@@ -39,6 +39,24 @@ const PublicHeader = () => {
                 {item.label}
               </Link>
             ))}
+             <Link
+                href={'#'}
+                className="transition-colors hover:text-foreground/80 text-foreground/60"
+              >
+                Syllabus
+              </Link>
+               <Link
+                href={'#'}
+                className="transition-colors hover:text-foreground/80 text-foreground/60"
+              >
+                About Us
+              </Link>
+               <Link
+                href={'#'}
+                className="transition-colors hover:text-foreground/80 text-foreground/60"
+              >
+                Contact Us
+              </Link>
           </nav>
         </div>
 
