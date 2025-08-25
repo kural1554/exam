@@ -3,12 +3,9 @@ import Logo from '../Logo';
 import { Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
 
 const footerSections = {
-    'Product': [
-        { href: '#', label: 'Overview' },
-        { href: '#', label: 'Pricing' },
-        { href: '#', label: 'Customer stories' },
-        { href: '#', label: 'Integrations' },
-        { href: '#', label: 'Security' },
+    'Company': [
+        { href: '/about', label: 'About us' },
+        { href: '/contact', label: 'Contact support' },
     ],
     'Resources': [
         { href: '#', label: 'Blog' },
@@ -20,10 +17,6 @@ const footerSections = {
         { href: '/dashboard', label: 'Dashboard' },
         { href: '/login', label: 'Log In and Sign Up' },
         { href: '#', label: 'Payment' },
-    ],
-    'Company': [
-        { href: '/about', label: 'About us' },
-        { href: '/contact', label: 'Contact support' },
     ],
 };
 
