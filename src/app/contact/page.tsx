@@ -11,7 +11,7 @@ export default function ContactPage() {
   return (
     <>
       <PublicHeader />
-      <div className="min-h-[calc(100vh-4rem)] w-full bg-lime-50 dark:bg-lime-900/10">
+      <div className="w-full bg-lime-50 dark:bg-lime-900/10 flex-1">
         <div className="container mx-auto px-4 py-12 md:py-24">
           <div className="relative rounded-xl shadow-2xl overflow-hidden">
             <div className="absolute inset-0">

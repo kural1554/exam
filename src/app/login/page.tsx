@@ -11,7 +11,7 @@ export default function LoginPage() {
   return (
     <>
     <PublicHeader />
-    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-background p-4">
+    <div className="flex items-center justify-center bg-background p-4 flex-1">
       <div className="w-full max-w-md mx-auto">
           <div className="text-center mb-8">
             <Link href="/" className="inline-block">

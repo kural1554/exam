@@ -113,7 +113,7 @@ export default function AboutUsPage() {
                     />
                   </div>
                   <div
-                    className={`space-y-4 ${
+                    className={`space-y-4 p-4 ${
                       section.imageLeft ? 'md:order-2' : 'md:order-1'
                     }`}
                   >

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
+import Footer from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
   title: "Examplify - AI-Powered Practice Exams",
@@ -30,11 +31,12 @@ export default function RootLayout({
       </head>
       <body
         className={cn(
-          "min-h-screen bg-background font-body antialiased"
+          "min-h-screen bg-background font-body antialiased flex flex-col"
         )}
       >
-        <div className="relative flex min-h-screen flex-col">
-           <div className="flex-1">{children}</div>
+        <div className="relative flex flex-col flex-1">
+           <main className="flex-1">{children}</main>
+           <Footer />
         </div>
         <Toaster />
       </body>
