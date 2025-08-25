@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
@@ -5,8 +7,6 @@ import { Input } from '@/components/ui/input';
 import { Search, Menu } from 'lucide-react';
 import UserNav from './UserNav';
 import Logo from '../Logo';
-import PublicHeader from './PublicHeader';
-import { usePathname } from 'next/navigation';
 import React from 'react';
 import AppSidebar from './AppSidebar';
 
