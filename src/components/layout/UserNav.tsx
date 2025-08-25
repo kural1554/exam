@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { mockUser } from '@/lib/mock-data';
 import Link from 'next/link';
-import { CreditCard, LogOut, Settings, User } from 'lucide-react';
+import { BookCopy, Home, LogOut, Settings, User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 const UserNav = () => {
@@ -50,10 +50,16 @@ const UserNav = () => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem asChild>
+           <DropdownMenuItem asChild>
             <Link href="/dashboard">
-              <User className="mr-2 h-4 w-4" />
-              <span>Profile</span>
+              <Home className="mr-2 h-4 w-4" />
+              <span>Dashboard</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/exams">
+              <BookCopy className="mr-2 h-4 w-4" />
+              <span>Exams</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
