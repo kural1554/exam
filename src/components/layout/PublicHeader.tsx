@@ -3,14 +3,20 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import Logo from '../Logo';
-import { Menu } from 'lucide-react';
+import { ChevronDown, Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 import { useState } from 'react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
+import { cn } from '@/lib/utils';
 
 const navItems = [
   { href: '/', label: 'Home' },
   { href: '/exams', label: 'Practice Exams' },
-  { href: '#', label: 'LMS' },
   { href: '/courses', label: 'Courses' },
   { href: '#', label: 'Tricks' },
   { href: '#', label: 'Pattern' },
@@ -18,6 +24,30 @@ const navItems = [
   { href: '/syllabus', label: 'Syllabus' },
   { href: '/about', label: 'About Us' },
   { href: '/contact', label: 'Contact Us' },
+];
+
+const moreMenuItems = [
+    { href: '#', label: 'Free Live Classes' },
+    { href: '#', label: 'Free Live Tests & Quizzes' },
+    { href: '#', label: 'Free Quizzes' },
+    { href: '#', label: 'Previous Year Papers' },
+    { href: '#', label: 'Doubts' },
+    { href: '#', label: 'Practice' },
+    { href: '#', label: 'Refer and Earn' },
+    { href: '#', label: 'All Exams' },
+    { href: '#', label: 'Our Selections' },
+    { href: '#', label: 'Careers' },
+    { href: '#', label: 'IAS Preparation' },
+    { href: '#', label: 'Current Affairs' },
+];
+
+const desktopNavLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/exams', label: 'Practice Exams' },
+    { href: '/courses', label: 'Courses' },
+    { href: '/syllabus', label: 'Syllabus' },
+    { href: '/about', label: 'About Us' },
+    { href: '/contact', label: 'Contact Us' },
 ];
 
 const PublicHeader = () => {
@@ -30,7 +60,7 @@ const PublicHeader = () => {
             <Logo />
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
-            {navItems.slice(0, 4).map((item) => (
+            {desktopNavLinks.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
@@ -39,24 +69,20 @@ const PublicHeader = () => {
                 {item.label}
               </Link>
             ))}
-             <Link
-                href={'/syllabus'}
-                className="transition-colors hover:text-foreground/80 text-foreground/60"
-              >
-                Syllabus
-              </Link>
-               <Link
-                href={'/about'}
-                className="transition-colors hover:text-foreground/80 text-foreground/60"
-              >
-                About Us
-              </Link>
-               <Link
-                href={'/contact'}
-                className="transition-colors hover:text-foreground/80 text-foreground/60"
-              >
-                Contact Us
-              </Link>
+             <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-1 transition-colors hover:text-foreground/80 text-foreground/60 px-0 hover:bg-transparent">
+                  More <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                {moreMenuItems.map((item) => (
+                    <DropdownMenuItem key={item.label} asChild>
+                        <Link href={item.href}>{item.label}</Link>
+                    </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </nav>
         </div>
 
