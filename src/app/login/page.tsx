@@ -5,10 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Logo from "@/components/Logo";
 import LoginForm from "@/components/auth/LoginForm";
+import PublicHeader from "@/components/layout/PublicHeader";
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+    <>
+    <PublicHeader />
+    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-background p-4">
       <div className="w-full max-w-md mx-auto">
           <div className="text-center mb-8">
             <Link href="/" className="inline-block">
@@ -34,5 +37,6 @@ export default function LoginPage() {
         </Card>
       </div>
     </div>
+    </>
   );
 }
