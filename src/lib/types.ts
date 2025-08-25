@@ -53,3 +53,16 @@ export type NavItem = {
   icon: LucideIcon;
   active?: boolean;
 };
+
+export type Course = {
+    id: string;
+    title: string;
+    image: {
+        src: string;
+        hint: string;
+    };
+    type: 'Paid' | 'Free' | 'Combo';
+    duration: number;
+    language: string;
+    price: number;
+};

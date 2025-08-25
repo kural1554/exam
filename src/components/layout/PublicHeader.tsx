@@ -11,7 +11,7 @@ const navItems = [
   { href: '/', label: 'Home' },
   { href: '/exams', label: 'Practice Exams' },
   { href: '#', label: 'LMS' },
-  { href: '#', label: 'Courses' },
+  { href: '/courses', label: 'Courses' },
   { href: '#', label: 'Tricks' },
   { href: '#', label: 'Pattern' },
   { href: '#', label: 'Pricing' },

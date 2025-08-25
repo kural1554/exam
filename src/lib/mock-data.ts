@@ -1,4 +1,4 @@
-import type { User, Exam, Question, ExamAttempt, Answer } from "./types";
+import type { User, Exam, Question, ExamAttempt, Answer, Course } from "./types";
 
 export const mockUser: User = {
   id: "user-1",
@@ -147,4 +147,79 @@ export const mockPerformanceData: ExamAttempt[] = [
     date: '2024-07-01',
     duration: 28,
   },
+];
+
+export const mockCourses: Course[] = [
+    {
+        id: 'course-1',
+        title: 'Arduino in Tamil',
+        image: { src: 'https://placehold.co/400x225', hint: 'arduino board' },
+        type: 'Paid',
+        duration: 2,
+        language: 'Tamil',
+        price: 1499,
+    },
+    {
+        id: 'course-2',
+        title: 'Azure Solution Architect Part - 1',
+        image: { src: 'https://placehold.co/400x225', hint: 'cloud architecture' },
+        type: 'Paid',
+        duration: 6,
+        language: 'English',
+        price: 1499,
+    },
+    {
+        id: 'course-3',
+        title: 'Building Estimation and Costing',
+        image: { src: 'https://placehold.co/400x225', hint: 'construction blueprint calculator' },
+        type: 'Paid',
+        duration: 13,
+        language: 'English',
+        price: 2499,
+    },
+    {
+        id: 'course-4',
+        title: 'IPL - Cricket Analytics in Hindi',
+        image: { src: 'https://placehold.co/400x225', hint: 'cricket stadium analytics' },
+        type: 'Paid',
+        duration: 1,
+        language: 'Hindi',
+        price: 1499,
+    },
+    {
+        id: 'course-5',
+        title: 'Introduction to FPGA Architecture',
+        image: { src: 'https://placehold.co/400x225', hint: 'fpga board circuit' },
+        type: 'Paid',
+        duration: 7,
+        language: 'English',
+        price: 2499,
+    },
+    {
+        id: 'course-6',
+        title: 'Meta Ads',
+        image: { src: 'https://placehold.co/400x225', hint: 'social media marketing chart' },
+        type: 'Paid',
+        duration: 4,
+        language: 'English',
+        price: 1499,
+    },
+    {
+        id: 'course-7',
+        title: 'Node.js',
+        image: { src: 'https://placehold.co/400x225', hint: 'programming code abstract' },
+        type: 'Paid',
+        duration: 13,
+        language: 'English',
+        price: 2499,
+    },
+    {
+        id: 'course-8',
+        title: 'Python Zero to Hero Malayalam',
+        image: { src: 'https://placehold.co/400x225', hint: 'python code editor' },
+        type: 'Paid',
+        duration: 17,
+        language: 'Malayalam',
+        price: 1499,
+    },
 ];
