@@ -15,9 +15,9 @@ const navItems = [
   { href: '#', label: 'Tricks' },
   { href: '#', label: 'Pattern' },
   { href: '#', label: 'Pricing' },
-  { href: '#', label: 'Syllabus' },
-  { href: '#', label: 'About Us' },
-  { href: '#', label: 'Contact Us' },
+  { href: '/syllabus', label: 'Syllabus' },
+  { href: '/about', label: 'About Us' },
+  { href: '/contact', label: 'Contact Us' },
 ];
 
 const PublicHeader = () => {
@@ -40,19 +40,19 @@ const PublicHeader = () => {
               </Link>
             ))}
              <Link
-                href={'#'}
+                href={'/syllabus'}
                 className="transition-colors hover:text-foreground/80 text-foreground/60"
               >
                 Syllabus
               </Link>
                <Link
-                href={'#'}
+                href={'/about'}
                 className="transition-colors hover:text-foreground/80 text-foreground/60"
               >
                 About Us
               </Link>
                <Link
-                href={'#'}
+                href={'/contact'}
                 className="transition-colors hover:text-foreground/80 text-foreground/60"
               >
                 Contact Us
