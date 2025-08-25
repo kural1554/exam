@@ -12,7 +12,7 @@ export default function ExamsLayout({
                 <AppSidebar />
                 <main className="flex-1 flex flex-col">
                     <Header />
-                    <div className="flex-1 p-4 sm:p-6 lg:p-8">{children}</div>
+                    <div className="flex-1 p-4 sm:p-6 lg:p-8 bg-muted/30">{children}</div>
                 </main>
             </div>
         </div>

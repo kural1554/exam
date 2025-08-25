@@ -1,48 +1,57 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, BookOpen } from 'lucide-react';
 import type { Exam } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
 
 interface ExamCardProps {
   exam: Exam;
+  isFree: boolean;
+  price?: number;
 }
 
-export default function ExamCard({ exam }: ExamCardProps) {
+export default function ExamCard({ exam, isFree, price }: ExamCardProps) {
+  const estimatedTime = Math.round(exam.numberOfQuestions * 1.5);
   return (
-    <Link href={`/exams/${exam.id}`} className="group">
-      <Card className="h-full flex flex-col transition-all duration-300 ease-in-out hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1">
-        <CardHeader className="p-0">
-          <div className="relative h-40 w-full">
-            <Image
-              src={exam.image.src}
-              alt={exam.title}
-              fill
-              className="object-cover rounded-t-lg"
-              data-ai-hint={exam.image.hint}
-            />
-            <div className={cn("absolute inset-0 rounded-t-lg", exam.color, "opacity-20 group-hover:opacity-10 transition-opacity")}></div>
-          </div>
+    <Card className="flex flex-col transition-all duration-300 ease-in-out hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1 overflow-hidden">
+        <CardHeader className="p-0 relative">
+            <div className="aspect-video w-full relative">
+                <Image
+                    src={exam.image.src}
+                    alt={exam.title}
+                    fill
+                    className="object-cover"
+                    data-ai-hint={exam.image.hint}
+                />
+            </div>
+            <div className="absolute top-0 left-0">
+                <div className="relative mt-2 ml-[-5px] px-4 py-1">
+                    <div className={`absolute inset-0 ${isFree ? 'bg-orange-500' : 'bg-green-600'} transform -skew-x-12`}></div>
+                    <span className="relative text-white text-xs font-bold">
+                        {isFree ? 'FREE EXAM' : 'PREMIUM EXAM'}
+                    </span>
+                </div>
+            </div>
         </CardHeader>
         <CardContent className="p-4 flex-grow">
-          <Badge variant="secondary" className="mb-2">{exam.category}</Badge>
-          <CardTitle className="text-lg font-semibold leading-snug group-hover:text-primary transition-colors">{exam.title}</CardTitle>
-          <CardDescription className="mt-2 text-sm line-clamp-2">{exam.description}</CardDescription>
-        </CardContent>
-        <CardFooter className="p-4 pt-0 flex justify-between items-center">
-            <div className="flex items-center text-sm text-muted-foreground">
-                <BookOpen className="h-4 w-4 mr-1.5" />
-                {exam.numberOfQuestions} Questions
+          <h3 className="font-semibold leading-snug truncate">{exam.title}</h3>
+          <div className="flex items-center text-sm text-muted-foreground mt-2">
+                <span>Marks : {exam.numberOfQuestions * 2}</span>
+                <span className="mx-2">·</span>
+                <span>{estimatedTime} mins</span>
             </div>
-            <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
-                Start
-                <ArrowRight className="h-4 w-4 ml-2" />
+        </CardContent>
+        <CardFooter className="p-4 pt-0 flex justify-between items-center bg-card">
+            <Button asChild className="w-full bg-orange-400 hover:bg-orange-500 text-white">
+              <Link href={`/exams/${exam.id}`}>Start Exam</Link>
             </Button>
+            {!isFree && price && (
+                <div className="text-right ml-2">
+                    <p className="text-sm font-semibold text-primary">Price : INR {price}</p>
+                </div>
+            )}
         </CardFooter>
       </Card>
-    </Link>
   );
 }
