@@ -100,7 +100,7 @@ export default function AboutUsPage() {
                   className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center"
                 >
                   <div
-                    className={`relative w-full aspect-[4/3] rounded-xl overflow-hidden shadow-2xl ${
+                    className={`relative w-full aspect-[4/3] rounded-xl overflow-hidden shadow-2xl m-5 ${
                       section.imageLeft ? 'md:order-1' : 'md:order-2'
                     }`}
                   >
