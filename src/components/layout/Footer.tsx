@@ -36,8 +36,8 @@ export default function Footer() {
                             Optimize your preparation process for competitive exams.
                         </p>
                         <div className="mt-6 flex space-x-4">
-                            {socialLinks.map(social => (
-                                <Link key={social.name} href={social.href} className="text-muted-foreground hover:text-primary">
+                            {socialLinks.map((social, index) => (
+                                <Link key={`social-${social.name}-${index}`} href={social.href} className="text-muted-foreground hover:text-primary">
                                     <social.icon className="h-6 w-6" />
                                 </Link>
                             ))}
