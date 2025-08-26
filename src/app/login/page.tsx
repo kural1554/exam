@@ -28,7 +28,7 @@ export default function LoginPage() {
                 </div>
                 <div className="flex justify-between items-center mb-6 text-sm">
                     <Link href="/signup" className="text-primary hover:underline">
-                        Register
+                        Sign up
                     </Link>
                     <Link href="#" className="text-muted-foreground hover:underline">
                         Forgot Password?
@@ -64,7 +64,8 @@ export default function LoginPage() {
                     <h1 className="text-6xl font-bold leading-tight">Journey</h1>
                     <div className="mt-8 flex items-center gap-4">
                         <button className="h-16 w-16 bg-orange-500 rounded-full flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 <ul>
+ 24 24" fill="white" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                         </button>
                         <div>
                             <p className="font-semibold">Reaching the top</p>
