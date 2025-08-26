@@ -24,6 +24,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { PlusCircle, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Switch } from '@/components/ui/switch';
 
 interface Question {
   id: number;
@@ -42,7 +43,13 @@ export default function ExamsAdminPage() {
   const [subtopic, setSubtopic] = useState('');
   const [date, setDate] = useState('');
   const [numQuestions, setNumQuestions] = useState('');
+  
+  const [hasTimeLimit, setHasTimeLimit] = useState(false);
   const [timeLimit, setTimeLimit] = useState('');
+  
+  const [isPaid, setIsPaid] = useState(false);
+  const [price, setPrice] = useState('');
+
   const [topics, setTopics] = useState('');
   const [questions, setQuestions] = useState<Question[]>([]);
 
@@ -56,6 +63,7 @@ export default function ExamsAdminPage() {
         correctAnswer: '',
         marks: 1,
         hasImage: false,
+        image: null,
       },
     ]);
   };
@@ -89,7 +97,10 @@ export default function ExamsAdminPage() {
         subtopic,
         date,
         numQuestions,
+        hasTimeLimit,
         timeLimit,
+        isPaid,
+        price,
         topics,
         questions
     })
@@ -144,8 +155,21 @@ export default function ExamsAdminPage() {
               <Input id="num-questions" type="number" value={numQuestions} onChange={(e) => setNumQuestions(e.target.value)} placeholder="e.g., 50" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="time-limit">Time Limit (in minutes)</Label>
-              <Input id="time-limit" type="number" value={timeLimit} onChange={(e) => setTimeLimit(e.target.value)} placeholder="e.g., 60" />
+                <div className="flex items-center justify-between">
+                    <Label htmlFor="time-limit-toggle">Enable Time Limit</Label>
+                    <Switch id="time-limit-toggle" checked={hasTimeLimit} onCheckedChange={setHasTimeLimit} />
+                </div>
+                <Input id="time-limit" type="number" value={timeLimit} onChange={(e) => setTimeLimit(e.target.value)} placeholder="e.g., 60" disabled={!hasTimeLimit} />
+                <p className="text-xs text-muted-foreground">Time limit in minutes.</p>
+            </div>
+             <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                    <Label htmlFor="paid-toggle">Paid Exam</Label>
+                    <Switch id="paid-toggle" checked={isPaid} onCheckedChange={setIsPaid} />
+                </div>
+                 {isPaid && (
+                    <Input id="price" type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Enter amount" />
+                 )}
             </div>
             <div className="space-y-2 md:col-span-2 lg:col-span-3">
               <Label htmlFor="topics">Related Topics (comma-separated)</Label>
