@@ -6,8 +6,6 @@ const footerSections = {
     'Company': [
         { href: '/about', label: 'About us' },
         { href: '/contact', label: 'Contact support' },
-    ],
-    'Resources': [
         { href: '#', label: 'Blog' },
         { href: '#', label: 'Guides & tutorials' },
         { href: '#', label: 'Help center' },
@@ -21,17 +19,17 @@ const footerSections = {
 };
 
 const socialLinks = [
-    { icon: Facebook, href: '#' },
-    { icon: Twitter, href: '#' },
-    { icon: Instagram, href: '#' },
-    { icon: Youtube, href: '#' },
+    { name: 'Facebook', icon: Facebook, href: '#' },
+    { name: 'Twitter', icon: Twitter, href: '#' },
+    { name: 'Instagram', icon: Instagram, href: '#' },
+    { name: 'Youtube', icon: Youtube, href: '#' },
 ]
 
 export default function Footer() {
     return (
         <footer className="bg-card text-card-foreground border-t">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     <div className="lg:col-span-2 pr-8">
                         <Logo />
                         <p className="mt-4 text-muted-foreground max-w-xs">
@@ -39,7 +37,7 @@ export default function Footer() {
                         </p>
                         <div className="mt-6 flex space-x-4">
                             {socialLinks.map(social => (
-                                <Link key={social.href} href={social.href} className="text-muted-foreground hover:text-primary">
+                                <Link key={social.name} href={social.href} className="text-muted-foreground hover:text-primary">
                                     <social.icon className="h-6 w-6" />
                                 </Link>
                             ))}
