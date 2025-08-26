@@ -44,6 +44,7 @@ export default function LoginForm() {
     setIsLoading(true);
     // Simulate API call
     setTimeout(() => {
+      setIsLoading(false);
       if (values.email === 'admin@gmail.com' && values.password === 'admin@123') {
         toast({
           title: "Admin Login Successful",
@@ -57,7 +58,6 @@ export default function LoginForm() {
         });
         router.push('/dashboard');
       }
-      setIsLoading(false);
     }, 1000);
   }
 
