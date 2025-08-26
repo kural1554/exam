@@ -130,11 +130,8 @@ const PublicHeader = () => {
           </div>
           <nav className="hidden md:flex items-center">
             <div className="flex items-center gap-2">
-                <Button asChild variant="ghost" size="sm">
+                <Button asChild>
                     <Link href="/login">Sign In</Link>
-                </Button>
-                <Button asChild size="sm">
-                    <Link href="/signup">Sign Up</Link>
                 </Button>
             </div>
           </nav>
