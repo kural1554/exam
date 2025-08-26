@@ -1,16 +1,16 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Exam, Question, Answer } from '@/lib/types';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { adaptiveExamQuestionSelection } from '@/ai/flows/adaptive-exam-question-selection';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { AlertCircle, Check, Star } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface ExamTakerProps {
   exam: Exam;
@@ -21,118 +21,198 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
   const router = useRouter();
   const { toast } = useToast();
   
-  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
-  const [remainingQuestions, setRemainingQuestions] = useState<Question[]>([]);
-  const [selectedAnswer, setSelectedAnswer] = useState<string>('');
-  const [answers, setAnswers] = useState<Answer[]>([]);
-  const [currentDifficulty, setCurrentDifficulty] = useState(5);
-  const [isLoading, setIsLoading] = useState(false);
-  
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [answers, setAnswers] = useState<Map<string, { answer: string; marked: boolean }>>(new Map());
+  const [timeLeft, setTimeLeft] = useState(exam.numberOfQuestions * 90); // 1.5 minutes per question
+
+  const currentQuestion = questions[currentIndex];
+  const selectedAnswer = answers.get(currentQuestion.id)?.answer || '';
+  const isMarked = answers.get(currentQuestion.id)?.marked || false;
+
   useEffect(() => {
-    // Start with a medium difficulty question
-    const initialQuestion = questions.find(q => q.difficulty === 5) || questions[0];
-    setCurrentQuestion(initialQuestion);
-    setRemainingQuestions(questions.filter(q => q.id !== initialQuestion.id));
-  }, [questions]);
-
-  const progress = useMemo(() => {
-    if (!questions.length) return 0;
-    return (answers.length / questions.length) * 100;
-  }, [answers, questions]);
-
-  const findNextQuestion = (targetDifficulty: number, questionPool: Question[]): Question | null => {
-    if (questionPool.length === 0) return null;
-    
-    let closestQuestion = questionPool[0];
-    let minDiff = Math.abs(closestQuestion.difficulty - targetDifficulty);
-
-    for (const q of questionPool) {
-      const diff = Math.abs(q.difficulty - targetDifficulty);
-      if (diff < minDiff) {
-        minDiff = diff;
-        closestQuestion = q;
-      }
-    }
-    return closestQuestion;
-  };
-
-  const handleNext = async () => {
-    if (!selectedAnswer || !currentQuestion) {
-      toast({ title: "Please select an answer.", variant: "destructive" });
-      return;
-    }
-
-    setIsLoading(true);
-
-    const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
-    const newAnswer: Answer = {
-      questionId: currentQuestion.id,
-      userAnswer: selectedAnswer,
-      isCorrect,
-    };
-    const newAnswers = [...answers, newAnswer];
-    setAnswers(newAnswers);
-
-    if (remainingQuestions.length === 0) {
-      localStorage.setItem(`exam_results_${exam.id}`, JSON.stringify({ answers: newAnswers, exam, questions }));
-      router.push(`/exams/${exam.id}/results`);
-      return;
-    }
-
-    try {
-      const { newDifficulty } = await adaptiveExamQuestionSelection({
-        currentDifficulty,
-        userAnswerCorrect: isCorrect,
-        examType: exam.category,
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          handleSubmit();
+          return 0;
+        }
+        return prev - 1;
       });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
-      const nextQuestion = findNextQuestion(newDifficulty, remainingQuestions);
-      
-      setCurrentDifficulty(newDifficulty);
-      setCurrentQuestion(nextQuestion);
-      setRemainingQuestions(remainingQuestions.filter(q => q.id !== nextQuestion?.id));
-      setSelectedAnswer('');
-    } catch (error) {
-      console.error("Failed to get next question:", error);
-      toast({ title: "Error", description: "Could not fetch the next question. Please try again.", variant: "destructive" });
-      // Fallback to random question
-      const nextQuestion = remainingQuestions[Math.floor(Math.random() * remainingQuestions.length)];
-      setCurrentQuestion(nextQuestion);
-      setRemainingQuestions(remainingQuestions.filter(q => q.id !== nextQuestion?.id));
-    } finally {
-      setIsLoading(false);
+  const formatTime = (seconds: number) => {
+    const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+    const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  };
+
+  const updateAnswer = (questionId: string, answer: string, marked: boolean) => {
+    setAnswers(prev => new Map(prev).set(questionId, { answer, marked }));
+  };
+
+  const handleSelectAnswer = (answer: string) => {
+    updateAnswer(currentQuestion.id, answer, isMarked);
+  };
+
+  const handleMarkForReview = () => {
+    updateAnswer(currentQuestion.id, selectedAnswer, !isMarked);
+    handleNext();
+  };
+  
+  const handleClearAnswer = () => {
+    updateAnswer(currentQuestion.id, '', isMarked);
+  };
+
+  const handleNext = () => {
+    if (currentIndex < questions.length - 1) {
+      setCurrentIndex(currentIndex + 1);
     }
   };
 
-  if (!currentQuestion) {
-    return <Card className="w-full max-w-2xl"><CardContent className="p-6"><Loader2 className="mx-auto h-8 w-8 animate-spin" /></CardContent></Card>;
-  }
+  const handlePrevious = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
+  const handleSubmit = useCallback(() => {
+    const finalAnswers: Answer[] = questions.map(q => {
+      const userAnswer = answers.get(q.id)?.answer;
+      return {
+        questionId: q.id,
+        userAnswer: userAnswer || '',
+        isCorrect: userAnswer === q.correctAnswer,
+      };
+    });
+    localStorage.setItem(`exam_results_${exam.id}`, JSON.stringify({ answers: finalAnswers, exam, questions }));
+    router.push(`/exams/${exam.id}/results`);
+  }, [answers, exam, questions, router]);
+
 
   return (
-    <Card className="w-full max-w-2xl shadow-2xl">
-      <CardHeader>
-        <div className="mb-4">
-          <p className="text-sm text-muted-foreground">Question {answers.length + 1} of {questions.length}</p>
-          <Progress value={progress} className="w-full mt-2" />
-        </div>
-        <CardTitle className="text-2xl">{currentQuestion.questionText}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <RadioGroup value={selectedAnswer} onValueChange={setSelectedAnswer} className="space-y-4">
-          {currentQuestion.options.map((option, index) => (
-            <Label key={index} htmlFor={`option-${index}`} className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-muted/50 has-[[data-state=checked]]:bg-muted has-[[data-state=checked]]:border-primary">
-              <RadioGroupItem value={option} id={`option-${index}`} className="mr-4" />
-              <span>{option}</span>
-            </Label>
-          ))}
-        </RadioGroup>
-      </CardContent>
-      <CardFooter className="flex justify-end">
-        <Button onClick={handleNext} disabled={isLoading || !selectedAnswer}>
-          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {remainingQuestions.length > 0 ? 'Next Question' : 'Finish Exam'}
-        </Button>
-      </CardFooter>
-    </Card>
+    <div className="grid md:grid-cols-3 gap-8">
+      <div className="md:col-span-2">
+        <Card className="shadow-lg">
+          <CardHeader>
+            <div className="flex justify-between items-center text-sm text-muted-foreground">
+                <span>{exam.title}</span>
+                <span>Exam Duration: {formatTime(exam.numberOfQuestions * 90)}</span>
+            </div>
+            <hr className="my-2"/>
+            <CardTitle className="text-xl">
+              Question {currentIndex + 1} of {questions.length}
+            </CardTitle>
+            <CardDescription>{currentQuestion.questionText}</CardDescription>
+             <div className="flex justify-between items-center text-sm text-muted-foreground pt-2">
+                <span>2 Mark(s)</span>
+                <button onClick={() => updateAnswer(currentQuestion.id, selectedAnswer, !isMarked)}>
+                    <Star className={cn("h-5 w-5", isMarked ? 'text-yellow-400 fill-current' : 'text-muted-foreground')}/>
+                </button>
+             </div>
+          </CardHeader>
+          <CardContent>
+            <RadioGroup value={selectedAnswer} onValueChange={handleSelectAnswer} className="space-y-4">
+              {currentQuestion.options.map((option, index) => (
+                <Label key={index} htmlFor={`option-${index}`} className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-muted/50 has-[[data-state=checked]]:bg-muted has-[[data-state=checked]]:border-primary">
+                  <RadioGroupItem value={option} id={`option-${index}`} className="mr-4" />
+                  <span>{option}</span>
+                </Label>
+              ))}
+            </RadioGroup>
+          </CardContent>
+          <CardFooter className="flex justify-between items-center flex-wrap gap-2">
+            <div>
+              <Button variant="outline" onClick={handlePrevious} disabled={currentIndex === 0}>Previous</Button>
+              <Button onClick={handleMarkForReview} variant="outline" className="ml-2">
+                Mark for Review & Next
+              </Button>
+            </div>
+            <div>
+              <Button onClick={handleNext} disabled={currentIndex === questions.length - 1}>Next</Button>
+              <Button onClick={handleClearAnswer} variant="ghost" className="ml-2">Clear Answer</Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                    <Button variant="destructive" className="ml-2">Finish</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure you want to finish the exam?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This will submit all your answers and end the exam session. You cannot go back.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleSubmit}>Finish Exam</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
+      
+      <div className="space-y-6">
+        <Card className="shadow-lg">
+          <CardHeader className="text-center">
+            <CardTitle className="text-4xl tracking-widest">{formatTime(timeLeft)}</CardTitle>
+            <CardDescription>Total Time: {formatTime(exam.numberOfQuestions * 90)}</CardDescription>
+          </CardHeader>
+        </Card>
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle>{exam.title}</CardTitle>
+            <CardDescription>{exam.category}</CardDescription>
+          </CardHeader>
+          <CardContent className="grid grid-cols-5 gap-2">
+            {questions.map((q, index) => {
+              const status = answers.get(q.id);
+              const isAnswered = !!status?.answer;
+              const isMarked = !!status?.marked;
+              
+              return (
+                <Button 
+                  key={q.id}
+                  variant={currentIndex === index ? 'default' : 'outline'}
+                  size="icon"
+                  className={cn(
+                    'h-10 w-10 relative',
+                    isAnswered && currentIndex !== index && 'bg-green-200 dark:bg-green-800 border-green-400',
+                    isMarked && 'border-yellow-400'
+                  )}
+                  onClick={() => setCurrentIndex(index)}
+                >
+                  {index + 1}
+                  {isMarked && <Star className="h-3 w-3 absolute -top-1 -right-1 text-yellow-400 fill-current"/>}
+                </Button>
+              )
+            })}
+          </CardContent>
+        </Card>
+        <Card className="shadow-lg">
+            <CardHeader>
+                <CardTitle>Summary</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2 text-sm">
+                <div className="flex items-center justify-between">
+                    <span>Answered:</span>
+                    <span className="font-bold">{Array.from(answers.values()).filter(a => !!a.answer).length}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                    <span>Marked for Review:</span>
+                    <span className="font-bold">{Array.from(answers.values()).filter(a => !!a.marked).length}</span>
+                </div>
+                 <div className="flex items-center justify-between">
+                    <span>Not Answered:</span>
+                    <span className="font-bold">{questions.length - Array.from(answers.values()).filter(a => !!a.answer).length}</span>
+                </div>
+            </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 }
