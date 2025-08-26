@@ -25,6 +25,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { PlusCircle, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Switch } from '@/components/ui/switch';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 interface Question {
   id: number;
@@ -34,6 +35,9 @@ interface Question {
   marks: number;
   image?: File | null;
   hasImage: boolean;
+  metaTitle: string;
+  metaKeywords: string;
+  metaDescription: string;
 }
 
 export default function ExamsAdminPage() {
@@ -53,6 +57,10 @@ export default function ExamsAdminPage() {
   const [topics, setTopics] = useState('');
   const [questions, setQuestions] = useState<Question[]>([]);
 
+  const [examMetaTitle, setExamMetaTitle] = useState('');
+  const [examMetaKeywords, setExamMetaKeywords] = useState('');
+  const [examMetaDescription, setExamMetaDescription] = useState('');
+
   const addQuestion = () => {
     setQuestions([
       ...questions,
@@ -64,6 +72,9 @@ export default function ExamsAdminPage() {
         marks: 1,
         hasImage: false,
         image: null,
+        metaTitle: '',
+        metaKeywords: '',
+        metaDescription: '',
       },
     ]);
   };
@@ -102,6 +113,9 @@ export default function ExamsAdminPage() {
         isPaid,
         price,
         topics,
+        examMetaTitle,
+        examMetaKeywords,
+        examMetaDescription,
         questions
     })
   }
@@ -175,6 +189,21 @@ export default function ExamsAdminPage() {
               <Label htmlFor="topics">Related Topics (comma-separated)</Label>
               <Input id="topics" value={topics} onChange={(e) => setTopics(e.target.value)} placeholder="e.g., Quadratic Equations, Geometry" />
             </div>
+             <div className="space-y-4 md:col-span-2 lg:col-span-3 border-t pt-6 mt-6">
+                <h3 className="text-lg font-medium">SEO for Exam</h3>
+                 <div className="space-y-2">
+                    <Label htmlFor="exam-meta-title">Meta Title</Label>
+                    <Input id="exam-meta-title" value={examMetaTitle} onChange={(e) => setExamMetaTitle(e.target.value)} placeholder="Meta Title for the exam" />
+                 </div>
+                 <div className="space-y-2">
+                    <Label htmlFor="exam-meta-keywords">Meta Keywords (comma-separated)</Label>
+                    <Input id="exam-meta-keywords" value={examMetaKeywords} onChange={(e) => setExamMetaKeywords(e.target.value)} placeholder="e.g., ibps, bank exam, practice test" />
+                 </div>
+                 <div className="space-y-2">
+                    <Label htmlFor="exam-meta-description">Meta Description</Label>
+                    <Textarea id="exam-meta-description" value={examMetaDescription} onChange={(e) => setExamMetaDescription(e.target.value)} placeholder="Short and engaging description for search engines." />
+                 </div>
+             </div>
           </CardContent>
         </Card>
 
@@ -233,6 +262,25 @@ export default function ExamsAdminPage() {
                                 <Input id={`q-image-${q.id}`} type="file" onChange={(e) => handleQuestionChange(qIndex, 'image', e.target.files ? e.target.files[0] : null)} />
                             </div>
                         )}
+                        <Accordion type="single" collapsible className="w-full">
+                            <AccordionItem value="seo">
+                                <AccordionTrigger>SEO for Question</AccordionTrigger>
+                                <AccordionContent className="space-y-4">
+                                     <div className="space-y-2">
+                                        <Label htmlFor={`q-meta-title-${q.id}`}>Meta Title</Label>
+                                        <Input id={`q-meta-title-${q.id}`} value={q.metaTitle} onChange={(e) => handleQuestionChange(qIndex, 'metaTitle', e.target.value)} placeholder="Meta Title for the question" />
+                                     </div>
+                                     <div className="space-y-2">
+                                        <Label htmlFor={`q-meta-keywords-${q.id}`}>Meta Keywords (comma-separated)</Label>
+                                        <Input id={`q-meta-keywords-${q.id}`} value={q.metaKeywords} onChange={(e) => handleQuestionChange(qIndex, 'metaKeywords', e.target.value)} placeholder="e.g., algebra, question, solve for x" />
+                                     </div>
+                                     <div className="space-y-2">
+                                        <Label htmlFor={`q-meta-description-${q.id}`}>Meta Description</Label>
+                                        <Textarea id={`q-meta-description-${q.id}`} value={q.metaDescription} onChange={(e) => handleQuestionChange(qIndex, 'metaDescription', e.target.value)} placeholder="Short and engaging description for this question." />
+                                     </div>
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
                     </div>
                 </Card>
                 ))}
