@@ -4,14 +4,14 @@ import {
   Bell,
   Home,
   Users,
-  BookUser,
-  Library,
   Book,
-  Calendar,
-  BookOpen,
+  FileText,
   Banknote,
   Star,
-  FileText,
+  BookCopy,
+  BookOpen,
+  HelpCircle,
+  Megaphone,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -21,16 +21,14 @@ import Logo from '../Logo';
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: Home },
-  { href: '/admin/faculties', label: 'Faculties', icon: BookUser },
-  { href: '/admin/departments', label: 'Departments', icon: Library },
-  { href: '/admin/subjects', label: 'Subjects', icon: Book },
-  { href: '/admin/timetable', label: 'Timetable', icon: Calendar },
-  { href: '/admin/lectures', label: 'Lectures', icon: BookOpen },
-  { href: '/admin/students', label: 'Students', icon: Users },
-  { href: '/admin/dons', label: 'Dons', icon: BookUser },
+  { href: '/admin/course', label: 'Course', icon: BookCopy },
+  { href: '/admin/post', label: 'Post', icon: BookOpen },
+  { href: '/admin/syllabus', label: 'Syllabus', icon: Book },
+  { href: '/admin/qa', label: 'Q/A', icon: HelpCircle },
   { href: '/admin/exams', label: 'Exams', icon: FileText },
   { href: '/admin/finance', label: 'Finance', icon: Banknote },
   { href: '/admin/reviews', label: 'Reviews', icon: Star },
+  { href: '/admin/notification', label: 'Notification', icon: Megaphone },
   { href: '/admin/users', label: 'Users', icon: Users },
 ];
 
