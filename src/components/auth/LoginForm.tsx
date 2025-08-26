@@ -44,12 +44,19 @@ export default function LoginForm() {
     setIsLoading(true);
     // Simulate API call
     setTimeout(() => {
-      console.log(values);
-      toast({
-        title: "Login Successful",
-        description: "Welcome back! Redirecting to your dashboard.",
-      });
-      router.push('/dashboard');
+      if (values.email === 'admin@gmail.com' && values.password === 'admin@123') {
+        toast({
+          title: "Admin Login Successful",
+          description: "Welcome back, Admin! Redirecting to your dashboard.",
+        });
+        router.push('/admin');
+      } else {
+        toast({
+          title: "Login Successful",
+          description: "Welcome back! Redirecting to your dashboard.",
+        });
+        router.push('/dashboard');
+      }
       setIsLoading(false);
     }, 1000);
   }
