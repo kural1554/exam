@@ -3,37 +3,55 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import Logo from "@/components/Logo";
 import SignupForm from "@/components/auth/SignupForm";
 import PublicHeader from "@/components/layout/PublicHeader";
+import Image from "next/image";
 
 export default function SignupPage() {
   return (
-    <>
-    <PublicHeader />
-    <div className="flex items-center justify-center bg-background p-4 flex-1">
-      <div className="w-full max-w-md mx-auto">
-        <div className="text-center mb-8">
-            <Link href="/" className="inline-block">
-                <Logo />
-            </Link>
-        </div>
-        <Card>
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Create an Account</CardTitle>
-            <CardDescription>
-              Start your learning journey with Examplify.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <SignupForm />
-            <div className="mt-4 text-center text-sm">
-              Already have an account?{" "}
-              <Link href="/login" className="underline text-primary">
-                Log in
-              </Link>
+    <div className="flex flex-col min-h-screen">
+      <PublicHeader />
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-2">
+        <div className="flex flex-col items-center justify-center bg-background p-8">
+            <div className="w-full max-w-sm">
+                 <div className="text-center mb-8">
+                    <Link href="/" className="inline-block">
+                        <Logo />
+                    </Link>
+                </div>
+                <Card>
+                  <CardHeader className="text-center">
+                    <CardTitle className="text-2xl">Create an Account</CardTitle>
+                    <CardDescription>
+                      Start your learning journey with Examplify.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <SignupForm />
+                    <div className="mt-4 text-center text-sm">
+                      Already have an account?{" "}
+                      <Link href="/login" className="underline text-primary">
+                        Log in
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
             </div>
-          </CardContent>
-        </Card>
+        </div>
+        <div className="hidden md:block relative">
+             <Image 
+                src="https://placehold.co/800x1200" 
+                alt="Learning Journey"
+                fill
+                className="object-cover"
+                data-ai-hint="students learning library"
+             />
+             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent flex flex-col justify-end p-12 text-white">
+                 <div className="w-full max-w-md">
+                    <h1 className="text-5xl font-bold leading-tight">Begin Your Success Story</h1>
+                    <p className="text-lg mt-4">Join a community of learners and achievers. Your path to excellence starts here.</p>
+                 </div>
+             </div>
+        </div>
       </div>
     </div>
-    </>
   );
 }

@@ -15,8 +15,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from 'next/navigation';
-import { Loader2 } from "lucide-react";
+import { Loader2, User, Mail, Lock } from "lucide-react";
 import React from "react";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -28,6 +29,13 @@ const formSchema = z.object({
   password: z.string().min(6, {
     message: "Password must be at least 6 characters.",
   }),
+  confirmPassword: z.string(),
+  userType: z.enum(["student", "coach"], {
+    required_error: "You need to select a user type.",
+  }),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
 });
 
 export default function SignupForm() {
@@ -41,6 +49,8 @@ export default function SignupForm() {
       name: "",
       email: "",
       password: "",
+      confirmPassword: "",
+      userType: "student",
     },
   });
 
@@ -68,7 +78,10 @@ export default function SignupForm() {
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Your Name" {...field} />
+                 <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input placeholder="Your Name" {...field} className="pl-10"/>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -81,7 +94,10 @@ export default function SignupForm() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="you@example.com" {...field} />
+                <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input placeholder="you@example.com" {...field} className="pl-10"/>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -94,13 +110,66 @@ export default function SignupForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="••••••••" {...field} />
+                <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input type="password" placeholder="••••••••" {...field} className="pl-10"/>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full" disabled={isLoading}>
+        <FormField
+          control={form.control}
+          name="confirmPassword"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Confirm Password</FormLabel>
+              <FormControl>
+                 <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input type="password" placeholder="••••••••" {...field} className="pl-10"/>
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="userType"
+          render={({ field }) => (
+            <FormItem className="space-y-3">
+              <FormLabel>Are you a...</FormLabel>
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  className="flex space-x-4"
+                >
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="student" />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      Student
+                    </FormLabel>
+                  </FormItem>
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="coach" />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      Coach
+                    </FormLabel>
+                  </FormItem>
+                </RadioGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit" className="w-full !mt-6" disabled={isLoading}>
           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Create Account
         </Button>
