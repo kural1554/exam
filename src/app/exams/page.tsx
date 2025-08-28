@@ -58,7 +58,7 @@ export default function ExamsPage() {
         <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-8">
         <aside className="space-y-6">
             <Card>
-                <div className="p-2">
+                <div className="p-4">
                     {categories.map((category, index) => (
                         <div key={category.name} className="relative group">
                              <Button 
@@ -76,11 +76,13 @@ export default function ExamsPage() {
                                                 {sub.name}
                                                 <ChevronRight className="h-4 w-4" />
                                             </Button>
-                                            <div className="absolute left-full top-0 w-48 bg-card border rounded-md shadow-lg p-2 invisible group-hover/sub:visible">
-                                                {sub.options?.map(option => (
-                                                    <Button key={option} variant="ghost" className="w-full justify-start text-left h-auto py-2">{option}</Button>
-                                                ))}
-                                            </div>
+                                            {sub.options && (
+                                                <div className="absolute left-full top-0 w-48 bg-card border rounded-md shadow-lg p-2 invisible group-hover/sub:visible">
+                                                    {sub.options?.map(option => (
+                                                        <Button key={option} variant="ghost" className="w-full justify-start text-left h-auto py-2">{option}</Button>
+                                                    ))}
+                                                </div>
+                                            )}
                                        </div>
                                    ))}
                                 </div>
