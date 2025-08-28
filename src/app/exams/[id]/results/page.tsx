@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -6,6 +7,7 @@ import ExamResults from '@/components/exams/ExamResults';
 import type { Exam, Question, Answer } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
+import FeedbackModal from '@/components/exams/FeedbackModal';
 
 interface StoredResults {
     answers: Answer[];
@@ -18,16 +20,31 @@ export default function ResultsPage() {
   const { id } = params;
   const [results, setResults] = useState<StoredResults | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && id) {
       const storedResults = localStorage.getItem(`exam_results_${id}`);
+      const feedbackDone = localStorage.getItem(`feedback_submitted_${id}`);
+      
       if (storedResults) {
         setResults(JSON.parse(storedResults));
+        if (!feedbackDone) {
+          setIsFeedbackModalOpen(true);
+        } else {
+            setFeedbackSubmitted(true);
+        }
       }
       setIsLoading(false);
     }
   }, [id]);
+
+  const handleFeedbackClose = () => {
+    localStorage.setItem(`feedback_submitted_${id}`, 'true');
+    setFeedbackSubmitted(true);
+    setIsFeedbackModalOpen(false);
+  }
 
   if (isLoading) {
     return (
@@ -51,10 +68,28 @@ export default function ResultsPage() {
   }
 
   return (
-    <ExamResults
-      answers={results.answers}
-      exam={results.exam}
-      questions={results.questions}
-    />
+    <>
+      <FeedbackModal 
+        isOpen={isFeedbackModalOpen}
+        onClose={handleFeedbackClose}
+        examTitle={results.exam.title}
+      />
+      {feedbackSubmitted && (
+         <ExamResults
+            answers={results.answers}
+            exam={results.exam}
+            questions={results.questions}
+        />
+      )}
+      {!feedbackSubmitted && !isLoading && (
+        <div className="flex items-center justify-center min-h-[50vh]">
+            <Card className="p-8 text-center">
+                <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
+                <h1 className="text-2xl font-bold">Waiting for feedback...</h1>
+                <p className="text-muted-foreground">Please complete the feedback form to view your results.</p>
+            </Card>
+        </div>
+      )}
+    </>
   );
 }
