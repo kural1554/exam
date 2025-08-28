@@ -63,7 +63,7 @@ export default function HomePage() {
                 className="object-cover"
                 data-ai-hint="student library study"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/40" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-black/50" />
             <div className="relative z-10 container px-4 text-white">
                 <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight">
                     Unlock Your Potential with AI-Powered Exams
@@ -83,7 +83,7 @@ export default function HomePage() {
         </section>
 
         {/* Features Section */}
-        <section id="features" className="py-12 md:py-24 bg-card">
+        <section id="features" className="py-20 md:py-28 bg-card">
           <div className="container">
             <div className="text-center">
               <h2 className="text-3xl font-bold tracking-tight">Why Choose Examplify?</h2>
@@ -104,7 +104,7 @@ export default function HomePage() {
         </section>
 
         {/* Popular Exams Section */}
-        <section className="py-12 md:py-24 bg-background">
+        <section className="py-20 md:py-28 bg-background">
             <div className="container">
                  <div className="text-center">
                     <h2 className="text-3xl font-bold tracking-tight">Popular Exams</h2>
@@ -145,7 +145,7 @@ export default function HomePage() {
         </section>
 
         {/* Testimonials Section */}
-        <section id="testimonials" className="py-12 md:py-24 bg-card">
+        <section id="testimonials" className="py-20 md:py-28 bg-card">
           <div className="container">
             <div className="text-center">
               <h2 className="text-3xl font-bold tracking-tight">What Our Students Say</h2>
@@ -154,8 +154,8 @@ export default function HomePage() {
             <div className="mt-12 grid gap-8 md:grid-cols-1 lg:grid-cols-3">
               {testimonials.map((testimonial, index) => (
                 <Card key={index} className="flex flex-col justify-between bg-background p-2 rounded-xl">
-                  <CardContent className="p-6">
-                    <div className="flex mb-4">
+                  <CardContent className="p-6 space-y-4">
+                    <div className="flex">
                         {[...Array(5)].map((_, i) => <Star key={i} className="h-5 w-5 text-yellow-400 fill-yellow-400" />)}
                     </div>
                     <p className="text-card-foreground">"{testimonial.quote}"</p>
