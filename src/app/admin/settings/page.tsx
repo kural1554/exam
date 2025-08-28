@@ -36,6 +36,32 @@ export default function AdminSettingsPage() {
 
             <Card>
                 <CardHeader>
+                    <CardTitle>Social Media Links</CardTitle>
+                    <CardDescription>Enter the URLs for your social media profiles. These will appear in the site footer.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="facebook-url">Facebook</Label>
+                        <Input id="facebook-url" placeholder="https://facebook.com/your-page" />
+                    </div>
+                     <div className="space-y-2">
+                        <Label htmlFor="twitter-url">Twitter</Label>
+                        <Input id="twitter-url" placeholder="https://twitter.com/your-handle" />
+                    </div>
+                     <div className="space-y-2">
+                        <Label htmlFor="instagram-url">Instagram</Label>
+                        <Input id="instagram-url" placeholder="https://instagram.com/your-username" />
+                    </div>
+                     <div className="space-y-2">
+                        <Label htmlFor="youtube-url">YouTube</Label>
+                        <Input id="youtube-url" placeholder="https://youtube.com/your-channel" />
+                    </div>
+                    <Button>Save Social Links</Button>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
                     <CardTitle>Site Configuration</CardTitle>
                 </CardHeader>
                 <CardContent>
