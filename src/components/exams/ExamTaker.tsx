@@ -1,6 +1,7 @@
+
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Exam, Question, Answer } from '@/lib/types';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -24,12 +25,50 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Map<string, { answer: string; marked: boolean }>>(new Map());
   const [timeLeft, setTimeLeft] = useState(exam.numberOfQuestions * 90); // 1.5 minutes per question
+  const [isClient, setIsClient] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const examContainerRef = useRef<HTMLDivElement>(null);
+
+
+  const checkFullscreen = useCallback(() => {
+    if (typeof document !== 'undefined') {
+        const fullscreenElement = document.fullscreenElement || (document as any).webkitFullscreenElement;
+        setIsFullscreen(!!fullscreenElement);
+    }
+  }, []);
+
+  useEffect(() => {
+    setIsClient(true);
+    document.addEventListener('fullscreenchange', checkFullscreen);
+    document.addEventListener('webkitfullscreenchange', checkFullscreen);
+
+    const requestFullscreen = async () => {
+        if (examContainerRef.current && typeof examContainerRef.current.requestFullscreen === 'function') {
+            try {
+                await examContainerRef.current.requestFullscreen();
+            } catch (err) {
+                console.error("Could not enter fullscreen mode:", err);
+            }
+        }
+    }
+    // Automatically request fullscreen when the component mounts
+    requestFullscreen();
+
+    return () => {
+      document.removeEventListener('fullscreenchange', checkFullscreen);
+      document.removeEventListener('webkitfullscreenchange', checkFullscreen);
+    };
+  }, [checkFullscreen]);
+
 
   const currentQuestion = questions[currentIndex];
   const selectedAnswer = answers.get(currentQuestion.id)?.answer || '';
   const isMarked = answers.get(currentQuestion.id)?.marked || false;
 
   const handleSubmit = useCallback(() => {
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    }
     const finalAnswers: Answer[] = questions.map(q => {
       const userAnswer = answers.get(q.id)?.answer;
       return {
@@ -98,125 +137,150 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
   const markedCount = Array.from(answers.values()).filter(a => !!a.marked).length;
   const notAnsweredCount = questions.length - answeredCount;
 
+  if (!isClient) {
+      return null;
+  }
+
   return (
-    <div className="grid md:grid-cols-[1fr_380px] gap-8 items-start">
-      <div className="md:col-span-1">
-        <Card className="shadow-lg bg-card/60 border-0">
-          <CardHeader className="p-0">
-            <div className="flex justify-between items-center text-sm text-muted-foreground mb-4">
-                <span>{exam.title}</span>
-                <span>Exam Duration: {formatTime(totalDuration)}</span>
-            </div>
-            <CardTitle className="text-3xl font-bold">
-              Question {currentIndex + 1} of {questions.length}
-            </CardTitle>
-            <p className="text-lg pt-4">{currentQuestion.questionText}</p>
-             <div className="flex justify-between items-center text-sm text-muted-foreground pt-4">
-                <span>2 Mark(s)</span>
-                <button onClick={() => updateAnswer(currentQuestion.id, selectedAnswer, !isMarked)}>
-                    <Star className={cn("h-5 w-5", isMarked ? 'text-yellow-400 fill-current' : 'text-muted-foreground')}/>
-                </button>
-             </div>
-          </CardHeader>
-          <CardContent className="p-0 mt-6">
-            <RadioGroup value={selectedAnswer} onValueChange={handleSelectAnswer} className="space-y-4">
-              {currentQuestion.options.map((option, index) => (
-                <Label key={index} htmlFor={`option-${index}`} className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-muted/50 has-[[data-state=checked]]:bg-muted has-[[data-state=checked]]:border-primary border-border/50">
-                  <RadioGroupItem value={option} id={`option-${index}`} className="mr-4" />
-                  <span className="text-base">{option}</span>
-                </Label>
-              ))}
-            </RadioGroup>
-          </CardContent>
-          <CardFooter className="flex justify-between items-center flex-wrap gap-2 mt-8 p-0">
-            <div>
-              <Button variant="outline" onClick={handlePrevious} disabled={currentIndex === 0}>Previous</Button>
-              <Button onClick={handleMarkForReview} variant="outline" className="ml-2">
-                Mark for Review & Next
-              </Button>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button onClick={handleNext} disabled={currentIndex === questions.length - 1}>Next</Button>
-              <Button onClick={handleClearAnswer} variant="ghost" className="ml-2">Clear Answer</Button>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                    <Button variant="destructive" className="ml-2">Finish</Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure you want to finish the exam?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            This will submit all your answers and end the exam session. You cannot go back.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleSubmit}>Finish Exam</AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
-          </CardFooter>
-        </Card>
-      </div>
-      
-      <div className="space-y-6">
-        <Card className="shadow-lg text-center bg-card/60 border-0">
-          <CardHeader>
-            <CardTitle className="text-5xl font-bold tracking-widest">{formatTime(timeLeft)}</CardTitle>
-            <CardDescription>Total Time: {formatTime(totalDuration)}</CardDescription>
-          </CardHeader>
-        </Card>
-        <Card className="shadow-lg bg-card/60 border-0">
-          <CardHeader>
-            <CardTitle>{exam.title}</CardTitle>
-            <CardDescription>{exam.category}</CardDescription>
-          </CardHeader>
-          <CardContent className="grid grid-cols-5 gap-2">
-            {questions.map((q, index) => {
-              const status = answers.get(q.id);
-              const isAnswered = !!status?.answer;
-              const isMarked = !!status?.marked;
-              
-              return (
-                <Button 
-                  key={q.id}
-                  variant={currentIndex === index ? 'default' : 'outline'}
-                  size="icon"
-                  className={cn(
-                    'h-10 w-10 relative font-bold',
-                    isAnswered && 'bg-green-500/80 hover:bg-green-500 text-white border-green-700',
-                    !isAnswered && 'bg-muted/40 border-border/50',
-                    isMarked && 'ring-2 ring-offset-2 ring-yellow-400 ring-offset-background'
-                  )}
-                  onClick={() => setCurrentIndex(index)}
-                >
-                  {index + 1}
-                </Button>
-              )
-            })}
-          </CardContent>
-        </Card>
-        <Card className="shadow-lg bg-card/60 border-0">
-            <CardHeader>
-                <CardTitle>Summary</CardTitle>
+    <div ref={examContainerRef} className="bg-background p-4 md:p-8">
+      {!isFullscreen && (
+          <AlertDialog defaultOpen={true}>
+              <AlertDialogContent>
+                  <AlertDialogHeader>
+                      <AlertDialogTitle>Fullscreen Required</AlertDialogTitle>
+                      <AlertDialogDescription>
+                          For the integrity of the exam, you must remain in fullscreen mode. Please re-enter fullscreen to continue.
+                      </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                      <AlertDialogAction onClick={() => examContainerRef.current?.requestFullscreen()}>
+                          Enter Fullscreen
+                      </AlertDialogAction>
+                  </AlertDialogFooter>
+              </AlertDialogContent>
+          </AlertDialog>
+      )}
+      <div className="grid md:grid-cols-[1fr_380px] gap-8 items-start">
+        <div className="md:col-span-1">
+          <Card className="shadow-lg bg-card/60 border-0">
+            <CardHeader className="p-0">
+              <div className="flex justify-between items-center text-sm text-muted-foreground mb-4">
+                  <span>{exam.title}</span>
+                  <span>Exam Duration: {formatTime(totalDuration)}</span>
+              </div>
+              <CardTitle className="text-3xl font-bold">
+                Question {currentIndex + 1} of {questions.length}
+              </CardTitle>
+              <p className="text-lg pt-4">{currentQuestion.questionText}</p>
+               <div className="flex justify-between items-center text-sm text-muted-foreground pt-4">
+                  <span>2 Mark(s)</span>
+                  <button onClick={() => updateAnswer(currentQuestion.id, selectedAnswer, !isMarked)}>
+                      <Star className={cn("h-5 w-5", isMarked ? 'text-yellow-400 fill-current' : 'text-muted-foreground')}/>
+                  </button>
+               </div>
             </CardHeader>
-            <CardContent className="space-y-3 text-base">
-                <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Answered:</span>
-                    <span className="font-bold">{answeredCount}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Marked for Review:</span>
-                    <span className="font-bold">{markedCount}</span>
-                </div>
-                 <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Not Answered:</span>
-                    <span className="font-bold">{notAnsweredCount}</span>
-                </div>
+            <CardContent className="p-0 mt-6">
+              <RadioGroup value={selectedAnswer} onValueChange={handleSelectAnswer} className="space-y-4">
+                {currentQuestion.options.map((option, index) => (
+                  <Label key={index} htmlFor={`option-${index}`} className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-muted/50 has-[[data-state=checked]]:bg-muted has-[[data-state=checked]]:border-primary border-border/50">
+                    <RadioGroupItem value={option} id={`option-${index}`} className="mr-4" />
+                    <span className="text-base">{option}</span>
+                  </Label>
+                ))}
+              </RadioGroup>
             </CardContent>
-        </Card>
+            <CardFooter className="flex justify-between items-center flex-wrap gap-2 mt-8 p-0">
+              <div>
+                <Button variant="outline" onClick={handlePrevious} disabled={currentIndex === 0}>Previous</Button>
+                <Button onClick={handleMarkForReview} variant="outline" className="ml-2">
+                  Mark for Review & Next
+                </Button>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button onClick={handleNext} disabled={currentIndex === questions.length - 1}>Next</Button>
+                <Button onClick={handleClearAnswer} variant="ghost" className="ml-2">Clear Answer</Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                      <Button variant="destructive" className="ml-2">Finish</Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                      <AlertDialogHeader>
+                          <AlertDialogTitle>Are you sure you want to finish the exam?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                              This will submit all your answers and end the exam session. You cannot go back.
+                          </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={handleSubmit}>Finish Exam</AlertDialogAction>
+                      </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+            </CardFooter>
+          </Card>
+        </div>
+        
+        <div className="space-y-6">
+          <Card className="shadow-lg text-center bg-card/60 border-0">
+            <CardHeader>
+              <CardTitle className="text-5xl font-bold tracking-widest">{formatTime(timeLeft)}</CardTitle>
+              <CardDescription>Total Time: {formatTime(totalDuration)}</CardDescription>
+            </CardHeader>
+          </Card>
+          <Card className="shadow-lg bg-card/60 border-0">
+            <CardHeader>
+              <CardTitle>{exam.title}</CardTitle>
+              <CardDescription>{exam.category}</CardDescription>
+            </CardHeader>
+            <CardContent className="grid grid-cols-5 gap-2">
+              {questions.map((q, index) => {
+                const status = answers.get(q.id);
+                const isAnswered = !!status?.answer;
+                const isMarked = !!status?.marked;
+                
+                return (
+                  <Button 
+                    key={q.id}
+                    variant={currentIndex === index ? 'default' : 'outline'}
+                    size="icon"
+                    className={cn(
+                      'h-10 w-10 relative font-bold',
+                      isAnswered && 'bg-green-500/80 hover:bg-green-500 text-white border-green-700',
+                      !isAnswered && 'bg-muted/40 border-border/50',
+                      isMarked && 'ring-2 ring-offset-2 ring-yellow-400 ring-offset-background'
+                    )}
+                    onClick={() => setCurrentIndex(index)}
+                  >
+                    {index + 1}
+                  </Button>
+                )
+              })}
+            </CardContent>
+          </Card>
+          <Card className="shadow-lg bg-card/60 border-0">
+              <CardHeader>
+                  <CardTitle>Summary</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-base">
+                  <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Answered:</span>
+                      <span className="font-bold">{answeredCount}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Marked for Review:</span>
+                      <span className="font-bold">{markedCount}</span>
+                  </div>
+                   <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Not Answered:</span>
+                      <span className="font-bold">{notAnsweredCount}</span>
+                  </div>
+              </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
 }
+
+    
