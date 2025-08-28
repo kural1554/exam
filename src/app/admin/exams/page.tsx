@@ -55,6 +55,7 @@ export default function ExamsAdminPage() {
   const [price, setPrice] = useState('');
 
   const [topics, setTopics] = useState('');
+  const [examImage, setExamImage] = useState<File | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
 
   const [examMetaTitle, setExamMetaTitle] = useState('');
@@ -113,6 +114,7 @@ export default function ExamsAdminPage() {
         isPaid,
         price,
         topics,
+        examImage,
         examMetaTitle,
         examMetaKeywords,
         examMetaDescription,
@@ -167,6 +169,10 @@ export default function ExamsAdminPage() {
             <div className="space-y-2">
               <Label htmlFor="num-questions">Number of Questions</Label>
               <Input id="num-questions" type="number" value={numQuestions} onChange={(e) => setNumQuestions(e.target.value)} placeholder="e.g., 50" />
+            </div>
+             <div className="space-y-2">
+                <Label htmlFor="exam-image">Exam Image</Label>
+                <Input id="exam-image" type="file" onChange={(e) => setExamImage(e.target.files ? e.target.files[0] : null)} />
             </div>
             <div className="space-y-2">
                 <div className="flex items-center justify-between">
