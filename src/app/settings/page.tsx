@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function SettingsPage() {
   return (
@@ -15,12 +16,41 @@ export default function SettingsPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Profile</CardTitle>
+            <CardTitle>Update Profile</CardTitle>
             <CardDescription>This is how others will see you on the site.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-sm text-muted-foreground">Profile settings are managed in your account.</p>
-            <Button>Update Profile</Button>
+            <div className="space-y-2">
+              <Label htmlFor="name">Name</Label>
+              <Input id="name" defaultValue="Alex Doe" />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" type="email" defaultValue="alex.doe@example.com" />
+            </div>
+             <Button>Update Profile</Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Change Password</CardTitle>
+            <CardDescription>Choose a strong password to protect your account.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+             <div className="space-y-2">
+              <Label htmlFor="current-password">Current Password</Label>
+              <Input id="current-password" type="password" />
+            </div>
+             <div className="space-y-2">
+              <Label htmlFor="new-password">New Password</Label>
+              <Input id="new-password" type="password" />
+            </div>
+             <div className="space-y-2">
+              <Label htmlFor="confirm-password">Confirm New Password</Label>
+              <Input id="confirm-password" type="password" />
+            </div>
+             <Button>Change Password</Button>
           </CardContent>
         </Card>
 
@@ -87,7 +117,7 @@ export default function SettingsPage() {
         </Card>
 
         <div className="flex justify-end">
-          <Button>Save Changes</Button>
+          <Button>Save All Changes</Button>
         </div>
       </div>
     </>
