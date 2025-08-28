@@ -2,41 +2,35 @@
 'use client';
 import Link from 'next/link';
 import {
-  Bell,
   Home,
-  Users,
-  Book,
-  FileText,
-  Banknote,
-  Star,
   BookCopy,
-  BookOpen,
-  HelpCircle,
-  Megaphone,
   Settings,
+  HelpCircle,
+  Calendar,
+  LogOut
 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import Logo from '../Logo';
+import { useRouter } from 'next/navigation';
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: Home },
-  { href: '/admin/course', label: 'Course', icon: BookCopy },
-  { href: '/admin/post', label: 'Post', icon: BookOpen },
-  { href: '/admin/syllabus', label: 'Syllabus', icon: Book },
-  { href: '/admin/qa', label: 'Q/A', icon: HelpCircle },
-  { href: '/admin/exams', label: 'Exams', icon: FileText },
-  { href: '/admin/finance', label: 'Finance', icon: Banknote },
-  { href: '/admin/reviews', label: 'Reviews', icon: Star },
-  { href: '/admin/notification', label: 'Notification', icon: Megaphone },
-  { href: '/admin/users', label: 'Users', icon: Users },
-  { href: '/admin/settings', label: 'General Setting', icon: Settings },
+  { href: '/admin/calendar', label: 'Calendar', icon: Calendar },
+  { href: '/admin/course', label: 'My Course', icon: BookCopy },
+  { href: '/admin/settings', label: 'Setting', icon: Settings },
+  { href: '/admin/qa', label: 'Help', icon: HelpCircle },
 ];
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    // In a real app, you'd handle logout logic here
+    router.push('/login');
+  };
 
   return (
     <div className="hidden border-r bg-card md:block">
@@ -47,8 +41,8 @@ export default function AdminSidebar() {
             <span className="">Admin Panel</span>
           </Link>
         </div>
-        <div className="flex-1">
-          <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+        <div className="flex-1 overflow-y-auto">
+          <nav className="grid items-start px-2 text-sm font-medium lg:px-4 py-4">
             {navItems.map((item) => (
               <Link
                 key={item.label}
@@ -63,6 +57,12 @@ export default function AdminSidebar() {
               </Link>
             ))}
           </nav>
+        </div>
+        <div className="mt-auto p-4">
+            <Button variant="ghost" className="w-full justify-start" onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+            </Button>
         </div>
       </div>
     </div>
