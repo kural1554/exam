@@ -9,6 +9,7 @@ import UserNav from './UserNav';
 import Logo from '../Logo';
 import React from 'react';
 import AppSidebar from './AppSidebar';
+import { ModeToggle } from '../ModeToggle';
 
 const Header = () => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
@@ -46,6 +47,7 @@ const Header = () => {
             />
           </div>
         </form>
+        <ModeToggle />
         <UserNav />
       </div>
     </header>

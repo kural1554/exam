@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { cn } from '@/lib/utils';
+import { ModeToggle } from '../ModeToggle';
 
 const navItems = [
   { href: '/', label: 'Home' },
@@ -123,7 +124,7 @@ const PublicHeader = () => {
         
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <div className="w-full flex-1 md:w-auto md:flex-none">
-            {/* Search input can go here */}
+            <ModeToggle />
           </div>
           <nav className="hidden md:flex items-center">
             <div className="flex items-center gap-2">

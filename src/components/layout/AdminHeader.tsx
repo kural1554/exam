@@ -35,6 +35,7 @@ import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import AdminSidebar from './AdminSidebar';
 import UserNav from './UserNav';
+import { ModeToggle } from '../ModeToggle';
 
 export default function AdminHeader() {
   return (
@@ -53,6 +54,7 @@ export default function AdminHeader() {
       <div className="w-full flex-1">
         {/* Can be used for breadcrumbs or other header content */}
       </div>
+      <ModeToggle />
       <UserNav />
     </header>
   );
