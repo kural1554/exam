@@ -13,6 +13,7 @@ import {
   BookOpen,
   HelpCircle,
   Megaphone,
+  Settings,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -31,6 +32,7 @@ const navItems = [
   { href: '/admin/reviews', label: 'Reviews', icon: Star },
   { href: '/admin/notification', label: 'Notification', icon: Megaphone },
   { href: '/admin/users', label: 'Users', icon: Users },
+  { href: '/admin/settings', label: 'General Setting', icon: Settings },
 ];
 
 export default function AdminSidebar() {
