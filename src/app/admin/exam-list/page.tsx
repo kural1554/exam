@@ -36,8 +36,18 @@ import {
   PlusCircle,
 } from 'lucide-react';
 import { mockExams } from '@/lib/mock-data';
+import { useToast } from '@/hooks/use-toast';
 
 export default function ExamListPage() {
+  const { toast } = useToast();
+
+  const handleAction = (action: string, examTitle: string) => {
+    toast({
+      title: `${action} Clicked`,
+      description: `You have clicked ${action} for the exam: ${examTitle}`,
+    });
+  };
+
   return (
     <>
       <div className="flex justify-between items-center mb-4">
@@ -90,14 +100,14 @@ export default function ExamListPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleAction('View', exam.title)}>
                           <Eye className="mr-2 h-4 w-4" /> View
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleAction('Edit', exam.title)}>
                           <Pencil className="mr-2 h-4 w-4" /> Edit
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-destructive">
+                        <DropdownMenuItem className="text-destructive" onClick={() => handleAction('Delete', exam.title)}>
                           <Trash className="mr-2 h-4 w-4" /> Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>

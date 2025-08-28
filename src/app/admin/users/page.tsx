@@ -49,6 +49,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
 
 const users = [
   {
@@ -144,6 +145,15 @@ const users = [
 ];
 
 export default function UsersPage() {
+  const { toast } = useToast();
+
+  const handleAction = (action: string, userName: string) => {
+    toast({
+      title: `${action} Clicked`,
+      description: `You have clicked ${action} for user: ${userName}`,
+    });
+  };
+
   return (
     <>
       <h1 className="text-3xl font-bold mb-4">User</h1>
@@ -241,14 +251,14 @@ export default function UsersPage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleAction('View', user.fullName)}>
                               <Eye className="mr-2 h-4 w-4" /> View
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleAction('Edit', user.fullName)}>
                               <Pencil className="mr-2 h-4 w-4" /> Edit
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem className="text-destructive">
+                            <DropdownMenuItem className="text-destructive" onClick={() => handleAction('Delete', user.fullName)}>
                               <Trash className="mr-2 h-4 w-4" /> Delete
                             </DropdownMenuItem>
                           </DropdownMenuContent>
