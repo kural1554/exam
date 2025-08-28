@@ -20,20 +20,43 @@ const categories = [
             { name: "Officer", options: ["Aptitude", "Reasoning", "English"] },
         ]
     },
-    { name: "Physics" },
-    { name: "Chemistry Category" },
-    { name: "History Category" },
-    { name: "Chemistry" },
-    { name: "English Category" },
+    { 
+        name: "Physics",
+        subCategories: [
+            { name: "Mechanics", options: ["Kinematics", "Dynamics", "Statics"] },
+            { name: "Thermodynamics", options: ["Laws", "Heat Transfer"] },
+        ]
+    },
+    { 
+        name: "Chemistry",
+        subCategories: [
+            { name: "Organic", options: ["Alkanes", "Alkenes", "Alkynes"] },
+            { name: "Inorganic", options: ["Acids", "Bases", "Salts"] },
+        ]
+    },
+    { 
+        name: "History",
+        subCategories: [
+            { name: "Ancient", options: ["India", "World"] },
+            { name: "Modern", options: ["India", "World"] },
+        ]
+    },
+    { 
+        name: "English",
+        subCategories: [
+            { name: "Grammar", options: ["Nouns", "Verbs", "Adjectives"] },
+            { name: "Literature", options: ["Poetry", "Prose"] },
+        ]
+    },
     { name: "Test" },
-    { name: "mocktest" }
+    { name: "Mocktest" }
 ];
 
 export default function ExamsPage() {
   return (
     <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-8">
-        <aside>
+        <aside className="space-y-6">
             <Card>
                 <div className="p-2">
                     {categories.map((category, index) => (
@@ -46,7 +69,7 @@ export default function ExamsPage() {
                                 {category.subCategories && <ChevronRight className="h-4 w-4" />}
                             </Button>
                             {category.subCategories && (
-                                <div className="absolute left-full top-0 w-48 bg-card border rounded-md shadow-lg p-2 invisible group-hover:visible">
+                                <div className="absolute left-full -top-1 w-48 bg-card border rounded-md shadow-lg p-2 invisible group-hover:visible z-10">
                                    {category.subCategories.map(sub => (
                                        <div key={sub.name} className="relative group/sub">
                                             <Button variant="ghost" className="w-full justify-between text-left h-auto py-2">
