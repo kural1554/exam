@@ -56,7 +56,7 @@ export default function LoginForm() {
           title: "Login Successful",
           description: "Welcome back! Redirecting to your dashboard.",
         });
-        router.push('/dashboard');
+        router.push('/u/dashboard');
       }
     }, 1000);
   }
