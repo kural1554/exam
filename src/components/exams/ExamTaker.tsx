@@ -26,21 +26,11 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
   const [answers, setAnswers] = useState<Map<string, { answer: string; marked: boolean }>>(new Map());
   const [timeLeft, setTimeLeft] = useState(exam.numberOfQuestions * 90); // 1.5 minutes per question
   const [isClient, setIsClient] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const examContainerRef = useRef<HTMLDivElement>(null);
 
 
-  const checkFullscreen = useCallback(() => {
-    if (typeof document !== 'undefined') {
-        const fullscreenElement = document.fullscreenElement || (document as any).webkitFullscreenElement;
-        setIsFullscreen(!!fullscreenElement);
-    }
-  }, []);
-
   useEffect(() => {
     setIsClient(true);
-    document.addEventListener('fullscreenchange', checkFullscreen);
-    document.addEventListener('webkitfullscreenchange', checkFullscreen);
 
     const requestFullscreen = async () => {
         if (examContainerRef.current && typeof examContainerRef.current.requestFullscreen === 'function') {
@@ -54,11 +44,7 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
     // Automatically request fullscreen when the component mounts
     requestFullscreen();
 
-    return () => {
-      document.removeEventListener('fullscreenchange', checkFullscreen);
-      document.removeEventListener('webkitfullscreenchange', checkFullscreen);
-    };
-  }, [checkFullscreen]);
+  }, []);
 
 
   const currentQuestion = questions[currentIndex];
@@ -129,7 +115,7 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
 
   const handlePrevious = () => {
     if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
+      setCurrentIndex(currentIndex + 1);
     }
   };
 
@@ -143,23 +129,6 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
 
   return (
     <div ref={examContainerRef} className="bg-background p-4 md:p-8">
-      {!isFullscreen && (
-          <AlertDialog defaultOpen={true}>
-              <AlertDialogContent>
-                  <AlertDialogHeader>
-                      <AlertDialogTitle>Fullscreen Required</AlertDialogTitle>
-                      <AlertDialogDescription>
-                          For the integrity of the exam, you must remain in fullscreen mode. Please re-enter fullscreen to continue.
-                      </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                      <AlertDialogAction onClick={() => examContainerRef.current?.requestFullscreen()}>
-                          Enter Fullscreen
-                      </AlertDialogAction>
-                  </AlertDialogFooter>
-              </AlertDialogContent>
-          </AlertDialog>
-      )}
       <div className="grid md:grid-cols-[1fr_380px] gap-8 items-start">
         <div className="md:col-span-1">
           <Card className="shadow-lg bg-card/60 border-0">
