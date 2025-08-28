@@ -13,6 +13,7 @@ import {
   HelpCircle,
   DollarSign,
   Star,
+  List,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
@@ -26,6 +27,7 @@ const navItems = [
   { href: '/admin/syllabus', label: 'Syllabus', icon: ListTodo },
   { href: '/admin/qa', label: 'Q/A', icon: HelpCircle },
   { href: '/admin/exams', label: 'Exams', icon: FilePenLine },
+  { href: '/admin/exam-list', label: 'Exam List', icon: List },
   { href: '/admin/finance', label: 'Finance', icon: DollarSign },
   { href: '/admin/reviews', label: 'Reviews', icon: Star },
   { href: '/admin/notification', label: 'Notification', icon: Bell },
