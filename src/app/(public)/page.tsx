@@ -63,7 +63,7 @@ export default function HomePage() {
                 className="object-cover"
                 data-ai-hint="student library study"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/40" />
             <div className="relative z-10 container px-4 text-white">
                 <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight">
                     Unlock Your Potential with AI-Powered Exams
@@ -83,7 +83,7 @@ export default function HomePage() {
         </section>
 
         {/* Features Section */}
-        <section id="features" className="py-12 md:py-24 bg-background">
+        <section id="features" className="py-12 md:py-24 bg-card">
           <div className="container">
             <div className="text-center">
               <h2 className="text-3xl font-bold tracking-tight">Why Choose Examplify?</h2>
@@ -91,8 +91,8 @@ export default function HomePage() {
             </div>
             <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
               {features.map((feature, index) => (
-                <div key={index} className="text-center">
-                  <div className="flex justify-center items-center h-16 w-16 rounded-full bg-primary/10 mx-auto">
+                <div key={index} className="text-center p-4">
+                  <div className="flex justify-center items-center h-20 w-20 rounded-full bg-primary/10 mx-auto border-2 border-primary/20 shadow-lg">
                     {feature.icon}
                   </div>
                   <h3 className="mt-6 text-xl font-semibold">{feature.title}</h3>
@@ -104,7 +104,7 @@ export default function HomePage() {
         </section>
 
         {/* Popular Exams Section */}
-        <section className="py-12 md:py-24 bg-card">
+        <section className="py-12 md:py-24 bg-background">
             <div className="container">
                  <div className="text-center">
                     <h2 className="text-3xl font-bold tracking-tight">Popular Exams</h2>
@@ -113,7 +113,7 @@ export default function HomePage() {
                  <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {mockExams.slice(0, 4).map(exam => (
                         <Link href={`/exams/${exam.id}`} key={exam.id} className="group">
-                             <Card className="h-full flex flex-col transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 overflow-hidden">
+                             <Card className="h-full flex flex-col transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-2 overflow-hidden rounded-xl">
                                 <div className="relative h-40 w-full">
                                     <Image
                                         src={exam.image.src}
@@ -145,7 +145,7 @@ export default function HomePage() {
         </section>
 
         {/* Testimonials Section */}
-        <section id="testimonials" className="py-12 md:py-24 bg-background">
+        <section id="testimonials" className="py-12 md:py-24 bg-card">
           <div className="container">
             <div className="text-center">
               <h2 className="text-3xl font-bold tracking-tight">What Our Students Say</h2>
@@ -153,12 +153,12 @@ export default function HomePage() {
             </div>
             <div className="mt-12 grid gap-8 md:grid-cols-1 lg:grid-cols-3">
               {testimonials.map((testimonial, index) => (
-                <Card key={index} className="flex flex-col justify-between">
+                <Card key={index} className="flex flex-col justify-between bg-background p-2 rounded-xl">
                   <CardContent className="p-6">
-                    <div className="flex">
+                    <div className="flex mb-4">
                         {[...Array(5)].map((_, i) => <Star key={i} className="h-5 w-5 text-yellow-400 fill-yellow-400" />)}
                     </div>
-                    <p className="mt-4 text-card-foreground">"{testimonial.quote}"</p>
+                    <p className="text-card-foreground">"{testimonial.quote}"</p>
                   </CardContent>
                   <CardFooter className="p-6 pt-0 flex items-center gap-4">
                     <Image src={testimonial.avatar} alt={testimonial.name} width={48} height={48} className="rounded-full" data-ai-hint="person portrait" />
