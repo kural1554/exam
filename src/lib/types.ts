@@ -18,6 +18,7 @@ export type Exam = {
     hint: string;
   };
   color: string;
+  createdAt: Date;
 };
 
 export type Question = {

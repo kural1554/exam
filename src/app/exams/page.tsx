@@ -1,15 +1,15 @@
 
 
+'use client';
 import { Button } from '@/components/ui/button';
 import {
   Card,
-  CardContent
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { mockExams } from '@/lib/mock-data';
 import { ChevronRight, Search } from 'lucide-react';
-import Link from 'next/link';
 import ExamCard from '@/components/exams/ExamCard';
+import { useState, useMemo } from 'react';
 
 const categories = [
     { 
@@ -53,13 +53,35 @@ const categories = [
     { name: "Mocktest" }
 ];
 
+const EXAMS_PER_PAGE = 15;
+
 export default function ExamsPage() {
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const sortedExams = useMemo(() => {
+        return [...mockExams].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    }, []);
+
+    const totalPages = Math.ceil(sortedExams.length / EXAMS_PER_PAGE);
+    const paginatedExams = sortedExams.slice(
+        (currentPage - 1) * EXAMS_PER_PAGE,
+        currentPage * EXAMS_PER_PAGE
+    );
+
+    const handleNextPage = () => {
+        setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+    };
+
+    const handlePreviousPage = () => {
+        setCurrentPage((prev) => Math.max(prev - 1, 1));
+    };
+
   return (
     <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-8">
         <aside className="space-y-6">
             <Card>
-                <div className="p-4">
+                <div className="p-2">
                     {categories.map((category, index) => (
                         <div key={category.name} className="relative group">
                              <Button 
@@ -105,7 +127,7 @@ export default function ExamsPage() {
                 </div>
 
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
-                    {mockExams.map((exam, index) => (
+                    {paginatedExams.map((exam, index) => (
                         <ExamCard 
                             key={exam.id} 
                             exam={exam} 
@@ -116,8 +138,11 @@ export default function ExamsPage() {
                 </div>
 
                 <div className="flex justify-center items-center gap-4">
-                    <Button variant="outline">Previous</Button>
-                    <Button>Next</Button>
+                    <Button variant="outline" onClick={handlePreviousPage} disabled={currentPage === 1}>Previous</Button>
+                    <span className="text-sm text-muted-foreground">
+                        Page {currentPage} of {totalPages}
+                    </span>
+                    <Button onClick={handleNextPage} disabled={currentPage === totalPages}>Next</Button>
                 </div>
             </div>
         </section>
