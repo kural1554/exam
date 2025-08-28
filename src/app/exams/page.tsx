@@ -1,4 +1,5 @@
 
+
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -14,38 +15,38 @@ const categories = [
     { 
         name: "MPPSC",
         subCategories: [
-            { name: "Clerk", options: ["Aptitude", "Reasoning", "English"] },
-            { name: "PO", options: ["Aptitude", "Reasoning", "English"] },
-            { name: "Manager", options: ["Aptitude", "Reasoning", "English"] },
-            { name: "Officer", options: ["Aptitude", "Reasoning", "English"] },
+            { name: "Clerk", options: ["All", "Aptitude", "Reasoning", "English"] },
+            { name: "PO", options: ["All", "Aptitude", "Reasoning", "English"] },
+            { name: "Manager", options: ["All", "Aptitude", "Reasoning", "English"] },
+            { name: "Officer", options: ["All", "Aptitude", "Reasoning", "English"] },
         ]
     },
     { 
         name: "Physics",
         subCategories: [
-            { name: "Mechanics", options: ["Kinematics", "Dynamics", "Statics"] },
-            { name: "Thermodynamics", options: ["Laws", "Heat Transfer"] },
+            { name: "Mechanics", options: ["All", "Kinematics", "Dynamics", "Statics"] },
+            { name: "Thermodynamics", options: ["All", "Laws", "Heat Transfer"] },
         ]
     },
     { 
         name: "Chemistry",
         subCategories: [
-            { name: "Organic", options: ["Alkanes", "Alkenes", "Alkynes"] },
-            { name: "Inorganic", options: ["Acids", "Bases", "Salts"] },
+            { name: "Organic", options: ["All", "Alkanes", "Alkenes", "Alkynes"] },
+            { name: "Inorganic", options: ["All", "Acids", "Bases", "Salts"] },
         ]
     },
     { 
         name: "History",
         subCategories: [
-            { name: "Ancient", options: ["India", "World"] },
-            { name: "Modern", options: ["India", "World"] },
+            { name: "Ancient", options: ["All", "India", "World"] },
+            { name: "Modern", options: ["All", "India", "World"] },
         ]
     },
     { 
         name: "English",
         subCategories: [
-            { name: "Grammar", options: ["Nouns", "Verbs", "Adjectives"] },
-            { name: "Literature", options: ["Poetry", "Prose"] },
+            { name: "Grammar", options: ["All", "Nouns", "Verbs", "Adjectives"] },
+            { name: "Literature", options: ["All", "Poetry", "Prose"] },
         ]
     },
     { name: "Test" },
