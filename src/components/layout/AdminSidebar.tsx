@@ -1,32 +1,35 @@
+
 'use client';
 import Link from 'next/link';
 import {
   Bell,
   Home,
-  Package2,
   Users,
   FilePenLine,
   ListTodo,
   Settings,
+  BookOpen,
+  FileText,
+  HelpCircle,
+  DollarSign,
+  Star,
 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import Logo from '../Logo';
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: Home },
-  { href: '/admin/users', label: 'Users', icon: Users },
-  { href: '/admin/exams', label: 'Exams', icon: FilePenLine },
+  { href: '/admin/course', label: 'Course', icon: BookOpen },
+  { href: '/admin/post', label: 'Post', icon: FileText },
   { href: '/admin/syllabus', label: 'Syllabus', icon: ListTodo },
+  { href: '/admin/qa', label: 'Q/A', icon: HelpCircle },
+  { href: '/admin/exams', label: 'Exams', icon: FilePenLine },
+  { href: '/admin/finance', label: 'Finance', icon: DollarSign, comingSoon: true },
+  { href: '/admin/reviews', label: 'Reviews', icon: Star, comingSoon: true },
+  { href: '/admin/notification', label: 'Notification', icon: Bell, comingSoon: true },
+  { href: '/admin/users', label: 'Users', icon: Users },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 
@@ -50,14 +53,16 @@ export default function AdminSidebar() {
             {navItems.map((item) => (
               <Link
                 key={item.label}
-                href={item.href}
+                href={item.comingSoon ? '#' : item.href}
                 className={cn(
                   'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
-                  pathname.startsWith(item.href) && item.href !== '/admin' ? 'bg-muted text-primary' : pathname === '/admin' && item.href === '/admin' ? 'bg-muted text-primary' : ''
+                  (pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/admin')) && 'bg-muted text-primary',
+                  item.comingSoon && 'cursor-not-allowed opacity-50'
                 )}
               >
                 <item.icon className="h-4 w-4" />
                 {item.label}
+                {item.comingSoon && <span className="ml-auto text-xs">(Soon)</span>}
               </Link>
             ))}
           </nav>
