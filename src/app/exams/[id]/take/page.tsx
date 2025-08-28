@@ -13,20 +13,13 @@ export default function TakeExamPage({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-        const storedExams: Exam[] = JSON.parse(localStorage.getItem('exams') || '[]');
-        const storedQuestions: Question[] = JSON.parse(localStorage.getItem('questions') || '[]');
-        
-        const allExams = [...storedExams, ...mockExams.filter(me => !storedExams.some(se => se.id === me.id))];
-        const allQuestions = [...storedQuestions, ...mockQuestions.filter(mq => !storedQuestions.some(sq => sq.id === mq.id))];
-
-        const currentExam = allExams.find((e) => e.id === params.id) || null;
-        const currentQuestions = allQuestions.filter((q) => q.examId === params.id);
-        
-        setExam(currentExam);
-        setQuestions(currentQuestions);
-        setLoading(false);
-    }
+    // TODO: Replace with an API call to fetch exam and questions by ID
+    const currentExam = mockExams.find((e) => e.id === params.id) || null;
+    const currentQuestions = mockQuestions.filter((q) => q.examId === params.id);
+    
+    setExam(currentExam);
+    setQuestions(currentQuestions);
+    setLoading(false);
   }, [params.id]);
 
 

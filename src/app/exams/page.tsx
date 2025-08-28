@@ -57,18 +57,9 @@ const categories = [
 const EXAMS_PER_PAGE = 15;
 
 export default function ExamsPage() {
-    const [allExams, setAllExams] = useState<Exam[]>([]);
+    // TODO: Replace with API call to fetch exams
+    const [allExams, setAllExams] = useState<Exam[]>(mockExams);
     const [currentPage, setCurrentPage] = useState(1);
-
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const storedExams = JSON.parse(localStorage.getItem('exams') || '[]');
-            const combinedExams = [...storedExams, ...mockExams.filter(me => !storedExams.some((se: Exam) => se.id === me.id))];
-            setAllExams(combinedExams);
-        } else {
-            setAllExams(mockExams);
-        }
-    }, []);
 
     const sortedExams = useMemo(() => {
         return [...allExams].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());

@@ -27,7 +27,6 @@ import { useToast } from '@/hooks/use-toast';
 import { Switch } from '@/components/ui/switch';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import type { Exam, Question } from '@/lib/types';
-import { mockExams, mockQuestions } from '@/lib/mock-data';
 
 interface QuestionState {
   id: number;
@@ -111,56 +110,61 @@ export default function ExamsAdminPage() {
         return;
     }
 
-    const examId = `exam-${Date.now()}`;
-    const newExam: Exam = {
-        id: examId,
+    const examData = {
         title: examTitle,
         description: examDescription,
         category: examType,
-        numberOfQuestions: questions.length,
-        image: {
-            src: examImage ? URL.createObjectURL(examImage) : `https://placehold.co/600x400?text=${encodeURIComponent(examTitle)}`,
-            hint: 'exam image',
-        },
-        color: 'bg-gray-500',
-        createdAt: new Date(),
+        difficulty,
+        subtopic,
+        hasTimeLimit,
+        timeLimit: hasTimeLimit ? parseInt(timeLimit) : undefined,
+        isPaid,
+        price: isPaid ? parseFloat(price) : undefined,
+        topics: topics.split(',').map(t => t.trim()),
+        examImage,
+        questions: questions.map(q => ({
+            questionText: q.questionText,
+            options: q.options,
+            correctAnswer: q.correctAnswer,
+            marks: q.marks,
+            image: q.image,
+            seo: {
+                metaTitle: q.metaTitle,
+                metaKeywords: q.metaKeywords,
+                metaDescription: q.metaDescription,
+            }
+        })),
+        seo: {
+            metaTitle: examMetaTitle,
+            metaKeywords: examMetaKeywords,
+            metaDescription: examMetaDescription,
+        }
     };
+    
+    // TODO: Implement API call to DRF backend here
+    console.log("Exam Data to be sent to backend:", examData);
 
-    const newQuestions: Question[] = questions.map((q, index) => ({
-        id: `${examId}-q-${index + 1}`,
-        examId: examId,
-        questionText: q.questionText,
-        options: q.options,
-        correctAnswer: q.correctAnswer,
-        difficulty: 5, // Default difficulty
-    }));
+    toast({
+        title: "Exam Created Successfully!",
+        description: "The new exam has been prepared and is ready to be sent to the backend.",
+    });
 
-    try {
-        const storedExams = JSON.parse(localStorage.getItem('exams') || '[]');
-        const storedQuestions = JSON.parse(localStorage.getItem('questions') || '[]');
-        
-        localStorage.setItem('exams', JSON.stringify([newExam, ...storedExams]));
-        localStorage.setItem('questions', JSON.stringify([...newQuestions, ...storedQuestions]));
-
-        toast({
-            title: "Exam Created Successfully!",
-            description: "The new exam has been added and will be visible on the exams page.",
-        });
-
-        // Reset form
-        setExamTitle('');
-        setExamDescription('');
-        setExamType('');
-        setQuestions([]);
-
-    } catch (error) {
-        console.error("Failed to save exam to localStorage", error);
-        toast({
-            variant: "destructive",
-            title: "Error",
-            description: "Could not save the exam. Please check console for details.",
-        });
-    }
+    // Reset form
+    setExamTitle('');
+    setExamDescription('');
+    setExamType('');
+    setDifficulty('');
+    setSubtopic('');
+    setHasTimeLimit(false);
+    setTimeLimit('');
+    setIsPaid(false);
+    setPrice('');
+    setTopics('');
+    setExamImage(null);
+    setQuestions([]);
+    setExamMetaTitle('');
+    setExamMetaKeywords('');
+    setExamMetaDescription('');
   }
 
   return (
