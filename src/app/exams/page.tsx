@@ -1,20 +1,32 @@
-import ExamCard from '@/components/exams/ExamCard';
-import { mockExams } from '@/lib/mock-data';
-import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
+
 import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { mockExams } from '@/lib/mock-data';
+import { ChevronRight, Search } from 'lucide-react';
+import Link from 'next/link';
+import ExamCard from '@/components/exams/ExamCard';
 
 const categories = [
-    "MPPSC",
-    "Physics",
-    "Chemistry Category",
-    "History Category",
-    "Chemistry",
-    "English Category",
-    "Test",
-    "mocktest"
+    { 
+        name: "MPPSC",
+        subCategories: [
+            { name: "Clerk", options: ["Aptitude", "Reasoning", "English"] },
+            { name: "PO", options: ["Aptitude", "Reasoning", "English"] },
+            { name: "Manager", options: ["Aptitude", "Reasoning", "English"] },
+            { name: "Officer", options: ["Aptitude", "Reasoning", "English"] },
+        ]
+    },
+    { name: "Physics" },
+    { name: "Chemistry Category" },
+    { name: "History Category" },
+    { name: "Chemistry" },
+    { name: "English Category" },
+    { name: "Test" },
+    { name: "mocktest" }
 ];
 
 export default function ExamsPage() {
@@ -23,19 +35,36 @@ export default function ExamsPage() {
         <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-8">
         <aside>
             <Card>
-                <ScrollArea className="h-full">
-                    <div className="p-2">
-                        {categories.map((category, index) => (
-                            <Button 
-                                key={category} 
+                <div className="p-2">
+                    {categories.map((category, index) => (
+                        <div key={category.name} className="relative group">
+                             <Button 
                                 variant={index === 0 ? 'default' : 'ghost'} 
-                                className="w-full justify-start text-left h-auto py-2.5"
+                                className="w-full justify-between text-left h-auto py-2.5"
                             >
-                                {category}
+                                {category.name}
+                                {category.subCategories && <ChevronRight className="h-4 w-4" />}
                             </Button>
-                        ))}
-                    </div>
-                </ScrollArea>
+                            {category.subCategories && (
+                                <div className="absolute left-full top-0 w-48 bg-card border rounded-md shadow-lg p-2 invisible group-hover:visible">
+                                   {category.subCategories.map(sub => (
+                                       <div key={sub.name} className="relative group/sub">
+                                            <Button variant="ghost" className="w-full justify-between text-left h-auto py-2">
+                                                {sub.name}
+                                                <ChevronRight className="h-4 w-4" />
+                                            </Button>
+                                            <div className="absolute left-full top-0 w-48 bg-card border rounded-md shadow-lg p-2 invisible group-hover/sub:visible">
+                                                {sub.options?.map(option => (
+                                                    <Button key={option} variant="ghost" className="w-full justify-start text-left h-auto py-2">{option}</Button>
+                                                ))}
+                                            </div>
+                                       </div>
+                                   ))}
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
             </Card>
         </aside>
         <section>
@@ -50,14 +79,19 @@ export default function ExamsPage() {
                 </div>
 
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
-                {mockExams.map((exam, index) => (
-                    <ExamCard 
-                        key={exam.id} 
-                        exam={exam} 
-                        isFree={index % 2 === 0} 
-                        price={index % 2 !== 0 ? 75 : undefined} 
-                    />
-                ))}
+                    {mockExams.map((exam, index) => (
+                        <ExamCard 
+                            key={exam.id} 
+                            exam={exam} 
+                            isFree={index % 2 === 0} 
+                            price={index % 2 !== 0 ? 75 : undefined} 
+                        />
+                    ))}
+                </div>
+
+                <div className="flex justify-center items-center gap-4">
+                    <Button variant="outline">Previous</Button>
+                    <Button>Next</Button>
                 </div>
             </div>
         </section>
