@@ -2,13 +2,11 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Logo from "@/components/Logo";
 import SignupForm from "@/components/auth/SignupForm";
-import PublicHeader from "@/components/layout/PublicHeader";
 import Image from "next/image";
 
 export default function SignupPage() {
   return (
     <div className="flex flex-col min-h-screen">
-      <PublicHeader />
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2">
         <div className="flex flex-col items-center justify-center bg-background p-8">
             <div className="w-full max-w-sm">

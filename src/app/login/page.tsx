@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Logo from "@/components/Logo";
 import LoginForm from "@/components/auth/LoginForm";
-import PublicHeader from "@/components/layout/PublicHeader";
 import Image from "next/image";
 import { User, Lock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -12,7 +11,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 export default function LoginPage() {
   return (
     <div className="flex flex-col min-h-screen">
-      <PublicHeader />
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2">
         <div className="flex flex-col items-center justify-center bg-background p-8">
             <div className="w-full max-w-sm">

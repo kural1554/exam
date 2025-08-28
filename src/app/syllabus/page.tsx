@@ -1,4 +1,3 @@
-import PublicHeader from '@/components/layout/PublicHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
@@ -42,7 +41,6 @@ const syllabusData = [
 export default function SyllabusPage() {
   return (
     <>
-      <PublicHeader />
       <div className="container mx-auto py-8">
         <h1 className="text-3xl font-bold mb-6">Syllabus</h1>
         <Card>

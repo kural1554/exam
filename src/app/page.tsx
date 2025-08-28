@@ -1,4 +1,3 @@
-import PublicHeader from '@/components/layout/PublicHeader';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -6,7 +5,6 @@ import Image from 'next/image';
 export default function HomePage() {
   return (
     <>
-      <PublicHeader />
       <div className="flex flex-col">
         <main className="flex-1">
           <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">

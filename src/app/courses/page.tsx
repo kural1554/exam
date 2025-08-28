@@ -1,6 +1,5 @@
 
 import CourseCard from '@/components/courses/CourseCard';
-import PublicHeader from '@/components/layout/PublicHeader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -11,7 +10,6 @@ import { Search } from 'lucide-react';
 export default function CoursesPage() {
   return (
     <>
-      <PublicHeader />
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="paid">
           <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">

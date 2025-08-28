@@ -1,4 +1,3 @@
-import PublicHeader from '@/components/layout/PublicHeader';
 import { Card, CardContent } from '@/components/ui/card';
 import { CheckCircle } from 'lucide-react';
 import Image from 'next/image';
@@ -74,7 +73,6 @@ const aboutSections = [
 export default function AboutUsPage() {
   return (
     <>
-      <PublicHeader />
       <div className="flex flex-col min-h-[calc(100vh-4rem)]">
         <main className="flex-1">
           <section className="relative w-full h-48 md:h-80 bg-primary/10">
