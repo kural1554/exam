@@ -26,8 +26,10 @@ import { PlusCircle, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Switch } from '@/components/ui/switch';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import type { Exam, Question } from '@/lib/types';
+import { mockExams, mockQuestions } from '@/lib/mock-data';
 
-interface Question {
+interface QuestionState {
   id: number;
   questionText: string;
   options: string[];
@@ -43,10 +45,10 @@ interface Question {
 export default function ExamsAdminPage() {
   const { toast } = useToast();
   const [examType, setExamType] = useState('');
+  const [examTitle, setExamTitle] = useState('');
+  const [examDescription, setExamDescription] = useState('');
   const [difficulty, setDifficulty] = useState('');
   const [subtopic, setSubtopic] = useState('');
-  const [date, setDate] = useState('');
-  const [numQuestions, setNumQuestions] = useState('');
   
   const [hasTimeLimit, setHasTimeLimit] = useState(false);
   const [timeLimit, setTimeLimit] = useState('');
@@ -56,7 +58,7 @@ export default function ExamsAdminPage() {
 
   const [topics, setTopics] = useState('');
   const [examImage, setExamImage] = useState<File | null>(null);
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const [questions, setQuestions] = useState<QuestionState[]>([]);
 
   const [examMetaTitle, setExamMetaTitle] = useState('');
   const [examMetaKeywords, setExamMetaKeywords] = useState('');
@@ -80,7 +82,7 @@ export default function ExamsAdminPage() {
     ]);
   };
 
-  const handleQuestionChange = (index: number, field: keyof Question, value: any) => {
+  const handleQuestionChange = (index: number, field: keyof QuestionState, value: any) => {
     const newQuestions = [...questions];
     (newQuestions[index] as any)[field] = value;
     setQuestions(newQuestions);
@@ -99,27 +101,66 @@ export default function ExamsAdminPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-        title: "Exam Created Successfully!",
-        description: "The new exam has been added to the list.",
-    });
-    console.log({
-        examType,
-        difficulty,
-        subtopic,
-        date,
-        numQuestions,
-        hasTimeLimit,
-        timeLimit,
-        isPaid,
-        price,
-        topics,
-        examImage,
-        examMetaTitle,
-        examMetaKeywords,
-        examMetaDescription,
-        questions
-    })
+
+    if (!examTitle || !examType || !examDescription) {
+        toast({
+            variant: "destructive",
+            title: "Validation Error",
+            description: "Please fill in all required exam details (Title, Type, Description).",
+        });
+        return;
+    }
+
+    const examId = `exam-${Date.now()}`;
+    const newExam: Exam = {
+        id: examId,
+        title: examTitle,
+        description: examDescription,
+        category: examType,
+        numberOfQuestions: questions.length,
+        image: {
+            src: examImage ? URL.createObjectURL(examImage) : `https://placehold.co/600x400?text=${encodeURIComponent(examTitle)}`,
+            hint: 'exam image',
+        },
+        color: 'bg-gray-500',
+        createdAt: new Date(),
+    };
+
+    const newQuestions: Question[] = questions.map((q, index) => ({
+        id: `${examId}-q-${index + 1}`,
+        examId: examId,
+        questionText: q.questionText,
+        options: q.options,
+        correctAnswer: q.correctAnswer,
+        difficulty: 5, // Default difficulty
+    }));
+
+    try {
+        const storedExams = JSON.parse(localStorage.getItem('exams') || '[]');
+        const storedQuestions = JSON.parse(localStorage.getItem('questions') || '[]');
+        
+        localStorage.setItem('exams', JSON.stringify([newExam, ...storedExams]));
+        localStorage.setItem('questions', JSON.stringify([...newQuestions, ...storedQuestions]));
+
+        toast({
+            title: "Exam Created Successfully!",
+            description: "The new exam has been added and will be visible on the exams page.",
+        });
+
+        // Reset form
+        setExamTitle('');
+        setExamDescription('');
+        setExamType('');
+        setQuestions([]);
+
+    } catch (error) {
+        console.error("Failed to save exam to localStorage", error);
+        toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Could not save the exam. Please check console for details.",
+        });
+    }
   }
 
   return (
@@ -132,6 +173,10 @@ export default function ExamsAdminPage() {
             <CardDescription>Fill in the details for the new exam.</CardDescription>
           </CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+             <div className="space-y-2">
+              <Label htmlFor="exam-title">Exam Title</Label>
+              <Input id="exam-title" value={examTitle} onChange={(e) => setExamTitle(e.target.value)} placeholder="e.g., Algebra Fundamentals" />
+            </div>
             <div className="space-y-2">
               <Label htmlFor="exam-type">Exam Type</Label>
               <Select onValueChange={setExamType} value={examType}>
@@ -142,6 +187,9 @@ export default function ExamsAdminPage() {
                   <SelectItem value="ibps-po">IBPS PO</SelectItem>
                   <SelectItem value="ibps-clerk">IBPS Clerk</SelectItem>
                   <SelectItem value="tnpsc">TNPSC</SelectItem>
+                  <SelectItem value="Mathematics">Mathematics</SelectItem>
+                  <SelectItem value="Science">Science</SelectItem>
+                  <SelectItem value="History">History</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -158,29 +206,20 @@ export default function ExamsAdminPage() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="subtopic">Subtopic</Label>
-              <Input id="subtopic" value={subtopic} onChange={(e) => setSubtopic(e.target.value)} placeholder="e.g., Algebra" />
+             <div className="space-y-2 md:col-span-2 lg:col-span-3">
+                <Label htmlFor="exam-description">Exam Description</Label>
+                <Textarea id="exam-description" value={examDescription} onChange={(e) => setExamDescription(e.target.value)} placeholder="A short description of the exam." />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="date">Date</Label>
-              <Input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="num-questions">Number of Questions</Label>
-              <Input id="num-questions" type="number" value={numQuestions} onChange={(e) => setNumQuestions(e.target.value)} placeholder="e.g., 50" />
-            </div>
-             <div className="space-y-2">
                 <Label htmlFor="exam-image">Exam Image</Label>
-                <Input id="exam-image" type="file" onChange={(e) => setExamImage(e.target.files ? e.target.files[0] : null)} />
+                <Input id="exam-image" type="file" onChange={(e) => setExamImage(e.target.files ? e.target.files[0] : null)} accept="image/*" />
             </div>
             <div className="space-y-2">
                 <div className="flex items-center justify-between">
                     <Label htmlFor="time-limit-toggle">Enable Time Limit</Label>
                     <Switch id="time-limit-toggle" checked={hasTimeLimit} onCheckedChange={setHasTimeLimit} />
                 </div>
-                <Input id="time-limit" type="number" value={timeLimit} onChange={(e) => setTimeLimit(e.target.value)} placeholder="e.g., 60" disabled={!hasTimeLimit} />
-                <p className="text-xs text-muted-foreground">Time limit in minutes.</p>
+                <Input id="time-limit" type="number" value={timeLimit} onChange={(e) => setTimeLimit(e.target.value)} placeholder="e.g., 60 (minutes)" disabled={!hasTimeLimit} />
             </div>
              <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -191,11 +230,11 @@ export default function ExamsAdminPage() {
                     <Input id="price" type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Enter amount" />
                  )}
             </div>
-            <div className="space-y-2 md:col-span-2 lg:col-span-3">
+            <div className="space-y-2 md:col-span-3">
               <Label htmlFor="topics">Related Topics (comma-separated)</Label>
               <Input id="topics" value={topics} onChange={(e) => setTopics(e.target.value)} placeholder="e.g., Quadratic Equations, Geometry" />
             </div>
-             <div className="space-y-4 md:col-span-2 lg:col-span-3 border-t pt-6 mt-6">
+             <div className="space-y-4 md:col-span-3 border-t pt-6 mt-6">
                 <h3 className="text-lg font-medium">SEO for Exam</h3>
                  <div className="space-y-2">
                     <Label htmlFor="exam-meta-title">Meta Title</Label>
@@ -265,7 +304,7 @@ export default function ExamsAdminPage() {
                         {q.hasImage && (
                              <div className="space-y-2">
                                 <Label htmlFor={`q-image-${q.id}`}>Upload Image</Label>
-                                <Input id={`q-image-${q.id}`} type="file" onChange={(e) => handleQuestionChange(qIndex, 'image', e.target.files ? e.target.files[0] : null)} />
+                                <Input id={`q-image-${q.id}`} type="file" onChange={(e) => handleQuestionChange(qIndex, 'image', e.target.files ? e.target.files[0] : null)} accept="image/*" />
                             </div>
                         )}
                         <Accordion type="single" collapsible className="w-full">
@@ -302,3 +341,5 @@ export default function ExamsAdminPage() {
     </div>
   );
 }
+
+    

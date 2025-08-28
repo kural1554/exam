@@ -9,7 +9,8 @@ import { Input } from '@/components/ui/input';
 import { mockExams } from '@/lib/mock-data';
 import { ChevronRight, Search } from 'lucide-react';
 import ExamCard from '@/components/exams/ExamCard';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import type { Exam } from '@/lib/types';
 
 const categories = [
     { 
@@ -56,11 +57,22 @@ const categories = [
 const EXAMS_PER_PAGE = 15;
 
 export default function ExamsPage() {
+    const [allExams, setAllExams] = useState<Exam[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
 
-    const sortedExams = useMemo(() => {
-        return [...mockExams].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedExams = JSON.parse(localStorage.getItem('exams') || '[]');
+            const combinedExams = [...storedExams, ...mockExams.filter(me => !storedExams.some((se: Exam) => se.id === me.id))];
+            setAllExams(combinedExams);
+        } else {
+            setAllExams(mockExams);
+        }
     }, []);
+
+    const sortedExams = useMemo(() => {
+        return [...allExams].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }, [allExams]);
 
     const totalPages = Math.ceil(sortedExams.length / EXAMS_PER_PAGE);
     const paginatedExams = sortedExams.slice(
@@ -123,7 +135,7 @@ export default function ExamsPage() {
                 </div>
                 
                 <div>
-                <h1 className="text-2xl font-bold tracking-tight">MPPSC Exams</h1>
+                <h1 className="text-2xl font-bold tracking-tight">All Exams</h1>
                 </div>
 
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
@@ -137,16 +149,20 @@ export default function ExamsPage() {
                     ))}
                 </div>
 
-                <div className="flex justify-center items-center gap-4">
-                    <Button variant="outline" onClick={handlePreviousPage} disabled={currentPage === 1}>Previous</Button>
-                    <span className="text-sm text-muted-foreground">
-                        Page {currentPage} of {totalPages}
-                    </span>
-                    <Button onClick={handleNextPage} disabled={currentPage === totalPages}>Next</Button>
-                </div>
+                {totalPages > 1 && (
+                    <div className="flex justify-center items-center gap-4">
+                        <Button variant="outline" onClick={handlePreviousPage} disabled={currentPage === 1}>Previous</Button>
+                        <span className="text-sm text-muted-foreground">
+                            Page {currentPage} of {totalPages}
+                        </span>
+                        <Button onClick={handleNextPage} disabled={currentPage === totalPages}>Next</Button>
+                    </div>
+                )}
             </div>
         </section>
         </div>
     </div>
   );
 }
+
+    
