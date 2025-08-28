@@ -26,9 +26,9 @@ const navItems = [
   { href: '/admin/syllabus', label: 'Syllabus', icon: ListTodo },
   { href: '/admin/qa', label: 'Q/A', icon: HelpCircle },
   { href: '/admin/exams', label: 'Exams', icon: FilePenLine },
-  { href: '/admin/finance', label: 'Finance', icon: DollarSign, comingSoon: true },
-  { href: '/admin/reviews', label: 'Reviews', icon: Star, comingSoon: true },
-  { href: '/admin/notification', label: 'Notification', icon: Bell, comingSoon: true },
+  { href: '/admin/finance', label: 'Finance', icon: DollarSign },
+  { href: '/admin/reviews', label: 'Reviews', icon: Star },
+  { href: '/admin/notification', label: 'Notification', icon: Bell },
   { href: '/admin/users', label: 'Users', icon: Users },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
@@ -53,16 +53,14 @@ export default function AdminSidebar() {
             {navItems.map((item) => (
               <Link
                 key={item.label}
-                href={item.comingSoon ? '#' : item.href}
+                href={item.href}
                 className={cn(
                   'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
-                  (pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/admin')) && 'bg-muted text-primary',
-                  item.comingSoon && 'cursor-not-allowed opacity-50'
+                  (pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/admin')) && 'bg-muted text-primary'
                 )}
               >
                 <item.icon className="h-4 w-4" />
                 {item.label}
-                {item.comingSoon && <span className="ml-auto text-xs">(Soon)</span>}
               </Link>
             ))}
           </nav>
