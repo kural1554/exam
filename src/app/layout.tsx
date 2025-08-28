@@ -3,6 +3,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 import Footer from "@/components/layout/Footer";
+import PublicHeader from "@/components/layout/PublicHeader";
 
 export const metadata: Metadata = {
   title: "Examplify - AI-Powered Practice Exams",
@@ -35,7 +36,9 @@ export default function RootLayout({
         )}
       >
         <div className="relative flex flex-col flex-1">
+           <PublicHeader />
            {children}
+           <Footer />
         </div>
         <Toaster />
       </body>
