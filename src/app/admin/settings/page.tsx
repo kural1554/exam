@@ -1,73 +1,84 @@
 
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
+'use client';
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Logo from "@/components/Logo";
+import { cn } from "@/lib/utils";
+import React from "react";
+import { Info } from "lucide-react";
+
+const settingsNav = [
+    { name: 'Adsense settings' },
+    { name: 'Api settings' },
+    { name: 'Contact us settings' },
+    { name: 'Dispute settings' },
+    { name: 'Email settings' },
+    { name: 'Front Pages Settings' },
+    { name: 'General settings' },
+    { name: 'Multi language settings' },
+    { name: 'Project settings' },
+    { name: 'Proposal settings' },
+    { name: 'Seller settings' },
+    { name: 'Site settings' },
+    { name: 'Social media settings', active: true },
+]
+
+const socialFields = [
+    { name: 'Facebook', placeholder: 'https://www.facebook.com/profile.php?id=61576615841032' },
+    { name: 'Twitter', placeholder: 'https://x.com/tekiiesoft/' },
+    { name: 'Linkedin', placeholder: 'https://www.linkedin.com/showcase/tekiie-com/' },
+    { name: 'Dribbble', placeholder: 'Dribbble' },
+]
 
 export default function AdminSettingsPage() {
+    const [activeTab, setActiveTab] = React.useState('Social media settings');
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-3xl font-bold">General Settings</h1>
-                <p className="text-muted-foreground">Manage your site's general configuration.</p>
+                <h1 className="text-2xl font-bold tracking-tight">Global Settings</h1>
             </div>
             
-            <Card>
-                <CardHeader>
-                    <CardTitle>Logo Settings</CardTitle>
-                    <CardDescription>Update your site's logo. The logo will appear in the navigation bar.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                    <div>
-                        <Label>Current Logo</Label>
-                        <div className="mt-2 p-4 border rounded-md inline-block bg-background">
-                            <Logo />
+            <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] lg:grid-cols-[280px_1fr] gap-8 items-start">
+                <nav className="flex flex-col gap-1">
+                    {settingsNav.map(item => (
+                         <Button 
+                            key={item.name}
+                            variant="ghost"
+                            onClick={() => setActiveTab(item.name)}
+                            className={cn(
+                                "justify-start text-left",
+                                activeTab === item.name ? "bg-muted text-primary hover:bg-muted" : ""
+                            )}
+                         >
+                            {item.name}
+                         </Button>
+                    ))}
+                </nav>
+
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between border-b">
+                        <CardTitle className="text-lg">Social media settings</CardTitle>
+                        <div className="flex items-center gap-2">
+                             <Button variant="ghost">Reset all</Button>
+                             <Button variant="outline">Reset section</Button>
+                             <Button>Save changes</Button>
                         </div>
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="logo-upload">Upload New Logo</Label>
-                        <Input id="logo-upload" type="file" />
-                        <p className="text-sm text-muted-foreground">Recommended size: 128x128px. File format: PNG, SVG.</p>
-                    </div>
-                     <Button>Save Logo</Button>
-                </CardContent>
-            </Card>
-
-            <Card>
-                <CardHeader>
-                    <CardTitle>Social Media Links</CardTitle>
-                    <CardDescription>Enter the URLs for your social media profiles. These will appear in the site footer.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                        <Label htmlFor="facebook-url">Facebook</Label>
-                        <Input id="facebook-url" placeholder="https://facebook.com/your-page" />
-                    </div>
-                     <div className="space-y-2">
-                        <Label htmlFor="twitter-url">Twitter</Label>
-                        <Input id="twitter-url" placeholder="https://twitter.com/your-handle" />
-                    </div>
-                     <div className="space-y-2">
-                        <Label htmlFor="instagram-url">Instagram</Label>
-                        <Input id="instagram-url" placeholder="https://instagram.com/your-username" />
-                    </div>
-                     <div className="space-y-2">
-                        <Label htmlFor="youtube-url">YouTube</Label>
-                        <Input id="youtube-url" placeholder="https://youtube.com/your-channel" />
-                    </div>
-                    <Button>Save Social Links</Button>
-                </CardContent>
-            </Card>
-
-            <Card>
-                <CardHeader>
-                    <CardTitle>Site Configuration</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p>General site settings interface is under construction.</p>
-                </CardContent>
-            </Card>
+                    </CardHeader>
+                    <CardContent className="pt-6 space-y-8">
+                        {socialFields.map(field => (
+                            <div key={field.name} className="grid grid-cols-[1fr_2fr] items-center gap-4">
+                                <Label htmlFor={field.name.toLowerCase()} className="text-right">{field.name}</Label>
+                                 <div className="relative">
+                                    <Input id={field.name.toLowerCase()} placeholder={field.placeholder} className="pr-8" />
+                                    <Info className="absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                </div>
+                            </div>
+                        ))}
+                    </CardContent>
+                </Card>
+            </div>
         </div>
     )
 }
