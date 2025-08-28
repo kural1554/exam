@@ -163,7 +163,7 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
       <div className="grid md:grid-cols-[1fr_380px] gap-8 items-start">
         <div className="md:col-span-1">
           <Card className="shadow-lg bg-card/60 border-0">
-            <CardHeader className="p-0">
+            <CardHeader>
               <div className="flex justify-between items-center text-sm text-muted-foreground mb-4">
                   <span>{exam.title}</span>
                   <span>Exam Duration: {formatTime(totalDuration)}</span>
@@ -179,7 +179,7 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
                   </button>
                </div>
             </CardHeader>
-            <CardContent className="p-0 mt-6">
+            <CardContent>
               <RadioGroup value={selectedAnswer} onValueChange={handleSelectAnswer} className="space-y-4">
                 {currentQuestion.options.map((option, index) => (
                   <Label key={index} htmlFor={`option-${index}`} className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-muted/50 has-[[data-state=checked]]:bg-muted has-[[data-state=checked]]:border-primary border-border/50">
@@ -189,7 +189,7 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
                 ))}
               </RadioGroup>
             </CardContent>
-            <CardFooter className="flex justify-between items-center flex-wrap gap-2 mt-8 p-0">
+            <CardFooter className="flex justify-between items-center flex-wrap gap-2 mt-8 p-6 pt-0">
               <div>
                 <Button variant="outline" onClick={handlePrevious} disabled={currentIndex === 0}>Previous</Button>
                 <Button onClick={handleMarkForReview} variant="outline" className="ml-2">
