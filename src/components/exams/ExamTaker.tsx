@@ -27,24 +27,40 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
   const [timeLeft, setTimeLeft] = useState(exam.numberOfQuestions * 90); // 1.5 minutes per question
   const [isClient, setIsClient] = useState(false);
   const examContainerRef = useRef<HTMLDivElement>(null);
+  const [isPaused, setIsPaused] = useState(false);
 
+
+  const requestFullscreen = useCallback(async () => {
+    if (examContainerRef.current && typeof examContainerRef.current.requestFullscreen === 'function') {
+        try {
+            await examContainerRef.current.requestFullscreen({ navigationUI: 'hide' });
+            setIsPaused(false);
+        } catch (err) {
+            console.error("Could not enter fullscreen mode:", err);
+            setIsPaused(true); // Pause if fullscreen is denied
+        }
+    }
+  }, []);
+
+  const exitFullscreenHandler = useCallback(() => {
+    if (!document.fullscreenElement) {
+        setIsPaused(true);
+    }
+  }, []);
 
   useEffect(() => {
     setIsClient(true);
-
-    const requestFullscreen = async () => {
-        if (examContainerRef.current && typeof examContainerRef.current.requestFullscreen === 'function') {
-            try {
-                await examContainerRef.current.requestFullscreen();
-            } catch (err) {
-                console.error("Could not enter fullscreen mode:", err);
-            }
-        }
-    }
-    // Automatically request fullscreen when the component mounts
     requestFullscreen();
 
-  }, []);
+    document.addEventListener('fullscreenchange', exitFullscreenHandler);
+
+    return () => {
+        document.removeEventListener('fullscreenchange', exitFullscreenHandler);
+        if (document.fullscreenElement) {
+            document.exitFullscreen();
+        }
+    };
+  }, [requestFullscreen, exitFullscreenHandler]);
 
 
   const currentQuestion = questions[currentIndex];
@@ -68,6 +84,8 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
   }, [answers, exam, questions, router]);
 
   useEffect(() => {
+    if(isPaused) return;
+
     const timer = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
@@ -79,7 +97,7 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [handleSubmit]);
+  }, [handleSubmit, isPaused]);
 
   const formatTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
@@ -115,7 +133,7 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
 
   const handlePrevious = () => {
     if (currentIndex > 0) {
-      setCurrentIndex(currentIndex + 1);
+      setCurrentIndex(currentIndex - 1);
     }
   };
 
@@ -128,7 +146,20 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
   }
 
   return (
-    <div ref={examContainerRef} className="bg-background p-4 md:p-8">
+    <div ref={examContainerRef} className="bg-background p-4 md:p-8 w-full h-full">
+       <AlertDialog open={isPaused}>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Fullscreen Required</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        To ensure exam integrity, this exam must be taken in fullscreen mode. Please re-enter fullscreen to continue.
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogAction onClick={requestFullscreen}>Re-enter Fullscreen</AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+       </AlertDialog>
       <div className="grid md:grid-cols-[1fr_380px] gap-8 items-start">
         <div className="md:col-span-1">
           <Card className="shadow-lg bg-card/60 border-0">
