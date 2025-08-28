@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Exam, Question, Answer } from '@/lib/types';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -9,7 +9,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { AlertCircle, Check, Star } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ExamTakerProps {
@@ -29,6 +29,19 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
   const selectedAnswer = answers.get(currentQuestion.id)?.answer || '';
   const isMarked = answers.get(currentQuestion.id)?.marked || false;
 
+  const handleSubmit = useCallback(() => {
+    const finalAnswers: Answer[] = questions.map(q => {
+      const userAnswer = answers.get(q.id)?.answer;
+      return {
+        questionId: q.id,
+        userAnswer: userAnswer || '',
+        isCorrect: userAnswer === q.correctAnswer,
+      };
+    });
+    localStorage.setItem(`exam_results_${exam.id}`, JSON.stringify({ answers: finalAnswers, exam, questions }));
+    router.push(`/exams/${exam.id}/results`);
+  }, [answers, exam, questions, router]);
+
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft(prev => {
@@ -41,7 +54,7 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [handleSubmit]);
 
   const formatTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
@@ -75,38 +88,24 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
 
   const handlePrevious = () => {
     if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
+      setCurrentIndex(currentIndex + 1);
     }
   };
 
-  const handleSubmit = useCallback(() => {
-    const finalAnswers: Answer[] = questions.map(q => {
-      const userAnswer = answers.get(q.id)?.answer;
-      return {
-        questionId: q.id,
-        userAnswer: userAnswer || '',
-        isCorrect: userAnswer === q.correctAnswer,
-      };
-    });
-    localStorage.setItem(`exam_results_${exam.id}`, JSON.stringify({ answers: finalAnswers, exam, questions }));
-    router.push(`/exams/${exam.id}/results`);
-  }, [answers, exam, questions, router]);
-
-
   return (
-    <div className="grid md:grid-cols-3 gap-8">
-      <div className="md:col-span-2">
-        <Card className="shadow-lg">
+    <div className="grid md:grid-cols-[1fr_380px] gap-8 items-start">
+      <div className="md:col-span-1">
+        <Card className="shadow-lg bg-card/60">
           <CardHeader>
             <div className="flex justify-between items-center text-sm text-muted-foreground">
                 <span>{exam.title}</span>
                 <span>Exam Duration: {formatTime(exam.numberOfQuestions * 90)}</span>
             </div>
-            <hr className="my-2"/>
-            <CardTitle className="text-xl">
+            <hr className="my-2 border-border/50"/>
+            <CardTitle className="text-2xl font-bold">
               Question {currentIndex + 1} of {questions.length}
             </CardTitle>
-            <CardDescription>{currentQuestion.questionText}</CardDescription>
+            <p className="text-lg pt-2">{currentQuestion.questionText}</p>
              <div className="flex justify-between items-center text-sm text-muted-foreground pt-2">
                 <span>2 Mark(s)</span>
                 <button onClick={() => updateAnswer(currentQuestion.id, selectedAnswer, !isMarked)}>
@@ -117,9 +116,9 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
           <CardContent>
             <RadioGroup value={selectedAnswer} onValueChange={handleSelectAnswer} className="space-y-4">
               {currentQuestion.options.map((option, index) => (
-                <Label key={index} htmlFor={`option-${index}`} className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-muted/50 has-[[data-state=checked]]:bg-muted has-[[data-state=checked]]:border-primary">
+                <Label key={index} htmlFor={`option-${index}`} className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-muted/50 has-[[data-state=checked]]:bg-muted has-[[data-state=checked]]:border-primary border-border/50">
                   <RadioGroupItem value={option} id={`option-${index}`} className="mr-4" />
-                  <span>{option}</span>
+                  <span className="text-base">{option}</span>
                 </Label>
               ))}
             </RadioGroup>
@@ -131,7 +130,7 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
                 Mark for Review & Next
               </Button>
             </div>
-            <div>
+            <div className="flex items-center gap-2">
               <Button onClick={handleNext} disabled={currentIndex === questions.length - 1}>Next</Button>
               <Button onClick={handleClearAnswer} variant="ghost" className="ml-2">Clear Answer</Button>
               <AlertDialog>
@@ -157,13 +156,13 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
       </div>
       
       <div className="space-y-6">
-        <Card className="shadow-lg">
-          <CardHeader className="text-center">
-            <CardTitle className="text-4xl tracking-widest">{formatTime(timeLeft)}</CardTitle>
+        <Card className="shadow-lg text-center bg-card/60">
+          <CardHeader>
+            <CardTitle className="text-5xl font-bold tracking-widest">{formatTime(timeLeft)}</CardTitle>
             <CardDescription>Total Time: {formatTime(exam.numberOfQuestions * 90)}</CardDescription>
           </CardHeader>
         </Card>
-        <Card className="shadow-lg">
+        <Card className="shadow-lg bg-card/60">
           <CardHeader>
             <CardTitle>{exam.title}</CardTitle>
             <CardDescription>{exam.category}</CardDescription>
@@ -177,37 +176,37 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
               return (
                 <Button 
                   key={q.id}
-                  variant={currentIndex === index ? 'default' : 'outline'}
+                  variant={currentIndex === index ? 'default' : isAnswered ? 'secondary' : 'outline'}
                   size="icon"
                   className={cn(
-                    'h-10 w-10 relative',
-                    isAnswered && currentIndex !== index && 'bg-green-200 dark:bg-green-800 border-green-400',
-                    isMarked && 'border-yellow-400'
+                    'h-10 w-10 relative font-bold',
+                    isAnswered && currentIndex !== index && 'bg-green-500/80 hover:bg-green-500 text-white border-green-700',
+                    !isAnswered && 'bg-muted/40 border-border/50',
+                    isMarked && 'ring-2 ring-offset-2 ring-yellow-400 ring-offset-background'
                   )}
                   onClick={() => setCurrentIndex(index)}
                 >
                   {index + 1}
-                  {isMarked && <Star className="h-3 w-3 absolute -top-1 -right-1 text-yellow-400 fill-current"/>}
                 </Button>
               )
             })}
           </CardContent>
         </Card>
-        <Card className="shadow-lg">
+        <Card className="shadow-lg bg-card/60">
             <CardHeader>
                 <CardTitle>Summary</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2 text-sm">
+            <CardContent className="space-y-3 text-base">
                 <div className="flex items-center justify-between">
-                    <span>Answered:</span>
+                    <span className="text-muted-foreground">Answered:</span>
                     <span className="font-bold">{Array.from(answers.values()).filter(a => !!a.answer).length}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                    <span>Marked for Review:</span>
+                    <span className="text-muted-foreground">Marked for Review:</span>
                     <span className="font-bold">{Array.from(answers.values()).filter(a => !!a.marked).length}</span>
                 </div>
                  <div className="flex items-center justify-between">
-                    <span>Not Answered:</span>
+                    <span className="text-muted-foreground">Not Answered:</span>
                     <span className="font-bold">{questions.length - Array.from(answers.values()).filter(a => !!a.answer).length}</span>
                 </div>
             </CardContent>
