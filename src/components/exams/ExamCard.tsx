@@ -1,9 +1,13 @@
-import Link from 'next/link';
+
+'use client';
+
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import type { Exam } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
+import React from 'react';
 
 interface ExamCardProps {
   exam: Exam;
@@ -12,6 +16,24 @@ interface ExamCardProps {
 }
 
 export default function ExamCard({ exam, isFree, price }: ExamCardProps) {
+  const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+
+  React.useEffect(() => {
+    // In a real app, you'd have a proper auth context.
+    // For now, we'll simulate checking login status from localStorage.
+    const loggedInUser = localStorage.getItem('user_loggedin');
+    setIsLoggedIn(!!loggedInUser);
+  }, []);
+
+  const handleStartExam = () => {
+    if (isLoggedIn) {
+      router.push(`/exams/${exam.id}`);
+    } else {
+      router.push('/signup');
+    }
+  };
+
   const estimatedTime = Math.round(exam.numberOfQuestions * 1.5);
   return (
     <Card className="flex flex-col transition-all duration-300 ease-in-out hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1 overflow-hidden">
@@ -43,8 +65,8 @@ export default function ExamCard({ exam, isFree, price }: ExamCardProps) {
             </div>
         </CardContent>
         <CardFooter className="p-4 pt-0 flex justify-between items-center bg-card">
-            <Button asChild className="w-full bg-orange-400 hover:bg-orange-500 text-white">
-              <Link href={`/exams/${exam.id}`}>Start Exam</Link>
+            <Button onClick={handleStartExam} className="w-full bg-orange-400 hover:bg-orange-500 text-white">
+              Start Exam
             </Button>
             {!isFree && price && (
                 <div className="text-right ml-2">

@@ -1,16 +1,16 @@
 
-
 'use client';
 import { Button } from '@/components/ui/button';
 import {
   Card,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { mockExams } from '@/lib/mock-data';
-import { ChevronRight, Search } from 'lucide-react';
+import { getExams } from '@/services/api';
+import { ChevronRight, Search, Loader2 } from 'lucide-react';
 import ExamCard from '@/components/exams/ExamCard';
 import { useState, useMemo, useEffect } from 'react';
 import type { Exam } from '@/lib/types';
+import { useToast } from '@/hooks/use-toast';
 
 const categories = [
     { 
@@ -57,9 +57,29 @@ const categories = [
 const EXAMS_PER_PAGE = 15;
 
 export default function ExamsPage() {
-    // TODO: Replace with API call to fetch exams
-    const [allExams, setAllExams] = useState<Exam[]>(mockExams);
+    const [allExams, setAllExams] = useState<Exam[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
+    const [isLoading, setIsLoading] = useState(true);
+    const { toast } = useToast();
+
+    useEffect(() => {
+        const fetchExams = async () => {
+            setIsLoading(true);
+            try {
+                const examsData = await getExams();
+                setAllExams(examsData);
+            } catch (error) {
+                toast({
+                    variant: "destructive",
+                    title: "Error fetching exams",
+                    description: "Could not load the list of exams. Please try again later.",
+                });
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchExams();
+    }, [toast]);
 
     const sortedExams = useMemo(() => {
         return [...allExams].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
@@ -129,18 +149,25 @@ export default function ExamsPage() {
                 <h1 className="text-2xl font-bold tracking-tight">All Exams</h1>
                 </div>
 
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
-                    {paginatedExams.map((exam, index) => (
-                        <ExamCard 
-                            key={exam.id} 
-                            exam={exam} 
-                            isFree={index % 2 === 0} 
-                            price={index % 2 !== 0 ? 75 : undefined} 
-                        />
-                    ))}
-                </div>
+                {isLoading ? (
+                     <div className="flex justify-center items-center py-20">
+                        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+                    </div>
+                ) : (
+                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+                        {paginatedExams.map((exam, index) => (
+                            <ExamCard 
+                                key={exam.id} 
+                                exam={exam} 
+                                isFree={index % 2 === 0} 
+                                price={index % 2 !== 0 ? 75 : undefined} 
+                            />
+                        ))}
+                    </div>
+                )}
 
-                {totalPages > 1 && (
+
+                {totalPages > 1 && !isLoading && (
                     <div className="flex justify-center items-center gap-4">
                         <Button variant="outline" onClick={handlePreviousPage} disabled={currentPage === 1}>Previous</Button>
                         <span className="text-sm text-muted-foreground">
@@ -155,5 +182,3 @@ export default function ExamsPage() {
     </div>
   );
 }
-
-    

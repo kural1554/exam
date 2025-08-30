@@ -34,12 +34,36 @@ import {
   Trash,
   Pencil,
   PlusCircle,
+  Loader2,
 } from 'lucide-react';
-import { mockExams } from '@/lib/mock-data';
 import { useToast } from '@/hooks/use-toast';
+import { getExams } from '@/services/api';
+import type { Exam } from '@/lib/types';
+import React, { useEffect, useState } from 'react';
 
 export default function ExamListPage() {
   const { toast } = useToast();
+  const [exams, setExams] = useState<Exam[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchExams = async () => {
+      try {
+        const data = await getExams();
+        setExams(data);
+      } catch (error) {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Failed to fetch exams.',
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchExams();
+  }, [toast]);
+
 
   const handleAction = (action: string, examTitle: string) => {
     toast({
@@ -47,6 +71,14 @@ export default function ExamListPage() {
       description: `You have clicked ${action} for the exam: ${examTitle}`,
     });
   };
+
+  if(isLoading) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    )
+  }
 
   return (
     <>
@@ -81,7 +113,7 @@ export default function ExamListPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {mockExams.map((exam) => (
+              {exams.map((exam) => (
                 <TableRow key={exam.id}>
                   <TableCell className="font-medium">{exam.title}</TableCell>
                   <TableCell>{exam.category}</TableCell>
@@ -91,7 +123,7 @@ export default function ExamListPage() {
                       Published
                     </Badge>
                   </TableCell>
-                  <TableCell>{exam.createdAt.toLocaleDateString()}</TableCell>
+                  <TableCell>{new Date(exam.createdAt).toLocaleDateString()}</TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -120,7 +152,7 @@ export default function ExamListPage() {
         </CardContent>
         <CardFooter className="flex justify-between items-center">
           <div className="text-sm text-muted-foreground">
-            Showing 1 to {mockExams.length} of {mockExams.length} entries
+            Showing 1 to {exams.length} of {exams.length} entries
           </div>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm">

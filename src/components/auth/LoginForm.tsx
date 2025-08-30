@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -45,6 +46,9 @@ export default function LoginForm() {
     // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
+      // Simulate successful login
+      localStorage.setItem('user_loggedin', 'true');
+      
       if (values.email === 'admin@gmail.com' && values.password === 'admin@123') {
         toast({
           title: "Admin Login Successful",

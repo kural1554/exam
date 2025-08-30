@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -26,6 +27,7 @@ const UserNav = () => {
 
   const handleLogout = () => {
     // In a real app, you'd handle logout logic here
+    localStorage.removeItem('user_loggedin');
     router.push('/login');
   };
     

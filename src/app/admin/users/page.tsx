@@ -1,6 +1,7 @@
 
 'use client';
 
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   TableHeader,
@@ -22,10 +23,8 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuCheckboxItem,
   DropdownMenuItem,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -34,13 +33,13 @@ import { Badge } from '@/components/ui/badge';
 import {
   ArrowUpDown,
   Search,
-  ChevronDown,
   Upload,
   PlusCircle,
   MoreHorizontal,
   Eye,
   Trash,
   Pencil,
+  Loader2,
 } from 'lucide-react';
 import {
   Select,
@@ -50,102 +49,45 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { getAllUsers } from '@/services/api';
+import type { User } from '@/lib/types';
 
-const users = [
-  {
-    id: 'user1',
-    fullName: 'John Doe',
-    username: 'johndoe12',
-    email: 'johndoe12@email.com',
-    phone: '0813-2222-8899',
-    dateCreated: '27 Mar 2024 18:45',
-    status: 'Active',
-  },
-  {
-    id: 'user2',
-    fullName: 'Abizar Alghifary',
-    username: 'abizar33',
-    email: 'abizar33@email.com',
-    phone: '0813-4729-1056',
-    dateCreated: '26 Mar 2024 14:22',
-    status: 'Inactive',
-  },
-  {
-    id: 'user3',
-    fullName: 'Raffi Ahmad',
-    username: 'raffiahmad',
-    email: 'raffiahmad@email.com',
-    phone: '0821-0394-7682',
-    dateCreated: '25 Mar 2024 09:57',
-    status: 'Active',
-  },
-  {
-    id: 'user4',
-    fullName: 'Putri Amaliah',
-    username: 'putri211099',
-    email: 'putri211099@email.com',
-    phone: '0812-5583-9217',
-    dateCreated: '24 Mar 2024 20:10',
-    status: 'Active',
-  },
-  {
-    id: 'user5',
-    fullName: 'Zheperd Edward',
-    username: 'zheperd',
-    email: 'zheperd77@email.com',
-    phone: '0852-7741-3320',
-    dateCreated: '23 Mar 2024 16:33',
-    status: 'Active',
-  },
-  {
-    id: 'user6',
-    fullName: 'Exel Sudarso',
-    username: 'exellxl',
-    email: 'exelbd99@email.com',
-    phone: '0813-6902-4815',
-    dateCreated: '22 Mar 2024 11:48',
-    status: 'Active',
-  },
-  {
-    id: 'user7',
-    fullName: 'Edward Newgate',
-    username: 'sirohigeprts',
-    email: 'sirohigeprts@email.com',
-    phone: '0821-8173-0469',
-    dateCreated: '21 Mar 2024 08:15',
-    status: 'Active',
-  },
-  {
-    id: 'user8',
-    fullName: 'Jack Sparrow',
-    username: 'jacksparrow',
-    email: 'jacksparrow@email.com',
-    phone: '0812-2057-6884',
-    dateCreated: '20 Mar 2024 19:27',
-    status: 'Active',
-  },
-  {
-    id: 'user9',
-    fullName: 'Peter Parker',
-    username: 'peterparker',
-    email: 'peterparker@email.com',
-    phone: '0852-9316-2508',
-    dateCreated: '19 Mar 2024 17:06',
-    status: 'Inactive',
-  },
-  {
-    id: 'user10',
-    fullName: 'Zuki Kato',
-    username: 'zukizuki',
-    email: 'zukizuki@email.com',
-    phone: '0821-4680-1133',
-    dateCreated: '18 Mar 2024 12:06',
-    status: 'Inactive',
-  },
-];
+interface UserWithDetails extends User {
+    username: string;
+    phone: string;
+    dateCreated: string;
+    status: 'Active' | 'Inactive';
+}
 
 export default function UsersPage() {
   const { toast } = useToast();
+  const [users, setUsers] = useState<UserWithDetails[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+      const fetchUsers = async () => {
+          try {
+              const data = await getAllUsers();
+              const detailedUsers = data.map(u => ({
+                  ...u,
+                  username: u.email.split('@')[0],
+                  phone: '0812-xxxx-xxxx',
+                  dateCreated: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toLocaleString(),
+                  status: Math.random() > 0.3 ? 'Active' : 'Inactive'
+              })) as UserWithDetails[];
+              setUsers(detailedUsers);
+          } catch(error) {
+              toast({
+                  variant: 'destructive',
+                  title: 'Error',
+                  description: 'Failed to fetch users.'
+              })
+          } finally {
+              setIsLoading(false);
+          }
+      }
+      fetchUsers();
+  }, [toast]);
 
   const handleAction = (action: string, userName: string) => {
     toast({
@@ -153,6 +95,14 @@ export default function UsersPage() {
       description: `You have clicked ${action} for user: ${userName}`,
     });
   };
+
+  if(isLoading) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    )
+  }
 
   return (
     <>
@@ -229,7 +179,7 @@ export default function UsersPage() {
                       <TableCell>
                         <Checkbox />
                       </TableCell>
-                      <TableCell className="font-medium">{user.fullName}</TableCell>
+                      <TableCell className="font-medium">{user.name}</TableCell>
                       <TableCell>{user.username}</TableCell>
                       <TableCell>{user.email}</TableCell>
                       <TableCell>{user.phone}</TableCell>
@@ -251,14 +201,14 @@ export default function UsersPage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleAction('View', user.fullName)}>
+                            <DropdownMenuItem onClick={() => handleAction('View', user.name)}>
                               <Eye className="mr-2 h-4 w-4" /> View
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleAction('Edit', user.fullName)}>
+                            <DropdownMenuItem onClick={() => handleAction('Edit', user.name)}>
                               <Pencil className="mr-2 h-4 w-4" /> Edit
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem className="text-destructive" onClick={() => handleAction('Delete', user.fullName)}>
+                            <DropdownMenuItem className="text-destructive" onClick={() => handleAction('Delete', user.name)}>
                               <Trash className="mr-2 h-4 w-4" /> Delete
                             </DropdownMenuItem>
                           </DropdownMenuContent>
