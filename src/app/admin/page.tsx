@@ -17,13 +17,15 @@ import {
   PlusCircle,
   FilePenLine,
   Settings,
-  ArrowUpRight,
   Clock,
   UserPlus,
 } from 'lucide-react';
 import Link from 'next/link';
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Pie, PieChart, Cell, Legend, Tooltip, CartesianGrid } from 'recharts';
 import { mockAnalyticsData } from '@/lib/mock-data';
+import { useEffect, useState } from 'react';
+import { User } from '@/lib/types';
+import { getAllUsers } from '@/services/api';
 
 const stats = [
   { title: 'Total Users', value: '1,250', icon: Users, change: '+15.2%', changeType: 'increase' },
@@ -46,7 +48,44 @@ const quickActions = [
     { label: 'Global Settings', href: '/admin/settings', icon: Settings },
 ]
 
+const GENDER_COLORS = {
+    male: '#3B82F6',
+    female: '#EC4899',
+    other: '#A855F7',
+};
+
+const STATE_COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042'];
+
+
 export default function AdminDashboardPage() {
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    getAllUsers().then(setUsers);
+  }, []);
+
+  const genderData = users.reduce((acc, user) => {
+    const gender = user.gender || 'other';
+    const existing = acc.find(item => item.name === gender);
+    if (existing) {
+      existing.value += 1;
+    } else {
+      acc.push({ name: gender, value: 1 });
+    }
+    return acc;
+  }, [] as { name: string; value: number }[]).map(item => ({...item, name: item.name.charAt(0).toUpperCase() + item.name.slice(1)}));
+  
+  const stateData = users.reduce((acc, user) => {
+    const state = user.state || 'Unknown';
+    const existing = acc.find(item => item.name === state);
+    if(existing) {
+        existing.users += 1;
+    } else {
+        acc.push({ name: state, users: 1 });
+    }
+    return acc;
+  }, [] as { name: string, users: number }[]);
+
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">Admin Dashboard</h1>
@@ -109,7 +148,58 @@ export default function AdminDashboardPage() {
       </div>
 
       <div>
-        <h2 className="text-2xl font-bold mb-4">Website Analytics</h2>
+        <h2 className="text-2xl font-bold mb-4">User Analytics</h2>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+             <Card>
+                <CardHeader>
+                    <CardTitle>Gender Distribution</CardTitle>
+                    <CardDescription>User demographics by gender.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="h-[200px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                                <Pie data={genderData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={40} outerRadius={80} paddingAngle={5}>
+                                    {genderData.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={GENDER_COLORS[entry.name.toLowerCase() as keyof typeof GENDER_COLORS]} />
+                                    ))}
+                                </Pie>
+                                <Tooltip />
+                                <Legend />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    </div>
+                </CardContent>
+            </Card>
+            <Card className="lg:col-span-2">
+                <CardHeader>
+                    <CardTitle>Users by State</CardTitle>
+                    <CardDescription>User distribution across different states.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="h-[200px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={stateData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="name" />
+                                <YAxis />
+                                <Tooltip />
+                                <Legend />
+                                <Bar dataKey="users" fill="#8884d8">
+                                     {stateData.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={STATE_COLORS[index % STATE_COLORS.length]} />
+                                    ))}
+                                </Bar>
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+      </div>
+
+      <div>
+        <h2 className="text-2xl font-bold mb-4 mt-6">Website Analytics</h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <Card>
                 <CardHeader>
