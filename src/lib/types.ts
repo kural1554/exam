@@ -67,3 +67,16 @@ export type Course = {
     language: string;
     price: number;
 };
+
+export type AnalyticsData = {
+    topPages: { path: string, views: number }[];
+    engagement: {
+        avgSessionDuration: string;
+        sessionsByDay: { day: string, sessions: number }[];
+    };
+    newUsers: {
+        count: number;
+        changePercentage: number;
+        recentAvatars: string[];
+    }
+};

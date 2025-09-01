@@ -1,4 +1,4 @@
-import type { User, Exam, Question, ExamAttempt, Answer, Course } from "./types";
+import type { User, Exam, Question, ExamAttempt, Answer, Course, AnalyticsData } from "./types";
 
 export const mockUser: User = {
   id: "user-1",
@@ -367,3 +367,35 @@ export const mockCourses: Course[] = [
         price: 1499,
     },
 ];
+
+export const mockAnalyticsData: AnalyticsData = {
+    topPages: [
+        { path: '/exams', views: 2432 },
+        { path: '/dashboard', views: 1876 },
+        { path: '/', views: 1543 },
+        { path: '/courses', views: 987 },
+        { path: '/login', views: 754 },
+    ],
+    engagement: {
+        avgSessionDuration: "8m 12s",
+        sessionsByDay: [
+            { day: 'Mon', sessions: 200 },
+            { day: 'Tue', sessions: 300 },
+            { day: 'Wed', sessions: 250 },
+            { day: 'Thu', sessions: 400 },
+            { day: 'Fri', sessions: 350 },
+            { day: 'Sat', sessions: 500 },
+            { day: 'Sun', sessions: 450 },
+        ]
+    },
+    newUsers: {
+        count: 234,
+        changePercentage: 18.2,
+        recentAvatars: [
+            'https://placehold.co/40x40?text=U1',
+            'https://placehold.co/40x40?text=U2',
+            'https://placehold.co/40x40?text=U3',
+            'https://placehold.co/40x40?text=U4',
+        ]
+    }
+};

@@ -14,12 +14,16 @@ import {
   Users,
   BookOpen,
   DollarSign,
-  ArrowRight,
   PlusCircle,
   FilePenLine,
   Settings,
+  ArrowUpRight,
+  Clock,
+  UserPlus,
 } from 'lucide-react';
 import Link from 'next/link';
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
+import { mockAnalyticsData } from '@/lib/mock-data';
 
 const stats = [
   { title: 'Total Users', value: '1,250', icon: Users, change: '+15.2%', changeType: 'increase' },
@@ -104,6 +108,64 @@ export default function AdminDashboardPage() {
         </Card>
       </div>
 
+      <div>
+        <h2 className="text-2xl font-bold mb-4">Website Analytics</h2>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Top Pages</CardTitle>
+                    <CardDescription>Your most visited pages.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <ul className="space-y-2 text-sm">
+                        {mockAnalyticsData.topPages.map(page => (
+                            <li key={page.path} className="flex justify-between">
+                                <span>{page.path}</span>
+                                <span className="font-medium">{page.views.toLocaleString()} views</span>
+                            </li>
+                        ))}
+                    </ul>
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium">User Engagement</CardTitle>
+                    <Clock className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold">{mockAnalyticsData.engagement.avgSessionDuration}</div>
+                    <p className="text-xs text-muted-foreground">Avg. session duration</p>
+                    <div className="mt-4 h-[80px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={mockAnalyticsData.engagement.sessionsByDay}>
+                                <Bar dataKey="sessions" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium">New Users</CardTitle>
+                    <UserPlus className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold">+{mockAnalyticsData.newUsers.count.toLocaleString()}</div>
+                    <p className="text-xs text-muted-foreground">
+                        +{mockAnalyticsData.newUsers.changePercentage}% from last month
+                    </p>
+                    <div className="mt-4 flex items-center gap-2">
+                        <div className="flex -space-x-2">
+                            {mockAnalyticsData.newUsers.recentAvatars.map((avatar, index) => (
+                                <img key={index} src={avatar} alt="User" className="h-6 w-6 rounded-full border-2 border-background" />
+                            ))}
+                        </div>
+                        <span className="text-xs text-muted-foreground">and others...</span>
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+      </div>
     </div>
   );
 }
