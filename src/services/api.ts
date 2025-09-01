@@ -46,7 +46,7 @@ export const getCourses = async (): Promise<Course[]> => {
 export const getAllUsers = async (): Promise<User[]> => {
     await delay(300);
     // Returning a list of mock users based on mock data
-     const users = [
+     const users: User[] = [
         { id: 'user1', name: 'John Doe', email: 'johndoe12@email.com', avatarUrl: "https://placehold.co/100x100?text=JD" },
         { id: 'user2', name: 'Abizar Alghifary', email: 'abizar33@email.com', avatarUrl: "https://placehold.co/100x100?text=AA" },
         { id: 'user3', name: 'Raffi Ahmad', email: 'raffiahmad@email.com', avatarUrl: "https://placehold.co/100x100?text=RA" },

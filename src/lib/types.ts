@@ -1,9 +1,15 @@
+
 import type { LucideIcon } from "lucide-react";
 
 export type User = {
   id: string;
   name: string;
   email: string;
+  phone?: string;
+  dob?: Date;
+  gender?: 'male' | 'female' | 'other';
+  state?: string;
+  district?: string;
   avatarUrl?: string;
 };
 
