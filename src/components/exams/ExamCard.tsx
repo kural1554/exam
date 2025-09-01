@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import type { Exam } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
 import React from 'react';
+import { getCookie } from '@/lib/utils';
 
 interface ExamCardProps {
   exam: Exam;
@@ -21,8 +22,8 @@ export default function ExamCard({ exam, isFree, price }: ExamCardProps) {
 
   React.useEffect(() => {
     // In a real app, you'd have a proper auth context.
-    // For now, we'll simulate checking login status from localStorage.
-    const loggedInUser = localStorage.getItem('user_loggedin');
+    // For now, we'll simulate checking login status from cookies.
+    const loggedInUser = getCookie('user_loggedin');
     setIsLoggedIn(!!loggedInUser);
   }, []);
 

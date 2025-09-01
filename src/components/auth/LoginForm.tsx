@@ -18,6 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from 'next/navigation';
 import { Loader2 } from "lucide-react";
 import React from "react";
+import { setCookie } from "@/lib/utils";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -47,7 +48,7 @@ export default function LoginForm() {
     setTimeout(() => {
       setIsLoading(false);
       // Simulate successful login
-      localStorage.setItem('user_loggedin', 'true');
+      setCookie('user_loggedin', 'true');
       
       if (values.email === 'admin@gmail.com' && values.password === 'admin@123') {
         toast({

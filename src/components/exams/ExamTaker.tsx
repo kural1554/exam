@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Star } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, setCookie } from '@/lib/utils';
 
 interface ExamTakerProps {
   exam: Exam;
@@ -79,7 +79,7 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
         isCorrect: userAnswer === q.correctAnswer,
       };
     });
-    localStorage.setItem(`exam_results_${exam.id}`, JSON.stringify({ answers: finalAnswers, exam, questions }));
+    setCookie(`exam_results_${exam.id}`, { answers: finalAnswers, exam, questions });
     router.push(`/exams/${exam.id}/results`);
   }, [answers, exam, questions, router]);
 

@@ -16,6 +16,7 @@ import { mockUser } from '@/lib/mock-data';
 import Link from 'next/link';
 import { BookCopy, Home, LogOut, Settings, User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { removeCookie } from '@/lib/utils';
 
 const UserNav = () => {
   const router = useRouter();
@@ -27,7 +28,7 @@ const UserNav = () => {
 
   const handleLogout = () => {
     // In a real app, you'd handle logout logic here
-    localStorage.removeItem('user_loggedin');
+    removeCookie('user_loggedin');
     router.push('/login');
   };
     

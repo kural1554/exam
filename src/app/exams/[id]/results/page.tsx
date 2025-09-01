@@ -8,6 +8,7 @@ import type { Exam, Question, Answer } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 import FeedbackModal from '@/components/exams/FeedbackModal';
+import { getCookie, setCookie } from '@/lib/utils';
 
 interface StoredResults {
     answers: Answer[];
@@ -25,11 +26,11 @@ export default function ResultsPage() {
 
   useEffect(() => {
     if (typeof window !== 'undefined' && id) {
-      const storedResults = localStorage.getItem(`exam_results_${id}`);
-      const feedbackDone = localStorage.getItem(`feedback_submitted_${id}`);
+      const storedResults = getCookie(`exam_results_${id}`);
+      const feedbackDone = getCookie(`feedback_submitted_${id}`);
       
       if (storedResults) {
-        setResults(JSON.parse(storedResults));
+        setResults(storedResults);
         if (!feedbackDone) {
           setIsFeedbackModalOpen(true);
         } else {
@@ -41,7 +42,7 @@ export default function ResultsPage() {
   }, [id]);
 
   const handleFeedbackClose = () => {
-    localStorage.setItem(`feedback_submitted_${id}`, 'true');
+    setCookie(`feedback_submitted_${id}`, 'true');
     setFeedbackSubmitted(true);
     setIsFeedbackModalOpen(false);
   }
