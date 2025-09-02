@@ -34,7 +34,6 @@ export default function ExamDetailsPage({ params }: { params: { id: string } }) 
         </div>
         <CardHeader className="relative -mt-20 z-10">
           <CardTitle className="text-4xl font-extrabold tracking-tight text-white">{exam.title}</CardTitle>
-          <p className="text-lg text-muted-foreground mt-2">{exam.description}</p>
         </CardHeader>
         <CardContent className="mt-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center mb-8">
@@ -53,6 +52,11 @@ export default function ExamDetailsPage({ params }: { params: { id: string } }) 
                 <p className="text-2xl font-bold">~{estimatedTime} min</p>
                 <p className="text-sm text-muted-foreground">Estimated Time</p>
             </div>
+          </div>
+
+          <div className="mb-8 px-6 text-center">
+            <h3 className="text-xl font-semibold mb-2">About the Exam</h3>
+            <p className="text-muted-foreground">{exam.description}</p>
           </div>
           
           <div className="text-center">
