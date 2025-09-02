@@ -19,6 +19,7 @@ import {
   Settings,
   Clock,
   UserPlus,
+  BarChart2,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Pie, PieChart, Cell, Legend, Tooltip, CartesianGrid } from 'recharts';
@@ -221,15 +222,18 @@ export default function AdminDashboardPage() {
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             <Card>
                 <CardHeader>
-                    <CardTitle>Top Pages</CardTitle>
-                    <CardDescription>Your most visited pages.</CardDescription>
+                    <CardTitle>Top Pages by Engagement</CardTitle>
+                    <CardDescription>Your most engaging pages based on time spent.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <ul className="space-y-2 text-sm">
+                    <ul className="space-y-4 text-sm">
                         {mockAnalyticsData.topPages.map(page => (
-                            <li key={page.path} className="flex justify-between">
-                                <span>{page.path}</span>
-                                <span className="font-medium">{page.views.toLocaleString()} views</span>
+                            <li key={page.path} className="flex justify-between items-center">
+                                <div>
+                                    <p className="font-medium">{page.path}</p>
+                                    <p className="text-xs text-muted-foreground">{page.views.toLocaleString()} views</p>
+                                </div>
+                                <span className="font-semibold text-primary">{page.avgTime}</span>
                             </li>
                         ))}
                     </ul>

@@ -1,3 +1,4 @@
+
 import type { User, Exam, Question, ExamAttempt, Answer, Course, AnalyticsData, Feedback } from "./types";
 
 export const mockUser: User = {
@@ -370,11 +371,11 @@ export const mockCourses: Course[] = [
 
 export const mockAnalyticsData: AnalyticsData = {
     topPages: [
-        { path: '/exams', views: 2432 },
-        { path: '/dashboard', views: 1876 },
-        { path: '/', views: 1543 },
-        { path: '/courses', views: 987 },
-        { path: '/login', views: 754 },
+        { path: '/exams', views: 2432, avgTime: '5m 30s' },
+        { path: '/dashboard', views: 1876, avgTime: '4m 15s' },
+        { path: '/', views: 1543, avgTime: '2m 45s' },
+        { path: '/courses', views: 987, avgTime: '3m 50s' },
+        { path: '/login', views: 754, avgTime: '1m 20s' },
     ],
     engagement: {
         avgSessionDuration: "8m 12s",

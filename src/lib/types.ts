@@ -75,7 +75,7 @@ export type Course = {
 };
 
 export type AnalyticsData = {
-    topPages: { path: string, views: number }[];
+    topPages: { path: string, views: number, avgTime: string }[];
     engagement: {
         avgSessionDuration: string;
         sessionsByDay: { day: string, sessions: number }[];
