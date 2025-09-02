@@ -19,6 +19,7 @@ import { useRouter } from 'next/navigation';
 import { Loader2 } from "lucide-react";
 import React from "react";
 import { setCookie } from "@/lib/utils";
+import { mockUser } from "@/lib/mock-data";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -47,10 +48,17 @@ export default function LoginForm() {
     // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
+      
+      const isAdmin = values.email === 'admin@gmail.com' && values.password === 'admin@123';
+      
       // Simulate successful login
       setCookie('user_loggedin', 'true');
+      setCookie('user_details', {
+        name: isAdmin ? 'Admin User' : mockUser.name,
+        email: isAdmin ? 'admin@gmail.com' : mockUser.email,
+      });
       
-      if (values.email === 'admin@gmail.com' && values.password === 'admin@123') {
+      if (isAdmin) {
         toast({
           title: "Admin Login Successful",
           description: "Welcome back, Admin! Redirecting to your dashboard.",

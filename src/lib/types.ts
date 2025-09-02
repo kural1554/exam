@@ -86,3 +86,13 @@ export type AnalyticsData = {
         recentAvatars: string[];
     }
 };
+
+export type Feedback = {
+    id: string;
+    examTitle: string;
+    rating: number;
+    comment: string;
+    userName: string;
+    userEmail: string;
+    date: string;
+};

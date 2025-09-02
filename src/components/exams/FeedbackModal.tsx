@@ -5,9 +5,11 @@ import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Star } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Star, Loader2 } from 'lucide-react';
+import { cn, getCookie } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+import { submitFeedback } from '@/services/api';
+import type { User } from '@/lib/types';
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -18,10 +20,11 @@ interface FeedbackModalProps {
 export default function FeedbackModal({ isOpen, onClose, examTitle }: FeedbackModalProps) {
   const [rating, setRating] = useState(0);
   const [feedback, setFeedback] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (rating === 0) {
       toast({
         variant: "destructive",
@@ -30,20 +33,39 @@ export default function FeedbackModal({ isOpen, onClose, examTitle }: FeedbackMo
       });
       return;
     }
-    // In a real app, you'd send this data to your backend
-    console.log({
-      examTitle,
-      rating,
-      feedback,
-    });
-    setIsSubmitted(true);
+    
+    setIsSubmitting(true);
+    try {
+      const user: User | null = getCookie('user_details');
+      
+      await submitFeedback({
+        examTitle,
+        rating,
+        comment: feedback,
+        userName: user?.name || "Anonymous",
+        userEmail: user?.email || "anonymous@example.com",
+      });
+
+      setIsSubmitted(true);
+    } catch (error) {
+       toast({
+        variant: "destructive",
+        title: "Submission Failed",
+        description: "Could not submit your feedback. Please try again.",
+      });
+    } finally {
+        setIsSubmitting(false);
+    }
   };
 
   const handleCloseAndReset = () => {
-    setIsSubmitted(false);
-    setRating(0);
-    setFeedback('');
     onClose();
+    // Use a timeout to avoid seeing the state reset before the dialog closes
+    setTimeout(() => {
+        setIsSubmitted(false);
+        setRating(0);
+        setFeedback('');
+    }, 300);
   }
 
   return (
@@ -60,7 +82,7 @@ export default function FeedbackModal({ isOpen, onClose, examTitle }: FeedbackMo
             <div className="py-4 space-y-4">
               <div className="flex justify-center items-center gap-2">
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <button key={star} onClick={() => setRating(star)}>
+                  <button key={star} onClick={() => setRating(star)} disabled={isSubmitting}>
                     <Star
                       className={cn(
                         'h-8 w-8 cursor-pointer transition-colors',
@@ -76,10 +98,14 @@ export default function FeedbackModal({ isOpen, onClose, examTitle }: FeedbackMo
                 placeholder="Tell us more..."
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
+                disabled={isSubmitting}
               />
             </div>
             <DialogFooter>
-              <Button type="submit" onClick={handleSubmit}>Send</Button>
+              <Button type="submit" onClick={handleSubmit} disabled={isSubmitting}>
+                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Send
+              </Button>
             </DialogFooter>
           </>
         ) : (

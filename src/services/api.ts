@@ -4,8 +4,8 @@
  * In a real application, these would be replaced with actual API calls to a backend.
  */
 
-import { mockExams, mockQuestions, mockUser, mockPerformanceData, mockCourses } from '@/lib/mock-data';
-import type { Exam, Question, User, ExamAttempt, Course } from '@/lib/types';
+import { mockExams, mockQuestions, mockUser, mockPerformanceData, mockCourses, mockFeedback } from '@/lib/mock-data';
+import type { Exam, Question, User, ExamAttempt, Course, Feedback } from '@/lib/types';
 
 // Simulate network delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -76,8 +76,11 @@ export const getAllUsers = async (): Promise<User[]> => {
         ...u,
         id: `user-${index+1}`,
         phone: `0812-xxxx-xxxx`,
+        // @ts-ignore
         dateCreated: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+        // @ts-ignore
         status: Math.random() > 0.5 ? 'Active' : 'Inactive',
+        // @ts-ignore
         username: u.name.toLowerCase().replace(' ', ''),
         gender,
         state,
@@ -85,4 +88,22 @@ export const getAllUsers = async (): Promise<User[]> => {
         dob: new Date(`199${index}-0${index+1}-1${index+1}`)
       }
     });
+};
+
+// MOCK FEEDBACK API
+export const getFeedback = async (): Promise<Feedback[]> => {
+    await delay(500);
+    // Return a copy and sort by most recent
+    return [...mockFeedback].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+};
+
+export const submitFeedback = async (data: Omit<Feedback, 'id' | 'date'>): Promise<Feedback> => {
+    await delay(300);
+    const newFeedback: Feedback = {
+        ...data,
+        id: `feedback-${Date.now()}`,
+        date: new Date().toISOString(),
+    };
+    mockFeedback.push(newFeedback);
+    return newFeedback;
 };
