@@ -31,7 +31,7 @@ export default function RootLayout({
       </head>
       <body
         className={cn(
-          "min-h-screen bg-background font-body antialiased flex flex-col"
+          "min-h-screen bg-background font-body antialiased"
         )}
       >
         <ThemeProvider
@@ -40,7 +40,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="relative flex flex-col flex-1">{children}</div>
+          <div className="relative flex flex-col min-h-screen">{children}</div>
           <Toaster />
         </ThemeProvider>
       </body>

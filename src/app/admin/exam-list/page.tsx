@@ -40,6 +40,7 @@ import { useToast } from '@/hooks/use-toast';
 import { getExams } from '@/services/api';
 import type { Exam } from '@/lib/types';
 import React, { useEffect, useState } from 'react';
+import { cn } from '@/lib/utils';
 
 export default function ExamListPage() {
   const { toast } = useToast();
@@ -101,56 +102,58 @@ export default function ExamListPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Title</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Questions</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Created At</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {exams.map((exam) => (
-                <TableRow key={exam.id}>
-                  <TableCell className="font-medium">{exam.title}</TableCell>
-                  <TableCell>{exam.category}</TableCell>
-                  <TableCell>{exam.numberOfQuestions}</TableCell>
-                  <TableCell>
-                    <Badge variant="default" className="bg-green-500/20 text-green-700 hover:bg-green-500/30">
-                      Published
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{new Date(exam.createdAt).toLocaleDateString()}</TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleAction('View', exam.title)}>
-                          <Eye className="mr-2 h-4 w-4" /> View
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleAction('Edit', exam.title)}>
-                          <Pencil className="mr-2 h-4 w-4" /> Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-destructive" onClick={() => handleAction('Delete', exam.title)}>
-                          <Trash className="mr-2 h-4 w-4" /> Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+          <div className="overflow-x-auto">
+            <Table>
+                <TableHeader>
+                <TableRow>
+                    <TableHead>Title</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Questions</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Created At</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                </TableHeader>
+                <TableBody>
+                {exams.map((exam) => (
+                    <TableRow key={exam.id}>
+                    <TableCell className="font-medium">{exam.title}</TableCell>
+                    <TableCell>{exam.category}</TableCell>
+                    <TableCell>{exam.numberOfQuestions}</TableCell>
+                    <TableCell>
+                        <Badge variant="default" className={cn("whitespace-nowrap", "bg-green-500/20 text-green-700 hover:bg-green-500/30")}>
+                        Published
+                        </Badge>
+                    </TableCell>
+                    <TableCell>{new Date(exam.createdAt).toLocaleDateString()}</TableCell>
+                    <TableCell className="text-right">
+                        <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                            <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => handleAction('View', exam.title)}>
+                            <Eye className="mr-2 h-4 w-4" /> View
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleAction('Edit', exam.title)}>
+                            <Pencil className="mr-2 h-4 w-4" /> Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem className="text-destructive" onClick={() => handleAction('Delete', exam.title)}>
+                            <Trash className="mr-2 h-4 w-4" /> Delete
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                        </DropdownMenu>
+                    </TableCell>
+                    </TableRow>
+                ))}
+                </TableBody>
+            </Table>
+          </div>
         </CardContent>
-        <CardFooter className="flex justify-between items-center">
+        <CardFooter className="flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="text-sm text-muted-foreground">
             Showing 1 to {exams.length} of {exams.length} entries
           </div>

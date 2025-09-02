@@ -22,29 +22,29 @@ export default function ContactPage() {
                 />
                 <div className="absolute inset-0 bg-black/40"></div>
             </div>
-            <div className="relative grid md:grid-cols-2 min-h-[600px]">
-                <div className="flex items-center justify-center p-8">
-                    <Card className="max-w-sm w-full bg-white/90 dark:bg-card/90 backdrop-blur-sm">
+            <div className="relative grid md:grid-cols-2 min-h-[600px] gap-8">
+                <div className="flex items-center justify-center p-4 sm:p-8">
+                    <Card className="max-w-md w-full bg-white/90 dark:bg-card/90 backdrop-blur-sm">
                         <CardHeader>
                             <CardTitle className="text-2xl">Contact Information</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-6">
                              <div className="flex items-start gap-4">
-                                <MapPin className="h-6 w-6 text-primary mt-1" />
+                                <MapPin className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
                                 <div>
                                     <h3 className="font-semibold">Location</h3>
                                     <p className="text-muted-foreground">123 Examplify Lane, Knowledge City, 12345</p>
                                 </div>
                              </div>
                              <div className="flex items-start gap-4">
-                                <Phone className="h-6 w-6 text-primary mt-1" />
+                                <Phone className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
                                 <div>
                                     <h3 className="font-semibold">Phone</h3>
                                     <p className="text-muted-foreground">(123) 456-7890</p>
                                 </div>
                              </div>
                              <div className="flex items-start gap-4">
-                                <Clock className="h-6 w-6 text-primary mt-1" />
+                                <Clock className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
                                 <div>
                                     <h3 className="font-semibold">Hours</h3>
                                     <p className="text-muted-foreground">Monday - Friday: 9am - 5pm</p>
@@ -53,8 +53,8 @@ export default function ContactPage() {
                         </CardContent>
                     </Card>
                 </div>
-                 <div className="flex items-center justify-center p-8">
-                    <Card className="w-full max-w-lg bg-white/95 dark:bg-card/95 backdrop-blur-sm">
+                 <div className="flex items-center justify-center p-4 sm:p-8">
+                    <Card className="w-full max-w-md bg-white/95 dark:bg-card/95 backdrop-blur-sm">
                         <CardHeader>
                             <CardTitle className="text-2xl">Contact Form</CardTitle>
                         </CardHeader>

@@ -282,7 +282,7 @@ export default function SignupForm() {
                 <RadioGroup
                   onValueChange={field.onChange}
                   defaultValue={field.value}
-                  className="flex space-x-4"
+                  className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4"
                 >
                   <FormItem className="flex items-center space-x-3 space-y-0">
                     <FormControl>

@@ -106,7 +106,17 @@ export default function UsersPage() {
 
   return (
     <>
-      <h1 className="text-3xl font-bold mb-4">User</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+        <h1 className="text-3xl font-bold">User</h1>
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+             <Button className="w-full sm:w-auto">
+                <PlusCircle className="mr-2 h-4 w-4" /> Add User
+            </Button>
+            <Button variant="outline" className="w-full sm:w-auto">
+                <Upload className="mr-2 h-4 w-4" /> Export
+            </Button>
+        </div>
+      </div>
       <Tabs defaultValue="username">
         <TabsList className="grid w-full max-w-sm grid-cols-2">
           <TabsTrigger value="username">Username</TabsTrigger>
@@ -115,8 +125,8 @@ export default function UsersPage() {
         <TabsContent value="username">
           <Card>
             <CardHeader>
-              <div className="flex items-center gap-4">
-                <div className="relative flex-1">
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <div className="relative flex-1 w-full">
                   <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder="Search Username"
@@ -124,7 +134,7 @@ export default function UsersPage() {
                   />
                 </div>
                 <Select defaultValue="all">
-                  <SelectTrigger className="w-[180px]">
+                  <SelectTrigger className="w-full sm:w-[180px]">
                     <SelectValue placeholder="All Status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -133,97 +143,93 @@ export default function UsersPage() {
                     <SelectItem value="inactive">Inactive</SelectItem>
                   </SelectContent>
                 </Select>
-                <Button variant="outline">
-                  <Upload className="mr-2 h-4 w-4" /> Export
-                </Button>
-                <Button>
-                  <PlusCircle className="mr-2 h-4 w-4" /> Add User
-                </Button>
               </div>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[50px]">
-                      <Checkbox />
-                    </TableHead>
-                    <TableHead>
-                      <Button variant="ghost" className="p-0 hover:bg-transparent">
-                        Full Name <ArrowUpDown className="ml-2 h-4 w-4" />
-                      </Button>
-                    </TableHead>
-                    <TableHead>
-                      <Button variant="ghost" className="p-0 hover:bg-transparent">
-                        Username <ArrowUpDown className="ml-2 h-4 w-4" />
-                      </Button>
-                    </TableHead>
-                    <TableHead>
-                      <Button variant="ghost" className="p-0 hover:bg-transparent">
-                        Email <ArrowUpDown className="ml-2 h-4 w-4" />
-                      </Button>
-                    </TableHead>
-                    <TableHead>
-                        Phone Number
-                    </TableHead>
-                    <TableHead>
-                        Date Created
-                    </TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {users.map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell>
+              <div className="overflow-x-auto">
+                <Table>
+                    <TableHeader>
+                    <TableRow>
+                        <TableHead className="w-[50px]">
                         <Checkbox />
-                      </TableCell>
-                      <TableCell className="font-medium">{user.name}</TableCell>
-                      <TableCell>{user.username}</TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>{user.phone}</TableCell>
-                      <TableCell>{user.dateCreated}</TableCell>
-                      <TableCell>
-                        <Badge
-                          variant={user.status === 'Active' ? 'default' : 'destructive'}
-                          className={user.status === 'Active' ? 'bg-green-500/20 text-green-700 hover:bg-green-500/30' : 'bg-red-500/20 text-red-700 hover:bg-red-500/30'}
-                        >
-                          <span className={`mr-1 h-2 w-2 rounded-full ${user.status === 'Active' ? 'bg-green-600' : 'bg-red-600'}`}></span>
-                          {user.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleAction('View', user.name)}>
-                              <Eye className="mr-2 h-4 w-4" /> View
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleAction('Edit', user.name)}>
-                              <Pencil className="mr-2 h-4 w-4" /> Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem className="text-destructive" onClick={() => handleAction('Delete', user.name)}>
-                              <Trash className="mr-2 h-4 w-4" /> Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
+                        </TableHead>
+                        <TableHead>
+                        <Button variant="ghost" className="p-0 hover:bg-transparent">
+                            Full Name <ArrowUpDown className="ml-2 h-4 w-4" />
+                        </Button>
+                        </TableHead>
+                        <TableHead>
+                        <Button variant="ghost" className="p-0 hover:bg-transparent">
+                            Username <ArrowUpDown className="ml-2 h-4 w-4" />
+                        </Button>
+                        </TableHead>
+                        <TableHead>
+                        <Button variant="ghost" className="p-0 hover:bg-transparent">
+                            Email <ArrowUpDown className="ml-2 h-4 w-4" />
+                        </Button>
+                        </TableHead>
+                        <TableHead>
+                            Phone Number
+                        </TableHead>
+                        <TableHead>
+                            Date Created
+                        </TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                    </TableHeader>
+                    <TableBody>
+                    {users.map((user) => (
+                        <TableRow key={user.id}>
+                        <TableCell>
+                            <Checkbox />
+                        </TableCell>
+                        <TableCell className="font-medium">{user.name}</TableCell>
+                        <TableCell>{user.username}</TableCell>
+                        <TableCell>{user.email}</TableCell>
+                        <TableCell>{user.phone}</TableCell>
+                        <TableCell>{user.dateCreated}</TableCell>
+                        <TableCell>
+                            <Badge
+                            variant={user.status === 'Active' ? 'default' : 'destructive'}
+                            className={cn('whitespace-nowrap', user.status === 'Active' ? 'bg-green-500/20 text-green-700 hover:bg-green-500/30' : 'bg-red-500/20 text-red-700 hover:bg-red-500/30')}
+                            >
+                            <span className={`mr-1 h-2 w-2 rounded-full ${user.status === 'Active' ? 'bg-green-600' : 'bg-red-600'}`}></span>
+                            {user.status}
+                            </Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                            <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={() => handleAction('View', user.name)}>
+                                <Eye className="mr-2 h-4 w-4" /> View
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleAction('Edit', user.name)}>
+                                <Pencil className="mr-2 h-4 w-4" /> Edit
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem className="text-destructive" onClick={() => handleAction('Delete', user.name)}>
+                                <Trash className="mr-2 h-4 w-4" /> Delete
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                            </DropdownMenu>
+                        </TableCell>
+                        </TableRow>
+                    ))}
+                    </TableBody>
+                </Table>
+              </div>
             </CardContent>
-            <CardFooter className="flex justify-between items-center">
+            <CardFooter className="flex flex-col sm:flex-row justify-between items-center gap-4">
               <div className="text-sm text-muted-foreground">
                 Showing 1 to 10 of {users.length} entries
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap justify-center">
                 <Button variant="outline" size="sm">
                   First
                 </Button>

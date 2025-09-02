@@ -13,36 +13,38 @@ export default function CoursesPage() {
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="paid">
           <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-            <TabsList>
-              <TabsTrigger value="paid">Paid Courses</TabsTrigger>
-              <TabsTrigger value="combo">Combo Courses</TabsTrigger>
-              <TabsTrigger value="free">Free Courses</TabsTrigger>
+            <TabsList className="w-full md:w-auto">
+              <TabsTrigger value="paid" className="flex-1 md:flex-initial">Paid Courses</TabsTrigger>
+              <TabsTrigger value="combo" className="flex-1 md:flex-initial">Combo Courses</TabsTrigger>
+              <TabsTrigger value="free" className="flex-1 md:flex-initial">Free Courses</TabsTrigger>
             </TabsList>
-            <div className="flex items-center gap-2 w-full md:w-auto">
-                <Select defaultValue="default">
-                    <SelectTrigger className="w-[140px]">
-                        <SelectValue placeholder="Sort By" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="default">Sort By</SelectItem>
-                        <SelectItem value="popularity">Popularity</SelectItem>
-                        <SelectItem value="newest">Newest</SelectItem>
-                        <SelectItem value="price-asc">Price: Low to High</SelectItem>
-                        <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                    </SelectContent>
-                </Select>
-                 <Select defaultValue="all">
-                    <SelectTrigger className="w-[140px]">
-                        <SelectValue placeholder="Explore" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">Explore</SelectItem>
-                        <SelectItem value="web-dev">Web Development</SelectItem>
-                        <SelectItem value="data-science">Data Science</SelectItem>
-                        <SelectItem value="cloud">Cloud Computing</SelectItem>
-                    </SelectContent>
-                </Select>
-              <div className="relative flex-1 md:flex-initial">
+            <div className="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto">
+                <div className="grid grid-cols-2 sm:flex gap-2 w-full">
+                    <Select defaultValue="default">
+                        <SelectTrigger className="w-full sm:w-[140px]">
+                            <SelectValue placeholder="Sort By" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="default">Sort By</SelectItem>
+                            <SelectItem value="popularity">Popularity</SelectItem>
+                            <SelectItem value="newest">Newest</SelectItem>
+                            <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                            <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <Select defaultValue="all">
+                        <SelectTrigger className="w-full sm:w-[140px]">
+                            <SelectValue placeholder="Explore" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">Explore</SelectItem>
+                            <SelectItem value="web-dev">Web Development</SelectItem>
+                            <SelectItem value="data-science">Data Science</SelectItem>
+                            <SelectItem value="cloud">Cloud Computing</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+              <div className="relative flex-1 w-full md:flex-initial">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
