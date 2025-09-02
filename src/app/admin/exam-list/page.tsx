@@ -40,14 +40,22 @@ import { useToast } from '@/hooks/use-toast';
 import { getExams } from '@/services/api';
 import type { Exam } from '@/lib/types';
 import React, { useEffect, useState } from 'react';
-import { cn } from '@/lib/utils';
+import { cn, getCookie } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 export default function ExamListPage() {
   const { toast } = useToast();
   const [exams, setExams] = useState<Exam[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
+    const isLoggedIn = getCookie('user_loggedin');
+    if (!isLoggedIn) {
+        router.push('/login');
+        return;
+    }
+
     const fetchExams = async () => {
       try {
         const data = await getExams();
@@ -63,7 +71,7 @@ export default function ExamListPage() {
       }
     };
     fetchExams();
-  }, [toast]);
+  }, [toast, router]);
 
 
   const handleAction = (action: string, examTitle: string) => {

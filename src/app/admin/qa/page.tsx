@@ -8,12 +8,21 @@ import type { Feedback } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { Loader2, Star } from "lucide-react";
 import { format } from "date-fns";
+import { getCookie } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 export default function AdminQAPage() {
     const [feedbackList, setFeedbackList] = useState<Feedback[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const router = useRouter();
 
     useEffect(() => {
+        const isLoggedIn = getCookie('user_loggedin');
+        if (!isLoggedIn) {
+            router.push('/login');
+            return;
+        }
+
         const fetchFeedback = async () => {
             setIsLoading(true);
             try {
@@ -26,7 +35,7 @@ export default function AdminQAPage() {
             }
         };
         fetchFeedback();
-    }, []);
+    }, [router]);
 
     return (
         <div className="space-y-6">

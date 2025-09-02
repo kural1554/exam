@@ -51,7 +51,8 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { getAllUsers } from '@/services/api';
 import type { User } from '@/lib/types';
-import { cn } from '@/lib/utils';
+import { cn, getCookie } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 interface UserWithDetails extends User {
     username: string;
@@ -64,8 +65,15 @@ export default function UsersPage() {
   const { toast } = useToast();
   const [users, setUsers] = useState<UserWithDetails[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
+      const isLoggedIn = getCookie('user_loggedin');
+      if (!isLoggedIn) {
+          router.push('/login');
+          return;
+      }
+      
       const fetchUsers = async () => {
           try {
               const data = await getAllUsers();
@@ -88,7 +96,7 @@ export default function UsersPage() {
           }
       }
       fetchUsers();
-  }, [toast]);
+  }, [toast, router]);
 
   const handleAction = (action: string, userName: string) => {
     toast({

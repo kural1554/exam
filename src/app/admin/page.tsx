@@ -26,6 +26,9 @@ import { mockAnalyticsData } from '@/lib/mock-data';
 import { useEffect, useState } from 'react';
 import { User } from '@/lib/types';
 import { getAllUsers } from '@/services/api';
+import { useRouter } from 'next/navigation';
+import { getCookie } from '@/lib/utils';
+import { Loader2 } from 'lucide-react';
 
 const stats = [
   { title: 'Total Users', value: '1,250', icon: Users, change: '+15.2%', changeType: 'increase' },
@@ -59,10 +62,25 @@ const STATE_COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042'];
 
 export default function AdminDashboardPage() {
   const [users, setUsers] = useState<User[]>([]);
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getAllUsers().then(setUsers);
-  }, []);
+    const isLoggedIn = getCookie('user_loggedin');
+    if (!isLoggedIn) {
+        router.push('/login');
+        return;
+    }
+    
+    getAllUsers().then(fetchedUsers => {
+        setUsers(fetchedUsers);
+        setIsLoading(false);
+    });
+  }, [router]);
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center h-full"><Loader2 className="animate-spin h-8 w-8"/></div>
+  }
 
   const genderData = users.reduce((acc, user) => {
     const gender = user.gender || 'other';
