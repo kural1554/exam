@@ -51,6 +51,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { getAllUsers } from '@/services/api';
 import type { User } from '@/lib/types';
+import { cn } from '@/lib/utils';
 
 interface UserWithDetails extends User {
     username: string;

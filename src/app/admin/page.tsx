@@ -107,8 +107,8 @@ export default function AdminDashboardPage() {
         ))}
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <Card className="xl:col-span-2">
             <CardHeader>
                 <CardTitle>Recent Activity</CardTitle>
                 <CardDescription>An overview of recent activities across the platform.</CardDescription>
@@ -149,7 +149,7 @@ export default function AdminDashboardPage() {
 
       <div>
         <h2 className="text-2xl font-bold mb-4">User Analytics</h2>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
              <Card>
                 <CardHeader>
                     <CardTitle>Gender Distribution</CardTitle>
@@ -171,7 +171,7 @@ export default function AdminDashboardPage() {
                     </div>
                 </CardContent>
             </Card>
-            <Card className="lg:col-span-2">
+            <Card className="xl:col-span-2">
                 <CardHeader>
                     <CardTitle>Users by State</CardTitle>
                     <CardDescription>User distribution across different states.</CardDescription>
@@ -200,7 +200,7 @@ export default function AdminDashboardPage() {
 
       <div>
         <h2 className="text-2xl font-bold mb-4 mt-6">Website Analytics</h2>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             <Card>
                 <CardHeader>
                     <CardTitle>Top Pages</CardTitle>
