@@ -28,11 +28,11 @@ export default function ExamCard({ exam, isFree, price }: ExamCardProps) {
   }, []);
 
   const handleStartExam = () => {
-    if (isLoggedIn) {
+    // if (isLoggedIn) {
       router.push(`/exams/${exam.id}`);
-    } else {
-      router.push('/signup');
-    }
+    // } else {
+    //   router.push('/signup');
+    // }
   };
 
   const estimatedTime = Math.round(exam.numberOfQuestions * 1.5);
