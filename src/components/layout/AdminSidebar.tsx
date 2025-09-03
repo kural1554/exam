@@ -17,6 +17,7 @@ import {
   Calendar,
   LayoutGrid,
   LayoutList,
+  ListTree,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
@@ -29,6 +30,7 @@ const navItems = [
   { href: '/admin/post', label: 'Post', icon: FileText },
   { href: '/admin/category', label: 'Category', icon: LayoutGrid },
   { href: '/admin/sub-category', label: 'Sub Category', icon: LayoutList },
+  { href: '/admin/child-category', label: 'Child Category', icon: ListTree },
   { href: '/admin/syllabus', label: 'Syllabus', icon: ListTodo },
   { href: '/admin/qa', label: 'Q/A', icon: HelpCircle },
   { href: '/admin/exams', label: 'Exams', icon: FilePenLine },
