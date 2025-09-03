@@ -45,6 +45,8 @@ import Image from 'next/image';
 import { mockCategories } from '@/lib/mock-data';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger, DialogClose } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
 
 export default function AdminCategoryPage() {
     const categories = mockCategories;
@@ -61,9 +63,37 @@ export default function AdminCategoryPage() {
         </div>
         
         <div className="text-right">
-             <Button>
-                <PlusCircle className="mr-2 h-4 w-4" /> Create Category
-            </Button>
+            <Dialog>
+                <DialogTrigger asChild>
+                    <Button>
+                        <PlusCircle className="mr-2 h-4 w-4" /> Create Category
+                    </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle>Create New Category</DialogTitle>
+                        <DialogDescription>
+                            Enter the name for the new category below. Click submit when you're done.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="name" className="text-right">
+                                Name
+                            </Label>
+                            <Input id="name" placeholder="Category Name" className="col-span-3" />
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <DialogClose asChild>
+                            <Button type="button" variant="secondary">
+                                Cancel
+                            </Button>
+                        </DialogClose>
+                        <Button type="submit">Submit</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
