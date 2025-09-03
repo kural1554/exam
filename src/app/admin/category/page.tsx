@@ -101,9 +101,7 @@ export default function AdminCategoryPage() {
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>ID</TableHead>
-                                    <TableHead>Language</TableHead>
                                     <TableHead>Name</TableHead>
-                                    <TableHead>Slug</TableHead>
                                     <TableHead>Row Order</TableHead>
                                     <TableHead className="text-right">Operate</TableHead>
                                 </TableRow>
@@ -112,9 +110,7 @@ export default function AdminCategoryPage() {
                                 {categories.map((category) => (
                                     <TableRow key={category.id}>
                                         <TableCell>{category.id}</TableCell>
-                                        <TableCell>{category.language}</TableCell>
                                         <TableCell className="font-medium">{category.name}</TableCell>
-                                        <TableCell>{category.slug}</TableCell>
                                         <TableCell>
                                             <Badge className={cn("bg-yellow-400 text-yellow-900 hover:bg-yellow-500")}>
                                                 {category.rowOrder}
