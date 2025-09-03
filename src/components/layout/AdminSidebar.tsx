@@ -15,6 +15,8 @@ import {
   Star,
   List,
   Calendar,
+  LayoutGrid,
+  LayoutList,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
@@ -25,6 +27,8 @@ const navItems = [
   { href: '/admin', label: 'Dashboard', icon: Home },
   { href: '/admin/course', label: 'Course', icon: BookOpen },
   { href: '/admin/post', label: 'Post', icon: FileText },
+  { href: '/admin/category', label: 'Category', icon: LayoutGrid },
+  { href: '/admin/sub-category', label: 'Sub Category', icon: LayoutList },
   { href: '/admin/syllabus', label: 'Syllabus', icon: ListTodo },
   { href: '/admin/qa', label: 'Q/A', icon: HelpCircle },
   { href: '/admin/exams', label: 'Exams', icon: FilePenLine },
