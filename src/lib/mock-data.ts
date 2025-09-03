@@ -408,50 +408,50 @@ export const mockFeedback: Feedback[] = [];
 export const mockCategories: Category[] = [
     {
         id: 17,
-        language: 'English (US)',
-        image: 'https://placehold.co/80x50',
         name: 'Textiles',
-        slug: 'textiles',
         rowOrder: 0,
     },
     {
         id: 15,
-        language: 'English (US)',
-        image: 'https://placehold.co/80x50',
         name: 'General',
-        slug: 'general',
         rowOrder: 1,
     },
     {
         id: 16,
-        language: 'English (US)',
-        image: 'https://placehold.co/80x50',
         name: 'sustainable living',
-        slug: 'sustainable-living',
         rowOrder: 2,
     },
     {
         id: 18,
-        language: 'English (US)',
-        image: 'https://placehold.co/80x50',
         name: 'Travel',
-        slug: 'travel',
         rowOrder: 3,
     },
     {
         id: 19,
-        language: 'English (US)',
-        image: 'https://placehold.co/80x50',
         name: 'Health',
-        slug: 'health',
         rowOrder: 4,
     },
     {
         id: 20,
-        language: 'English (US)',
-        image: 'https://placehold.co/80x50',
         name: 'Technology',
-        slug: 'technology',
         rowOrder: 5,
     }
+];
+
+export const mockSubCategories: Category[] = [
+    { id: 1, name: 'Cotton', rowOrder: 0 },
+    { id: 2, name: 'News', rowOrder: 1 },
+    { id: 3, name: 'Eco-Friendly Products', rowOrder: 2 },
+    { id: 4, name: 'Destinations', rowOrder: 3 },
+    { id: 5, name: 'Fitness', rowOrder: 4 },
+    { id: 6, name: 'AI', rowOrder: 5 },
+];
+
+export const mockChildCategories: Category[] = [
+    { id: 1, name: 'Organic Cotton', rowOrder: 0 },
+    { id: 2, name: 'World News', rowOrder: 1 },
+    { id: 3, name: 'Recycled Materials', rowOrder: 2 },
+    { id: 4, name: 'Europe', rowOrder: 3 },
+    { id: 5, name: 'Yoga', rowOrder: 4 },
+    { id: 6, name: 'Machine Learning', rowOrder: 5 },
 ];
