@@ -14,6 +14,7 @@ import {
   DollarSign,
   Star,
   List,
+  Calendar,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
@@ -32,6 +33,7 @@ const navItems = [
   { href: '/admin/reviews', label: 'Reviews', icon: Star },
   { href: '/admin/notification', label: 'Notification', icon: Bell },
   { href: '/admin/users', label: 'Users', icon: Users },
+  { href: '/admin/calendar', label: 'Calendar', icon: Calendar },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 
