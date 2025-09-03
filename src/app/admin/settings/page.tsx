@@ -14,6 +14,7 @@ import Logo from "@/components/Logo";
 const settingsNav = [
     { name: 'Social media settings', key: 'social' },
     { name: 'Logo settings', key: 'logo' },
+    { name: 'Hero Image', key: 'hero' },
 ]
 
 const socialFields = [
@@ -99,6 +100,58 @@ const LogoSettings = () => {
     )
 };
 
+const HeroImageSettings = () => {
+    const [heroPreview, setHeroPreview] = React.useState<string | null>(null);
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setHeroPreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    return (
+        <Card>
+            <CardHeader className="border-b">
+                <CardTitle className="text-lg">Hero Image Settings</CardTitle>
+                <CardDescription>Update your site's hero image.</CardDescription>
+            </CardHeader>
+            <CardContent className="pt-6 space-y-6">
+                <div>
+                    <h3 className="text-sm font-medium mb-2">Current Hero Image</h3>
+                    <div className="p-4 border rounded-md bg-muted/20 inline-block">
+                        <Image src="https://placehold.co/1920x1080" alt="Current hero image" width={300} height={150} className="object-cover" data-ai-hint="student library study" />
+                    </div>
+                </div>
+                 <div>
+                    <h3 className="text-sm font-medium mb-2">New Hero Image Preview</h3>
+                    <div className="w-full aspect-video border-2 border-dashed rounded-md flex items-center justify-center bg-muted/20 relative">
+                         {heroPreview ? (
+                            <Image src={heroPreview} alt="New hero preview" fill className="object-contain" />
+                        ) : (
+                            <span className="text-sm text-muted-foreground">Preview</span>
+                        )}
+                    </div>
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="hero-upload">Upload New Hero Image</Label>
+                    <div className="flex items-center gap-2">
+                        <Input id="hero-upload" type="file" accept="image/*" className="max-w-xs" onChange={handleFileChange} />
+                        <Button variant="outline"><Upload className="mr-2 h-4 w-4" /> Upload</Button>
+                    </div>
+                </div>
+            </CardContent>
+            <CardFooter className="border-t pt-6">
+                 <Button>Save Hero Image</Button>
+            </CardFooter>
+        </Card>
+    )
+};
+
 
 export default function AdminSettingsPage() {
     const [activeTab, setActiveTab] = React.useState('social');
@@ -109,6 +162,8 @@ export default function AdminSettingsPage() {
                 return <SocialMediaSettings />;
             case 'logo':
                 return <LogoSettings />;
+            case 'hero':
+                return <HeroImageSettings />;
             default:
                 return <SocialMediaSettings />;
         }
