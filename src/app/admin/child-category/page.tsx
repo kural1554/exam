@@ -42,7 +42,7 @@ import {
     TableBody,
     TableCell,
   } from '@/components/ui/table';
-import { mockChildCategories } from '@/lib/mock-data';
+import { mockChildCategories, mockSubCategories } from '@/lib/mock-data';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger, DialogClose } from '@/components/ui/dialog';
@@ -50,6 +50,7 @@ import { Label } from '@/components/ui/label';
 
 export default function AdminChildCategoryPage() {
     const childCategories = mockChildCategories;
+    const subCategories = mockSubCategories;
 
   return (
     <div className="space-y-6">
@@ -73,10 +74,25 @@ export default function AdminChildCategoryPage() {
                     <DialogHeader>
                         <DialogTitle>Create New Child Category</DialogTitle>
                         <DialogDescription>
-                            Enter the name for the new child category below. Click submit when you're done.
+                             Select a sub category and enter the name for the new child category.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
+                         <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="sub-category" className="text-right">
+                                Sub Category
+                            </Label>
+                             <Select>
+                                <SelectTrigger className="col-span-3">
+                                    <SelectValue placeholder="Select a sub category" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {subCategories.map((category) => (
+                                        <SelectItem key={category.id} value={category.slug || category.name.toLowerCase()}>{category.name}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="name" className="text-right">
                                 Name
