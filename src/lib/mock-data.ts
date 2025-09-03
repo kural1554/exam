@@ -1,5 +1,6 @@
 
-import type { User, Exam, Question, ExamAttempt, Answer, Course, AnalyticsData, Feedback } from "./types";
+
+import type { User, Exam, Question, ExamAttempt, Answer, Course, AnalyticsData, Feedback, Category } from "./types";
 
 export const mockUser: User = {
   id: "user-1",
@@ -403,3 +404,54 @@ export const mockAnalyticsData: AnalyticsData = {
 
 // In-memory array to store feedback. In a real app, this would be a database.
 export const mockFeedback: Feedback[] = [];
+
+export const mockCategories: Category[] = [
+    {
+        id: 17,
+        language: 'English (US)',
+        image: 'https://placehold.co/80x50',
+        name: 'Textiles',
+        slug: 'textiles',
+        rowOrder: 0,
+    },
+    {
+        id: 15,
+        language: 'English (US)',
+        image: 'https://placehold.co/80x50',
+        name: 'General',
+        slug: 'general',
+        rowOrder: 1,
+    },
+    {
+        id: 16,
+        language: 'English (US)',
+        image: 'https://placehold.co/80x50',
+        name: 'sustainable living',
+        slug: 'sustainable-living',
+        rowOrder: 2,
+    },
+    {
+        id: 18,
+        language: 'English (US)',
+        image: 'https://placehold.co/80x50',
+        name: 'Travel',
+        slug: 'travel',
+        rowOrder: 3,
+    },
+    {
+        id: 19,
+        language: 'English (US)',
+        image: 'https://placehold.co/80x50',
+        name: 'Health',
+        slug: 'health',
+        rowOrder: 4,
+    },
+    {
+        id: 20,
+        language: 'English (US)',
+        image: 'https://placehold.co/80x50',
+        name: 'Technology',
+        slug: 'technology',
+        rowOrder: 5,
+    }
+];

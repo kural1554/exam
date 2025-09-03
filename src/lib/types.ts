@@ -1,4 +1,5 @@
 
+
 import type { LucideIcon } from "lucide-react";
 
 export type User = {
@@ -95,4 +96,13 @@ export type Feedback = {
     userName: string;
     userEmail: string;
     date: string;
+};
+
+export type Category = {
+    id: number;
+    language: string;
+    image: string;
+    name: string;
+    slug: string;
+    rowOrder: number;
 };
