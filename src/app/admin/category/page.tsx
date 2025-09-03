@@ -102,7 +102,6 @@ export default function AdminCategoryPage() {
                                 <TableRow>
                                     <TableHead>ID</TableHead>
                                     <TableHead>Language</TableHead>
-                                    <TableHead>Image</TableHead>
                                     <TableHead>Name</TableHead>
                                     <TableHead>Slug</TableHead>
                                     <TableHead>Row Order</TableHead>
@@ -114,9 +113,6 @@ export default function AdminCategoryPage() {
                                     <TableRow key={category.id}>
                                         <TableCell>{category.id}</TableCell>
                                         <TableCell>{category.language}</TableCell>
-                                        <TableCell>
-                                            <Image src={category.image} alt={category.name} width={60} height={40} className="rounded-md object-cover" />
-                                        </TableCell>
                                         <TableCell className="font-medium">{category.name}</TableCell>
                                         <TableCell>{category.slug}</TableCell>
                                         <TableCell>
