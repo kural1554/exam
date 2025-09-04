@@ -95,10 +95,7 @@ export default function LoginForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <div className="flex justify-between items-center">
-                <FormLabel>Password</FormLabel>
-                <a href="#" className="text-sm text-primary hover:underline">Forgot password?</a>
-              </div>
+              <FormLabel>Password</FormLabel>
               <FormControl>
                 <Input type="password" placeholder="••••••••" {...field} />
               </FormControl>
@@ -110,6 +107,9 @@ export default function LoginForm() {
           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Log In
         </Button>
+        <div className="text-right">
+            <a href="#" className="text-sm text-primary hover:underline">Forgot password?</a>
+        </div>
       </form>
     </Form>
   );
