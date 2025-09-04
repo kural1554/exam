@@ -110,8 +110,8 @@ export default function LoginForm() {
         </Button>
         <div className="mt-4 flex items-center justify-between text-sm">
             <div>
-                 Don't have an account?{" "}
-                <Link href="/signup" className="underline text-primary">
+                 <span>Don't have an account?</span>
+                <Link href="/signup" className="underline text-primary ml-1">
                     Sign up
                 </Link>
             </div>
