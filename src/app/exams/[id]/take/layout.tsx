@@ -1,4 +1,6 @@
 
+import ExamNavbar from "@/components/exams/ExamNavbar";
+
 export default function TakeExamLayout({
     children,
 }: {
@@ -6,6 +8,7 @@ export default function TakeExamLayout({
 }) {
     return (
         <div className="relative flex min-h-screen flex-col bg-background">
+            <ExamNavbar />
             <main className="flex-1 container mx-auto py-8">{children}</main>
         </div>
     )
