@@ -30,15 +30,14 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
   const [isPaused, setIsPaused] = useState(false);
 
 
-  const requestFullscreen = useCallback(async () => {
+  const requestFullscreen = useCallback(() => {
     if (examContainerRef.current && typeof examContainerRef.current.requestFullscreen === 'function') {
-        try {
-            await examContainerRef.current.requestFullscreen({ navigationUI: 'hide' });
-            setIsPaused(false);
-        } catch (err) {
-            console.error("Could not enter fullscreen mode:", err);
-            setIsPaused(true); // Pause if fullscreen is denied
-        }
+        examContainerRef.current.requestFullscreen({ navigationUI: 'hide' })
+            .then(() => setIsPaused(false))
+            .catch((err) => {
+                console.error("Could not enter fullscreen mode:", err);
+                setIsPaused(true); 
+            });
     }
   }, []);
 
@@ -50,17 +49,20 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
 
   useEffect(() => {
     setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isClient) return;
+
     requestFullscreen();
-
     document.addEventListener('fullscreenchange', exitFullscreenHandler);
-
     return () => {
         document.removeEventListener('fullscreenchange', exitFullscreenHandler);
         if (document.fullscreenElement) {
-            document.exitFullscreen();
+            document.exitFullscreen().catch(err => console.error(err));
         }
     };
-  }, [requestFullscreen, exitFullscreenHandler]);
+  }, [isClient, requestFullscreen, exitFullscreenHandler]);
 
 
   const currentQuestion = questions[currentIndex];
@@ -69,7 +71,7 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
 
   const handleSubmit = useCallback(() => {
     if (document.fullscreenElement) {
-        document.exitFullscreen();
+        document.exitFullscreen().catch(err => console.error(err));
     }
     const finalAnswers: Answer[] = questions.map(q => {
       const userAnswer = answers.get(q.id)?.answer;
