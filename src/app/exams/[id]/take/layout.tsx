@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import ExamNavbar from "@/components/exams/ExamNavbar";
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
@@ -93,7 +93,13 @@ export default function TakeExamLayout({
             <ExamNavbar />
             
             <main className="flex-1">
-                {React.cloneElement(children as React.ReactElement, { isPaused, onSubmit: handleSubmitExam, onQuit: handleQuitExam })}
+                {/* Pass props to children using cloneElement */}
+                {React.Children.map(children, (child) => {
+                    if (React.isValidElement(child)) {
+                        return React.cloneElement(child, { isPaused, onSubmit: handleSubmitExam, onQuit: handleQuitExam } as any);
+                    }
+                    return child;
+                })}
             </main>
         </div>
     )

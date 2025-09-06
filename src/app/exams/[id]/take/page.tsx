@@ -1,5 +1,6 @@
 
 'use client';
+import React from 'react';
 import { mockExams, mockQuestions } from '@/lib/mock-data';
 import { notFound } from 'next/navigation';
 import ExamTaker from '@/components/exams/ExamTaker';
@@ -38,6 +39,7 @@ export default function TakeExamPage({ params, ...props }: { params: { id: strin
     notFound();
   }
 
+  // The layout passes the necessary props now, so we can assert them as non-partial.
   return (
     <ExamTaker 
         exam={exam} 
