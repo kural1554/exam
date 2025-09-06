@@ -80,6 +80,13 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
     setCookie(`exam_results_${exam.id}`, { answers: finalAnswers, exam, questions });
     router.push(`/exams/${exam.id}/results`);
   }, [answers, exam, questions, router]);
+  
+  const handleQuitExam = () => {
+    if (document.fullscreenElement) {
+        document.exitFullscreen().catch(err => console.error(err));
+    }
+    router.push('/exams');
+  }
 
   useEffect(() => {
     if(isPaused || !isClient) return;
@@ -131,7 +138,7 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
 
   const handlePrevious = () => {
     if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
+      setCurrentIndex(currentIndex + 1);
     }
   };
 
@@ -160,7 +167,7 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
                 <AlertDialogFooter>
                     <Button
                         variant="destructive"
-                        onClick={handleSubmit}
+                        onClick={handleQuitExam}
                     >
                         End Exam
                     </Button>
@@ -275,12 +282,17 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
                             <AlertDialogHeader>
                                 <AlertDialogTitle>Are you sure you want to finish the exam?</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                    This will submit all your answers and end the exam session. You cannot go back.
+                                    This will end the exam session without saving your results. You cannot go back.
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={handleSubmit}>Finish Exam</AlertDialogAction>
+                                <AlertDialogAction 
+                                    onClick={handleQuitExam}
+                                    className={cn(buttonVariants({ variant: "destructive" }))}
+                                >
+                                    End Exam
+                                </AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>
