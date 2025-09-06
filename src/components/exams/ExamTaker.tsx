@@ -16,59 +16,17 @@ import { cn, setCookie } from '@/lib/utils';
 interface ExamTakerProps {
   exam: Exam;
   questions: Question[];
+  isPaused: boolean;
+  onSubmit: () => void;
+  onQuit: () => void;
 }
 
-export default function ExamTaker({ exam, questions }: ExamTakerProps) {
-  const router = useRouter();
-  const { toast } = useToast();
-  
+export default function ExamTaker({ exam, questions, isPaused, onSubmit, onQuit }: ExamTakerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Map<string, { answer: string; marked: boolean }>>(new Map());
   const [timeLeft, setTimeLeft] = useState(exam.numberOfQuestions * 90); // 1.5 minutes per question
-  const [isClient, setIsClient] = useState(false);
-  const examContainerRef = useRef<HTMLDivElement>(null);
-  const [isPaused, setIsPaused] = useState(false);
-
-
-  const requestFullscreen = useCallback(() => {
-    if (examContainerRef.current && typeof examContainerRef.current.requestFullscreen === 'function') {
-        examContainerRef.current.requestFullscreen({ navigationUI: 'hide' })
-            .then(() => setIsPaused(false))
-            .catch((err) => {
-                console.error("Could not enter fullscreen mode:", err);
-                setIsPaused(true); 
-            });
-    }
-  }, []);
-
-  const exitFullscreenHandler = useCallback(() => {
-    if (!document.fullscreenElement) {
-        setIsPaused(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isClient) return;
-
-    requestFullscreen();
-    document.addEventListener('fullscreenchange', exitFullscreenHandler);
-    return () => {
-        document.removeEventListener('fullscreenchange', exitFullscreenHandler);
-        if (document.fullscreenElement) {
-            document.exitFullscreen().catch(err => console.error(err));
-        }
-    };
-  }, [isClient, requestFullscreen, exitFullscreenHandler]);
-
 
   const handleSubmit = useCallback(() => {
-    if (document.fullscreenElement) {
-        document.exitFullscreen().catch(err => console.error(err));
-    }
     const finalAnswers: Answer[] = questions.map(q => {
       const userAnswer = answers.get(q.id)?.answer;
       return {
@@ -78,18 +36,12 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
       };
     });
     setCookie(`exam_results_${exam.id}`, { answers: finalAnswers, exam, questions });
-    router.push(`/exams/${exam.id}/results`);
-  }, [answers, exam, questions, router]);
+    onSubmit();
+  }, [answers, exam, questions, onSubmit]);
   
-  const handleQuitExam = () => {
-    if (document.fullscreenElement) {
-        document.exitFullscreen().catch(err => console.error(err));
-    }
-    router.push('/exams');
-  }
-
+  
   useEffect(() => {
-    if(isPaused || !isClient) return;
+    if(isPaused) return;
 
     const timer = setInterval(() => {
       setTimeLeft(prev => {
@@ -102,7 +54,7 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [handleSubmit, isPaused, isClient]);
+  }, [handleSubmit, isPaused]);
 
   const formatTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
@@ -138,44 +90,21 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
 
   const handlePrevious = () => {
     if (currentIndex > 0) {
-      setCurrentIndex(currentIndex + 1);
+      setCurrentIndex(currentIndex - 1);
     }
   };
 
   const answeredCount = Array.from(answers.values()).filter(a => !!a.answer).length;
   const markedCount = Array.from(answers.values()).filter(a => !!a.marked).length;
   const notAnsweredCount = questions.length - answeredCount;
-
-  if (!isClient) {
-      return null;
-  }
   
   const currentQuestion = questions[currentIndex];
   const selectedAnswer = answers.get(currentQuestion.id)?.answer || '';
   const isMarked = answers.get(currentQuestion.id)?.marked || false;
 
   return (
-    <div ref={examContainerRef} className="bg-background p-4 md:p-8 w-full h-full">
-       <AlertDialog open={isPaused}>
-            <AlertDialogContent>
-                <AlertDialogHeader>
-                    <AlertDialogTitle>Fullscreen Required</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        To ensure exam integrity, this exam must be taken in fullscreen mode. Please re-enter fullscreen to continue. The timer is paused.
-                    </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                    <Button
-                        variant="destructive"
-                        onClick={handleQuitExam}
-                    >
-                        End Exam
-                    </Button>
-                    <AlertDialogAction onClick={requestFullscreen}>Re-enter Fullscreen</AlertDialogAction>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-       </AlertDialog>
-      <div className="grid md:grid-cols-[1fr_380px] gap-8 items-start">
+    <div className="bg-background w-full h-full">
+      <div className="grid md:grid-cols-[1fr_380px] gap-8 items-start container mx-auto py-8">
         <div className="md:col-span-1">
           <Card className="shadow-lg bg-card/60 border-0">
             <CardHeader>
@@ -282,16 +211,15 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
                             <AlertDialogHeader>
                                 <AlertDialogTitle>Are you sure you want to finish the exam?</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                    This will end the exam session without saving your results. You cannot go back.
+                                    This will end the exam session and submit your answers. You cannot go back.
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                                 <AlertDialogAction 
-                                    onClick={handleQuitExam}
-                                    className={cn(buttonVariants({ variant: "destructive" }))}
+                                    onClick={handleSubmit}
                                 >
-                                    End Exam
+                                    Finish & View Results
                                 </AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>

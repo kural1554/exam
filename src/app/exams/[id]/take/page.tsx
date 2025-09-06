@@ -7,7 +7,14 @@ import { useEffect, useState } from 'react';
 import type { Exam, Question } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
 
-export default function TakeExamPage({ params }: { params: { id: string } }) {
+// The props are passed from the layout now
+interface TakeExamPageProps {
+  isPaused: boolean;
+  onSubmit: () => void;
+  onQuit: () => void;
+}
+
+export default function TakeExamPage({ params, ...props }: { params: { id: string } } & Partial<TakeExamPageProps>) {
   const [exam, setExam] = useState<Exam | null>(null);
   const [questions, setQuestions] = useState<Question[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -32,8 +39,12 @@ export default function TakeExamPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <ExamTaker exam={exam} questions={questions} />
+    <ExamTaker 
+        exam={exam} 
+        questions={questions} 
+        isPaused={props.isPaused!}
+        onSubmit={props.onSubmit!}
+        onQuit={props.onQuit!}
+    />
   );
 }
-
-    
