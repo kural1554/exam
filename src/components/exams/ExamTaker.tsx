@@ -5,7 +5,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Exam, Question, Answer } from '@/lib/types';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
@@ -158,6 +158,12 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
+                    <Button
+                        variant="destructive"
+                        onClick={handleSubmit}
+                    >
+                        End Exam
+                    </Button>
                     <AlertDialogAction onClick={requestFullscreen}>Re-enter Fullscreen</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
