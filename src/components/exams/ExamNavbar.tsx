@@ -18,7 +18,7 @@ export default function ExamNavbar() {
     <nav className="bg-primary text-primary-foreground sticky top-0 z-50">
       <div className="container mx-auto flex h-14 items-center justify-end gap-x-6">
         <div className="flex items-center gap-x-2">
-          <Label htmlFor="text-size">Text Size</Label>
+          <Label htmlFor="text-size" className="text-primary-foreground">Text Size</Label>
           <Select defaultValue="large">
             <SelectTrigger
               id="text-size"
@@ -34,7 +34,7 @@ export default function ExamNavbar() {
           </Select>
         </div>
         <div className="flex items-center gap-x-2">
-          <Label htmlFor="view-in">View in:</Label>
+          <Label htmlFor="view-in" className="text-primary-foreground">View in:</Label>
            <Select defaultValue="english">
             <SelectTrigger
               id="view-in"
