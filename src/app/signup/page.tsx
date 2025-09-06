@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Logo from "@/components/Logo";
@@ -53,3 +54,5 @@ export default function SignupPage() {
     </div>
   );
 }
+
+    
