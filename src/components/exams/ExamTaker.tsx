@@ -65,10 +65,6 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
   }, [isClient, requestFullscreen, exitFullscreenHandler]);
 
 
-  const currentQuestion = questions[currentIndex];
-  const selectedAnswer = answers.get(currentQuestion.id)?.answer || '';
-  const isMarked = answers.get(currentQuestion.id)?.marked || false;
-
   const handleSubmit = useCallback(() => {
     if (document.fullscreenElement) {
         document.exitFullscreen().catch(err => console.error(err));
@@ -146,6 +142,10 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
   if (!isClient) {
       return null;
   }
+  
+  const currentQuestion = questions[currentIndex];
+  const selectedAnswer = answers.get(currentQuestion.id)?.answer || '';
+  const isMarked = answers.get(currentQuestion.id)?.marked || false;
 
   return (
     <div ref={examContainerRef} className="bg-background p-4 md:p-8 w-full h-full">
@@ -222,7 +222,7 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
               {questions.map((q, index) => {
                 const status = answers.get(q.id);
                 const isAnswered = !!status?.answer;
-                const isMarked = !!status?.marked;
+                const isMarkedForReview = !!status?.marked;
                 
                 return (
                   <Button 
@@ -233,7 +233,7 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
                       'h-10 w-10 relative font-bold',
                       isAnswered && 'bg-green-500/80 hover:bg-green-500 text-white border-green-700',
                       !isAnswered && 'bg-muted/40 border-border/50',
-                      isMarked && 'ring-2 ring-offset-2 ring-yellow-400 ring-offset-background'
+                      isMarkedForReview && 'ring-2 ring-offset-2 ring-yellow-400 ring-offset-background'
                     )}
                     onClick={() => setCurrentIndex(index)}
                   >
