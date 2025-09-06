@@ -201,23 +201,6 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
               <div className="flex items-center gap-2">
                 <Button onClick={handleNext} disabled={currentIndex === questions.length - 1}>Next</Button>
                 <Button onClick={handleClearAnswer} variant="ghost" className="ml-2">Clear Answer</Button>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                      <Button variant="destructive" className="ml-2">Finish</Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                      <AlertDialogHeader>
-                          <AlertDialogTitle>Are you sure you want to finish the exam?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                              This will submit all your answers and end the exam session. You cannot go back.
-                          </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction onClick={handleSubmit}>Finish Exam</AlertDialogAction>
-                      </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
               </div>
             </CardFooter>
           </Card>
@@ -277,6 +260,25 @@ export default function ExamTaker({ exam, questions }: ExamTakerProps) {
                       <span className="text-muted-foreground">Not Answered:</span>
                       <span className="font-bold">{notAnsweredCount}</span>
                   </div>
+                   <div className="mt-6">
+                     <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                             <Button className="w-full bg-red-600 hover:bg-red-700">End Exam</Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Are you sure you want to finish the exam?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    This will submit all your answers and end the exam session. You cannot go back.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={handleSubmit}>Finish Exam</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                </div>
               </CardContent>
           </Card>
         </div>
