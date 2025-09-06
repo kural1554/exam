@@ -10,14 +10,14 @@ export default function SignupPage() {
     <div className="flex flex-col min-h-screen">
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2">
         <div className="flex flex-col items-center justify-center bg-background p-8">
-            <div className="w-full max-w-sm">
+            <div className="w-full max-w-2xl">
                  <div className="text-center mb-8">
                     <Link href="/" className="inline-block">
                         <Logo />
                     </Link>
                 </div>
                 <Card>
-                  <CardHeader className="text-center">
+                  <CardHeader className="text-center p-6">
                     <CardTitle className="text-2xl">Create an Account</CardTitle>
                     <CardDescription>
                       Start your learning journey with Examplify.
