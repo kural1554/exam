@@ -49,7 +49,6 @@ export default function ExamsAdminPage() {
   const [subCategory, setSubCategory] = useState('');
   const [childCategory, setChildCategory] = useState('');
 
-  const [examTitle, setExamTitle] = useState('');
   const [examDescription, setExamDescription] = useState('');
   const [difficulty, setDifficulty] = useState('');
   
@@ -105,11 +104,11 @@ export default function ExamsAdminPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!examTitle) {
+    if (!examTitleName || !examDescription) {
         toast({
             variant: "destructive",
             title: "Validation Error",
-            description: "Please fill in all required exam details (Title, Type, Description).",
+            description: "Please fill in all required exam details (Exam Title, Description).",
         });
         return;
     }
@@ -119,7 +118,6 @@ export default function ExamsAdminPage() {
         category,
         subCategory,
         childCategory,
-        title: examTitle,
         description: examDescription,
         difficulty,
         hasTimeLimit,
@@ -156,7 +154,6 @@ export default function ExamsAdminPage() {
     });
 
     // Reset form
-    setExamTitle('');
     setExamDescription('');
     setExamTitleName('');
     setCategory('');
@@ -243,10 +240,6 @@ export default function ExamsAdminPage() {
                   <SelectItem value="hard">Hard</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-             <div className="space-y-2">
-              <Label htmlFor="exam-title">Exam Name</Label>
-              <Input id="exam-title" value={examTitle} onChange={(e) => setExamTitle(e.target.value)} placeholder="e.g., Algebra Fundamentals" />
             </div>
              <div className="space-y-2 md:col-span-2 lg:col-span-3">
                 <Label htmlFor="exam-description">Exam Description</Label>
