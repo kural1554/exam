@@ -2,13 +2,11 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useRouter } from 'next/navigation';
 import type { Exam, Question, Answer } from '@/lib/types';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Star } from 'lucide-react';
 import { cn, setCookie } from '@/lib/utils';
@@ -16,15 +14,14 @@ import { cn, setCookie } from '@/lib/utils';
 interface ExamTakerProps {
   exam: Exam;
   questions: Question[];
-  isPaused: boolean;
   onSubmit: () => void;
-  onQuit: () => void;
 }
 
-export default function ExamTaker({ exam, questions, isPaused, onSubmit, onQuit }: ExamTakerProps) {
+export default function ExamTaker({ exam, questions, onSubmit }: ExamTakerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Map<string, { answer: string; marked: boolean }>>(new Map());
   const [timeLeft, setTimeLeft] = useState(exam.numberOfQuestions * 90); // 1.5 minutes per question
+  const [isPaused, setIsPaused] = useState(false); // Local pause state for timer
 
   const handleSubmit = useCallback(() => {
     const finalAnswers: Answer[] = questions.map(q => {
