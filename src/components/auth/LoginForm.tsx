@@ -81,7 +81,7 @@ export default function LoginForm() {
           title: "Login Successful",
           description: "Welcome back! Redirecting to the home page.",
         });
-        router.push('/');
+        router.push('/admin');
       }
     }, 1000);
   }
@@ -150,5 +150,3 @@ export default function LoginForm() {
     </Form>
   );
 }
-
-    

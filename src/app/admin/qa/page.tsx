@@ -17,12 +17,6 @@ export default function AdminQAPage() {
     const router = useRouter();
 
     useEffect(() => {
-        const isLoggedIn = getCookie('user_loggedin');
-        if (!isLoggedIn) {
-            router.push('/login');
-            return;
-        }
-
         const fetchFeedback = async () => {
             setIsLoading(true);
             try {

@@ -68,12 +68,6 @@ export default function UsersPage() {
   const router = useRouter();
 
   useEffect(() => {
-      const isLoggedIn = getCookie('user_loggedin');
-      if (!isLoggedIn) {
-          router.push('/login');
-          return;
-      }
-      
       const fetchUsers = async () => {
           try {
               const data = await getAllUsers();

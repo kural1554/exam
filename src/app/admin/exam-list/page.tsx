@@ -50,12 +50,6 @@ export default function ExamListPage() {
   const router = useRouter();
 
   useEffect(() => {
-    const isLoggedIn = getCookie('user_loggedin');
-    if (!isLoggedIn) {
-        router.push('/login');
-        return;
-    }
-
     const fetchExams = async () => {
       try {
         const data = await getExams();

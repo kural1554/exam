@@ -29,7 +29,7 @@ const UserNav = () => {
   const handleLogout = () => {
     // In a real app, you'd handle logout logic here
     removeCookie('user_loggedin');
-    router.push('/login');
+    router.push('/admin');
   };
     
   return (

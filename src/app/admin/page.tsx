@@ -67,12 +67,6 @@ export default function AdminDashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const isLoggedIn = getCookie('user_loggedin');
-    if (!isLoggedIn) {
-        router.push('/login');
-        return;
-    }
-    
     getAllUsers().then(fetchedUsers => {
         setUsers(fetchedUsers);
         setIsLoading(false);
