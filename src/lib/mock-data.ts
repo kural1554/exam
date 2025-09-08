@@ -220,15 +220,132 @@ export const mockQuestions: Question[] = [
       }
     }
   },
-  { id: 'm2', examId: 'math-101', questionText: 'Solve for x: x - 5 = 10', options: ['10', '15', '5', '-5'], correctAnswer: '15', difficulty: 2 },
-  { id: 'm3', examId: 'math-101', questionText: 'What is the area of a rectangle with length 5 and width 3?', options: ['8', '15', '16', '25'], correctAnswer: '15', difficulty: 3 },
-  { id: 'm4', examId: 'math-101', questionText: 'Simplify the expression: 3(x + 2)', options: ['3x + 6', '3x + 2', 'x + 6', '3x + 5'], correctAnswer: '3x + 6', difficulty: 4 },
-  { id: 'm5', examId: 'math-101', questionText: 'What is the value of 5! (5 factorial)?', options: ['120', '25', '15', '10'], correctAnswer: '120', difficulty: 5 },
-  { id: 'm6', examId: 'math-101', questionText: 'Solve the quadratic equation: x² - 4 = 0', options: ['x=2', 'x=-2', 'x=2, x=-2', 'x=4'], correctAnswer: 'x=2, x=-2', difficulty: 6 },
-  { id: 'm7', examId: 'math-101', questionText: 'What is the slope of the line y = 2x + 3?', options: ['1', '2', '3', '5'], correctAnswer: '2', difficulty: 7 },
-  { id: 'm8', examId: 'math-101', questionText: 'Find the derivative of f(x) = x³.', options: ['3x', 'x²', '3x²', 'x³'], correctAnswer: '3x²', difficulty: 8 },
-  { id: 'm9', examId: 'math-101', questionText: 'What is the integral of 2x dx?', options: ['x²', '2x²', 'x² + C', 'x'], correctAnswer: 'x² + C', difficulty: 9 },
-  { id: 'm10', examId: 'math-101', questionText: 'What is the limit of (x²-1)/(x-1) as x approaches 1?', options: ['0', '1', '2', 'undefined'], correctAnswer: '2', difficulty: 10 },
+  { 
+    id: 'm2', 
+    examId: 'math-101', 
+    questionText: 'Solve for x: x - 5 = 10', 
+    options: ['10', '15', '5', '-5'], 
+    correctAnswer: '15', 
+    difficulty: 2,
+    translations: {
+      hindi: {
+        questionText: 'x के लिए हल करें: x - 5 = 10',
+        options: ['10', '15', '5', '-5'],
+      }
+    } 
+  },
+  { 
+    id: 'm3', 
+    examId: 'math-101', 
+    questionText: 'What is the area of a rectangle with length 5 and width 3?', 
+    options: ['8', '15', '16', '25'], 
+    correctAnswer: '15', 
+    difficulty: 3,
+    translations: {
+      hindi: {
+        questionText: '5 लंबाई और 3 चौड़ाई वाले आयत का क्षेत्रफल क्या है?',
+        options: ['8', '15', '16', '25'],
+      }
+    } 
+  },
+  { 
+    id: 'm4', 
+    examId: 'math-101', 
+    questionText: 'Simplify the expression: 3(x + 2)', 
+    options: ['3x + 6', '3x + 2', 'x + 6', '3x + 5'], 
+    correctAnswer: '3x + 6', 
+    difficulty: 4,
+    translations: {
+      hindi: {
+        questionText: 'व्यंजक को सरल करें: 3(x + 2)',
+        options: ['3x + 6', '3x + 2', 'x + 6', '3x + 5'],
+      }
+    }
+  },
+  { 
+    id: 'm5', 
+    examId: 'math-101', 
+    questionText: 'What is the value of 5! (5 factorial)?', 
+    options: ['120', '25', '15', '10'], 
+    correctAnswer: '120', 
+    difficulty: 5,
+    translations: {
+      hindi: {
+        questionText: '5! (5 फैक्टोरियल) का मान क्या है?',
+        options: ['120', '25', '15', '10'],
+      }
+    }
+  },
+  { 
+    id: 'm6', 
+    examId: 'math-101', 
+    questionText: 'Solve the quadratic equation: x² - 4 = 0', 
+    options: ['x=2', 'x=-2', 'x=2, x=-2', 'x=4'], 
+    correctAnswer: 'x=2, x=-2', 
+    difficulty: 6,
+    translations: {
+      hindi: {
+        questionText: 'द्विघात समीकरण हल करें: x² - 4 = 0',
+        options: ['x=2', 'x=-2', 'x=2, x=-2', 'x=4'],
+      }
+    }
+  },
+  { 
+    id: 'm7', 
+    examId: 'math-101', 
+    questionText: 'What is the slope of the line y = 2x + 3?', 
+    options: ['1', '2', '3', '5'], 
+    correctAnswer: '2', 
+    difficulty: 7,
+    translations: {
+      hindi: {
+        questionText: 'रेखा y = 2x + 3 का ढलान क्या है?',
+        options: ['1', '2', '3', '5'],
+      }
+    }
+  },
+  { 
+    id: 'm8', 
+    examId: 'math-101', 
+    questionText: 'Find the derivative of f(x) = x³.', 
+    options: ['3x', 'x²', '3x²', 'x³'], 
+    correctAnswer: '3x²', 
+    difficulty: 8,
+    translations: {
+      hindi: {
+        questionText: 'f(x) = x³ का अवकलज ज्ञात कीजिए।',
+        options: ['3x', 'x²', '3x²', 'x³'],
+      }
+    }
+  },
+  { 
+    id: 'm9', 
+    examId: 'math-101', 
+    questionText: 'What is the integral of 2x dx?', 
+    options: ['x²', '2x²', 'x² + C', 'x'], 
+    correctAnswer: 'x² + C', 
+    difficulty: 9,
+    translations: {
+      hindi: {
+        questionText: '2x dx का समाकलन क्या है?',
+        options: ['x²', '2x²', 'x² + C', 'x'],
+      }
+    }
+  },
+  { 
+    id: 'm10', 
+    examId: 'math-101', 
+    questionText: 'What is the limit of (x²-1)/(x-1) as x approaches 1?', 
+    options: ['0', '1', '2', 'undefined'], 
+    correctAnswer: '2', 
+    difficulty: 10,
+    translations: {
+      hindi: {
+        questionText: '(x²-1)/(x-1) की सीमा क्या है जब x 1 के करीब पहुंचता है?',
+        options: ['0', '1', '2', 'अपरिभाषित'],
+      }
+    }
+  },
   // Science Questions
   { 
     id: 's1', 
@@ -285,6 +402,66 @@ export const mockQuestions: Question[] = [
       hindi: {
         questionText: '"To Kill a Mockingbird" किसने लिखा?',
         options: ['हार्पर ली', 'मार्क ट्वेन', 'एफ. स्कॉट फिट्जगेराल्ड', 'अर्नेस्ट हेमिंग्वे'],
+      }
+    }
+  },
+    // Physics Questions
+  { 
+    id: 'p1', 
+    examId: 'phys-101', 
+    questionText: 'What is the unit of force?', 
+    options: ['Joule', 'Watt', 'Newton', 'Pascal'], 
+    correctAnswer: 'Newton', 
+    difficulty: 2,
+    translations: {
+      hindi: {
+        questionText: 'बल की इकाई क्या है?',
+        options: ['जूल', 'वाट', 'न्यूटन', 'पास्कल'],
+      }
+    }
+  },
+  // Chemistry Questions
+  { 
+    id: 'c1', 
+    examId: 'chem-101', 
+    questionText: 'What is the atomic number of Carbon?', 
+    options: ['5', '6', '7', '8'], 
+    correctAnswer: '6', 
+    difficulty: 1,
+    translations: {
+      hindi: {
+        questionText: 'कार्बन की परमाणु संख्या क्या है?',
+        options: ['5', '6', '7', '8'],
+      }
+    }
+  },
+    // CS Questions
+  { 
+    id: 'cs1', 
+    examId: 'cs-101', 
+    questionText: 'What does CPU stand for?', 
+    options: ['Central Processing Unit', 'Computer Personal Unit', 'Central Process Unit', 'Central Processor Unit'], 
+    correctAnswer: 'Central Processing Unit', 
+    difficulty: 1,
+    translations: {
+      hindi: {
+        questionText: 'सीपीयू का मतलब क्या है?',
+        options: ['सेंट्रल प्रोसेसिंग यूनिट', 'कंप्यूटर पर्सनल यूनिट', 'सेंट्रल प्रोसेस यूनिट', 'सेंट्रल प्रोसेसर यूनिट'],
+      }
+    }
+  },
+  // Economics Questions
+  { 
+    id: 'e1', 
+    examId: 'econ-101', 
+    questionText: 'What is a market with only one seller called?', 
+    options: ['Oligopoly', 'Monopoly', 'Duopoly', 'Perfect Competition'], 
+    correctAnswer: 'Monopoly', 
+    difficulty: 3,
+    translations: {
+      hindi: {
+        questionText: 'केवल एक विक्रेता वाले बाजार को क्या कहा जाता है?',
+        options: ['अल्पाधिकार', 'एकाधिकार', 'द्वयाधिकार', 'पूर्ण प्रतियोगिता'],
       }
     }
   },
