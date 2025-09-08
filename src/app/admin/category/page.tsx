@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import React from 'react';
@@ -54,11 +55,11 @@ export default function AdminCategoryPage() {
   return (
     <div className="space-y-6">
         <div className="flex justify-between items-center">
-            <h1 className="text-3xl font-bold">Create and Manage Category</h1>
+            <h1 className="text-3xl font-bold">Create and Manage Exam Title</h1>
             <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <Link href="/admin" className="flex items-center gap-1 hover:text-primary"><Home className="h-4 w-4" /> Dashboard</Link>
                 <ChevronRight className="h-4 w-4" />
-                <span>Category</span>
+                <span>Exam Title</span>
             </div>
         </div>
         
@@ -66,14 +67,14 @@ export default function AdminCategoryPage() {
             <Dialog>
                 <DialogTrigger asChild>
                     <Button>
-                        <PlusCircle className="mr-2 h-4 w-4" /> Create Category
+                        <PlusCircle className="mr-2 h-4 w-4" /> Create Exam Title
                     </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
-                        <DialogTitle>Create New Category</DialogTitle>
+                        <DialogTitle>Create New Exam Title</DialogTitle>
                         <DialogDescription>
-                            Enter the name for the new category below. Click submit when you're done.
+                            Enter the name for the new exam title below. Click submit when you're done.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
@@ -81,7 +82,7 @@ export default function AdminCategoryPage() {
                             <Label htmlFor="name" className="text-right">
                                 Name
                             </Label>
-                            <Input id="name" placeholder="Category Name" className="col-span-3" />
+                            <Input id="name" placeholder="Exam Title" className="col-span-3" />
                         </div>
                     </div>
                     <DialogFooter>
@@ -101,7 +102,7 @@ export default function AdminCategoryPage() {
             <Card>
                 <CardHeader className="bg-muted/50">
                     <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-                        <CardTitle>Category List</CardTitle>
+                        <CardTitle>Exam Title List</CardTitle>
                         <div className="flex items-center gap-2">
                             <Select defaultValue="en-us">
                                 <SelectTrigger className="w-full sm:w-[160px] bg-background">
@@ -171,7 +172,7 @@ export default function AdminCategoryPage() {
         <div className="lg:col-span-1">
             <Card>
                 <CardHeader className="bg-muted/50">
-                    <CardTitle>Category Order</CardTitle>
+                    <CardTitle>Exam Title Order</CardTitle>
                 </CardHeader>
                 <CardContent className="pt-6">
                      <Select defaultValue="en-us">

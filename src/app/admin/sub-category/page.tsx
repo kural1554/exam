@@ -55,11 +55,11 @@ export default function AdminSubCategoryPage() {
   return (
     <div className="space-y-6">
         <div className="flex justify-between items-center">
-            <h1 className="text-3xl font-bold">Create and Manage Sub Category</h1>
+            <h1 className="text-3xl font-bold">Create and Manage Category</h1>
             <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <Link href="/admin" className="flex items-center gap-1 hover:text-primary"><Home className="h-4 w-4" /> Dashboard</Link>
                 <ChevronRight className="h-4 w-4" />
-                <span>Sub Category</span>
+                <span>Category</span>
             </div>
         </div>
         
@@ -67,24 +67,24 @@ export default function AdminSubCategoryPage() {
             <Dialog>
                 <DialogTrigger asChild>
                     <Button>
-                        <PlusCircle className="mr-2 h-4 w-4" /> Create Sub Category
+                        <PlusCircle className="mr-2 h-4 w-4" /> Create Category
                     </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
-                        <DialogTitle>Create New Sub Category</DialogTitle>
+                        <DialogTitle>Create New Category</DialogTitle>
                         <DialogDescription>
-                            Select a main category and enter the name for the new sub category.
+                            Select an exam title and enter the name for the new category.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="main-category" className="text-right">
-                                Main Category
+                                Exam Title
                             </Label>
                              <Select>
                                 <SelectTrigger className="col-span-3">
-                                    <SelectValue placeholder="Select a category" />
+                                    <SelectValue placeholder="Select an exam title" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {categories.map((category) => (
@@ -97,7 +97,7 @@ export default function AdminSubCategoryPage() {
                             <Label htmlFor="name" className="text-right">
                                 Name
                             </Label>
-                            <Input id="name" placeholder="Sub Category Name" className="col-span-3" />
+                            <Input id="name" placeholder="Category Name" className="col-span-3" />
                         </div>
                     </div>
                     <DialogFooter>
@@ -117,14 +117,14 @@ export default function AdminSubCategoryPage() {
             <Card>
                 <CardHeader className="bg-muted/50">
                     <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-                        <CardTitle>Sub Category List</CardTitle>
+                        <CardTitle>Category List</CardTitle>
                         <div className="flex items-center gap-2">
                              <Select defaultValue="all">
                                 <SelectTrigger className="w-full sm:w-[160px] bg-background">
-                                    <SelectValue placeholder="Select Category" />
+                                    <SelectValue placeholder="Select Exam Title" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="all">All Categories</SelectItem>
+                                    <SelectItem value="all">All Exam Titles</SelectItem>
                                     <SelectItem value="textiles">Textiles</SelectItem>
                                     <SelectItem value="general">General</SelectItem>
                                     <SelectItem value="health">Health</SelectItem>
@@ -150,7 +150,7 @@ export default function AdminSubCategoryPage() {
                                 <TableRow>
                                     <TableHead>ID</TableHead>
                                     <TableHead>Name</TableHead>
-                                    <TableHead>Main Category</TableHead>
+                                    <TableHead>Exam Title</TableHead>
                                     <TableHead>Row Order</TableHead>
                                     <TableHead className="text-right">Operate</TableHead>
                                 </TableRow>
@@ -193,12 +193,12 @@ export default function AdminSubCategoryPage() {
         <div className="lg:col-span-1">
             <Card>
                 <CardHeader className="bg-muted/50">
-                    <CardTitle>Sub Category Order</CardTitle>
+                    <CardTitle>Category Order</CardTitle>
                 </CardHeader>
                 <CardContent className="pt-6">
                      <Select defaultValue="textiles">
                         <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select Main Category" />
+                            <SelectValue placeholder="Select Exam Title" />
                         </SelectTrigger>
                         <SelectContent>
                            <SelectItem value="textiles">Textiles</SelectItem>
