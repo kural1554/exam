@@ -35,7 +35,7 @@ export default function TakeExamLayout({
             description: "You exited fullscreen or switched tabs. Your exam has been submitted automatically.",
         });
 
-        router.push(`/exams/${examId}/results`);
+        router.push(`/exams`);
     }, [router, examId, toast]);
 
     const requestFullscreen = useCallback(() => {
