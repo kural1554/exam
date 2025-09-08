@@ -26,7 +26,6 @@ const navItems = [
 ];
 
 const moreMenuItems = [
-    { href: '/doubts', label: 'Doubts' },
     { href: '#', label: 'Free Live Classes' },
     { href: '#', label: 'Free Live Tests & Quizzes' },
     { href: '#', label: 'Free Quizzes' },
