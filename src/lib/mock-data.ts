@@ -206,7 +206,20 @@ export const mockExams: Exam[] = [
 
 export const mockQuestions: Question[] = [
   // Math Questions (difficulties 1-10)
-  { id: 'm1', examId: 'math-101', questionText: 'What is 2 + 2?', options: ['3', '4', '5', '6'], correctAnswer: '4', difficulty: 1 },
+  { 
+    id: 'm1', 
+    examId: 'math-101', 
+    questionText: 'What is 2 + 2?', 
+    options: ['3', '4', '5', '6'], 
+    correctAnswer: '4', 
+    difficulty: 1,
+    translations: {
+      hindi: {
+        questionText: '2 + 2 क्या है?',
+        options: ['3', '4', '5', '6'],
+      }
+    }
+  },
   { id: 'm2', examId: 'math-101', questionText: 'Solve for x: x - 5 = 10', options: ['10', '15', '5', '-5'], correctAnswer: '15', difficulty: 2 },
   { id: 'm3', examId: 'math-101', questionText: 'What is the area of a rectangle with length 5 and width 3?', options: ['8', '15', '16', '25'], correctAnswer: '15', difficulty: 3 },
   { id: 'm4', examId: 'math-101', questionText: 'Simplify the expression: 3(x + 2)', options: ['3x + 6', '3x + 2', 'x + 6', '3x + 5'], correctAnswer: '3x + 6', difficulty: 4 },
@@ -217,12 +230,64 @@ export const mockQuestions: Question[] = [
   { id: 'm9', examId: 'math-101', questionText: 'What is the integral of 2x dx?', options: ['x²', '2x²', 'x² + C', 'x'], correctAnswer: 'x² + C', difficulty: 9 },
   { id: 'm10', examId: 'math-101', questionText: 'What is the limit of (x²-1)/(x-1) as x approaches 1?', options: ['0', '1', '2', 'undefined'], correctAnswer: '2', difficulty: 10 },
   // Science Questions
-  { id: 's1', examId: 'sci-101', questionText: 'What is the powerhouse of the cell?', options: ['Nucleus', 'Ribosome', 'Mitochondrion', 'Chloroplast'], correctAnswer: 'Mitochondrion', difficulty: 3 },
-  { id: 's2', examId: 'sci-101', questionText: 'What is the chemical symbol for water?', options: ['H2O', 'CO2', 'O2', 'NaCl'], correctAnswer: 'H2O', difficulty: 1 },
+  { 
+    id: 's1', 
+    examId: 'sci-101', 
+    questionText: 'What is the powerhouse of the cell?', 
+    options: ['Nucleus', 'Ribosome', 'Mitochondrion', 'Chloroplast'], 
+    correctAnswer: 'Mitochondrion', 
+    difficulty: 3,
+    translations: {
+      hindi: {
+        questionText: 'कोशिका का पावरहाउस क्या है?',
+        options: ['नाभिक', 'राइबोसोम', 'माइटोकॉन्ड्रियन', 'क्लोरोप्लास्ट'],
+      }
+    }
+  },
+  { 
+    id: 's2', 
+    examId: 'sci-101', 
+    questionText: 'What is the chemical symbol for water?', 
+    options: ['H2O', 'CO2', 'O2', 'NaCl'], 
+    correctAnswer: 'H2O', 
+    difficulty: 1,
+    translations: {
+      hindi: {
+        questionText: 'पानी का रासायनिक प्रतीक क्या है?',
+        options: ['H2O', 'CO2', 'O2', 'NaCl'],
+      }
+    }
+  },
   // History Questions
-  { id: 'h1', examId: 'hist-101', questionText: 'In which ancient civilization were pyramids built?', options: ['Rome', 'Greece', 'Egypt', 'China'], correctAnswer: 'Egypt', difficulty: 2 },
+  { 
+    id: 'h1', 
+    examId: 'hist-101', 
+    questionText: 'In which ancient civilization were pyramids built?', 
+    options: ['Rome', 'Greece', 'Egypt', 'China'], 
+    correctAnswer: 'Egypt', 
+    difficulty: 2,
+    translations: {
+      hindi: {
+        questionText: 'किस प्राचीन सभ्यता में पिरामिड बनाए गए थे?',
+        options: ['रोम', 'ग्रीस', 'मिस्र', 'चीन'],
+      }
+    }
+  },
   // Literature Questions
-  { id: 'l1', examId: 'lit-101', questionText: 'Who wrote "To Kill a Mockingbird"?', options: ['Harper Lee', 'Mark Twain', 'F. Scott Fitzgerald', 'Ernest Hemingway'], correctAnswer: 'Harper Lee', difficulty: 4 },
+  { 
+    id: 'l1', 
+    examId: 'lit-101', 
+    questionText: 'Who wrote "To Kill a Mockingbird"?', 
+    options: ['Harper Lee', 'Mark Twain', 'F. Scott Fitzgerald', 'Ernest Hemingway'], 
+    correctAnswer: 'Harper Lee', 
+    difficulty: 4,
+    translations: {
+      hindi: {
+        questionText: '"To Kill a Mockingbird" किसने लिखा?',
+        options: ['हार्पर ली', 'मार्क ट्वेन', 'एफ. स्कॉट फिट्जगेराल्ड', 'अर्नेस्ट हेमिंग्वे'],
+      }
+    }
+  },
 ];
 
 const createMockAnswers = (examId: string): Answer[] => {

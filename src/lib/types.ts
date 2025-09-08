@@ -35,6 +35,12 @@ export type Question = {
   options: string[];
   correctAnswer: string;
   difficulty: number; // 1-10
+  translations?: {
+    [language: string]: {
+      questionText: string;
+      options: string[];
+    };
+  };
 };
 
 export type Answer = {

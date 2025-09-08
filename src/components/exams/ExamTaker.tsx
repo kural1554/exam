@@ -67,17 +67,24 @@ export default function ExamTaker({ exam, questions: initialQuestions, onQuit }:
   }, [handleSubmit]);
 
   useEffect(() => {
-    if (language === 'hindi') {
-        // This is a mock translation. In a real app, you'd use a translation service.
-        const translatedQuestions = initialQuestions.map(q => ({
-            ...q,
-            questionText: `${q.questionText} (Hindi)`,
-            options: q.options.map(opt => `${opt} (Hindi)`),
-        }));
-        setQuestions(translatedQuestions);
-    } else {
-        setQuestions(initialQuestions);
-    }
+    const translatedQuestions = initialQuestions.map(q => {
+      if (language === 'hindi' && q.translations?.hindi) {
+        const translation = q.translations.hindi;
+        // The correct answer value remains the same as in English, but the options are translated.
+        // We need to find the translated version of the correct answer.
+        const originalCorrectAnswerIndex = q.options.indexOf(q.correctAnswer);
+        const translatedCorrectAnswer = translation.options[originalCorrectAnswerIndex];
+
+        return {
+          ...q,
+          questionText: translation.questionText,
+          options: translation.options,
+          correctAnswer: translatedCorrectAnswer, // The value of the correct answer is now in Hindi
+        };
+      }
+      return q; // Return original question if no translation
+    });
+    setQuestions(translatedQuestions);
   }, [language, initialQuestions]);
 
   const formatTime = (seconds: number) => {
