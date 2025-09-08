@@ -43,11 +43,15 @@ interface QuestionState {
 
 export default function ExamsAdminPage() {
   const { toast } = useToast();
-  const [examType, setExamType] = useState('');
+  
+  const [examTitleName, setExamTitleName] = useState('');
+  const [category, setCategory] = useState('');
+  const [subCategory, setSubCategory] = useState('');
+  const [childCategory, setChildCategory] = useState('');
+
   const [examTitle, setExamTitle] = useState('');
   const [examDescription, setExamDescription] = useState('');
   const [difficulty, setDifficulty] = useState('');
-  const [subtopic, setSubtopic] = useState('');
   
   const [hasTimeLimit, setHasTimeLimit] = useState(false);
   const [timeLimit, setTimeLimit] = useState('');
@@ -101,7 +105,7 @@ export default function ExamsAdminPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!examTitle || !examType || !examDescription) {
+    if (!examTitle) {
         toast({
             variant: "destructive",
             title: "Validation Error",
@@ -111,11 +115,13 @@ export default function ExamsAdminPage() {
     }
 
     const examData = {
+        examTitleName,
+        category,
+        subCategory,
+        childCategory,
         title: examTitle,
         description: examDescription,
-        category: examType,
         difficulty,
-        subtopic,
         hasTimeLimit,
         timeLimit: hasTimeLimit ? parseInt(timeLimit) : undefined,
         isPaid,
@@ -152,9 +158,11 @@ export default function ExamsAdminPage() {
     // Reset form
     setExamTitle('');
     setExamDescription('');
-    setExamType('');
+    setExamTitleName('');
+    setCategory('');
+    setSubCategory('');
+    setChildCategory('');
     setDifficulty('');
-    setSubtopic('');
     setHasTimeLimit(false);
     setTimeLimit('');
     setIsPaid(false);
@@ -177,23 +185,49 @@ export default function ExamsAdminPage() {
             <CardDescription>Fill in the details for the new exam.</CardDescription>
           </CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-             <div className="space-y-2">
-              <Label htmlFor="exam-title">Exam Title</Label>
-              <Input id="exam-title" value={examTitle} onChange={(e) => setExamTitle(e.target.value)} placeholder="e.g., Algebra Fundamentals" />
-            </div>
             <div className="space-y-2">
-              <Label htmlFor="exam-type">Exam Type</Label>
-              <Select onValueChange={setExamType} value={examType}>
-                <SelectTrigger id="exam-type">
-                  <SelectValue placeholder="Select exam type" />
+              <Label htmlFor="exam-title-name">Exam Title</Label>
+              <Select onValueChange={setExamTitleName} value={examTitleName}>
+                <SelectTrigger id="exam-title-name">
+                  <SelectValue placeholder="Select exam title" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="ibps-po">IBPS PO</SelectItem>
-                  <SelectItem value="ibps-clerk">IBPS Clerk</SelectItem>
-                  <SelectItem value="tnpsc">TNPSC</SelectItem>
-                  <SelectItem value="Mathematics">Mathematics</SelectItem>
-                  <SelectItem value="Science">Science</SelectItem>
-                  <SelectItem value="History">History</SelectItem>
+                  <SelectItem value="textiles">Textiles</SelectItem>
+                  <SelectItem value="general">General</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="category">Category</Label>
+              <Select onValueChange={setCategory} value={category}>
+                <SelectTrigger id="category">
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="cotton">Cotton</SelectItem>
+                  <SelectItem value="news">News</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="sub-category">Sub Category</Label>
+              <Select onValueChange={setSubCategory} value={subCategory}>
+                <SelectTrigger id="sub-category">
+                  <SelectValue placeholder="Select sub category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="organic-cotton">Organic Cotton</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="child-category">Child Category</Label>
+              <Select onValueChange={setChildCategory} value={childCategory}>
+                <SelectTrigger id="child-category">
+                  <SelectValue placeholder="Select child category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="gots-certified">GOTS Certified</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -209,6 +243,10 @@ export default function ExamsAdminPage() {
                   <SelectItem value="hard">Hard</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+             <div className="space-y-2">
+              <Label htmlFor="exam-title">Exam Name</Label>
+              <Input id="exam-title" value={examTitle} onChange={(e) => setExamTitle(e.target.value)} placeholder="e.g., Algebra Fundamentals" />
             </div>
              <div className="space-y-2 md:col-span-2 lg:col-span-3">
                 <Label htmlFor="exam-description">Exam Description</Label>
