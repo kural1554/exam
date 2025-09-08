@@ -10,7 +10,7 @@ import { Loader2 } from 'lucide-react';
 
 // The props are passed from the layout now
 interface TakeExamPageProps {
-  onSubmit: () => void;
+  onQuit: () => void;
 }
 
 export default function TakeExamPage({ params, ...props }: { params: { id: string } } & Partial<TakeExamPageProps>) {
@@ -42,7 +42,7 @@ export default function TakeExamPage({ params, ...props }: { params: { id: strin
     <ExamTaker 
         exam={exam} 
         questions={questions} 
-        onSubmit={props.onSubmit!}
+        onQuit={props.onQuit!}
     />
   );
 }

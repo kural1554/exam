@@ -16,10 +16,10 @@ import ExamNavbar from './ExamNavbar';
 interface ExamTakerProps {
   exam: Exam;
   questions: Question[];
-  onSubmit: () => void;
+  onQuit: () => void;
 }
 
-export default function ExamTaker({ exam, questions: initialQuestions, onSubmit }: ExamTakerProps) {
+export default function ExamTaker({ exam, questions: initialQuestions, onQuit }: ExamTakerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Map<string, { answer: string; marked: boolean }>>(new Map());
   const [timeLeft, setTimeLeft] = useState(initialQuestions.length * 90); // 1.5 minutes per question
@@ -42,12 +42,15 @@ export default function ExamTaker({ exam, questions: initialQuestions, onSubmit 
       };
     });
     setCookie(`exam_results_${exam.id}`, { answers: finalAnswers, exam, questions: initialQuestions });
+    if (document.fullscreenElement) {
+        document.exitFullscreen();
+    }
     router.push(`/exams/${exam.id}/results`);
   }, [answers, exam, questions, initialQuestions, router]);
 
   const handleQuitExam = useCallback(() => {
-      router.push('/exams');
-  }, [router]);
+      onQuit();
+  }, [onQuit]);
   
   useEffect(() => {
     const timer = setInterval(() => {
@@ -230,10 +233,10 @@ export default function ExamTaker({ exam, questions: initialQuestions, onSubmit 
                         <span className="text-muted-foreground">Not Answered:</span>
                         <span className="font-bold">{notAnsweredCount}</span>
                     </div>
-                     <div className="mt-6">
+                     <div className="mt-6 space-y-2">
                        <AlertDialog>
                           <AlertDialogTrigger asChild>
-                               <Button className="w-full bg-red-600 hover:bg-red-700">End Exam</Button>
+                               <Button className="w-full">Submit & Finish</Button>
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                               <AlertDialogHeader>
@@ -252,6 +255,7 @@ export default function ExamTaker({ exam, questions: initialQuestions, onSubmit 
                               </AlertDialogFooter>
                           </AlertDialogContent>
                       </AlertDialog>
+                      <Button variant="destructive" className="w-full" onClick={handleQuitExam}>End Exam</Button>
                   </div>
                 </CardContent>
             </Card>
