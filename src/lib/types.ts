@@ -18,7 +18,10 @@ export type Exam = {
   id: string;
   title: string;
   description: string;
+  examTitle: string;
   category: string;
+  subCategory: string;
+  childCategory: string;
   numberOfQuestions: number;
   image: {
     src: string;
@@ -106,9 +109,15 @@ export type Feedback = {
 
 export type Category = {
     id: number;
-    language: string;
-    image: string;
     name: string;
-    slug: string;
     rowOrder: number;
+    language?: string;
+    image?: string;
+    slug?: string;
 };
+
+export type NewChildCategory = {
+    id: number;
+    name: string;
+    rowOrder: number;
+}

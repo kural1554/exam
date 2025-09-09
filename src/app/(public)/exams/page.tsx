@@ -1,184 +1,194 @@
 
 'use client';
+
+import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { getExams } from '@/services/api';
-import { ChevronRight, Search, Loader2 } from 'lucide-react';
+import { ChevronRight, Search, Loader2, ArrowLeft } from 'lucide-react';
 import ExamCard from '@/components/exams/ExamCard';
-import { useState, useMemo, useEffect } from 'react';
 import type { Exam } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
+import { mockCategories, mockSubCategories, mockChildCategories, mockNewChildCategories, mockExams } from '@/lib/mock-data';
 
-const categories = [
-    { 
-        name: "MPPSC",
-        subCategories: [
-            { name: "Clerk", options: ["All", "Aptitude", "Reasoning", "English"] },
-            { name: "PO", options: ["All", "Aptitude", "Reasoning", "English"] },
-            { name: "Manager", options: ["All", "Aptitude", "Reasoning", "English"] },
-            { name: "Officer", options: ["All", "Aptitude", "Reasoning", "English"] },
-        ]
-    },
-    { 
-        name: "Physics",
-        subCategories: [
-            { name: "Mechanics", options: ["All", "Kinematics", "Dynamics", "Statics"] },
-            { name: "Thermodynamics", options: ["All", "Laws", "Heat Transfer"] },
-        ]
-    },
-    { 
-        name: "Chemistry",
-        subCategories: [
-            { name: "Organic", options: ["All", "Alkanes", "Alkenes", "Alkynes"] },
-            { name: "Inorganic", options: ["All", "Acids", "Bases", "Salts"] },
-        ]
-    },
-    { 
-        name: "History",
-        subCategories: [
-            { name: "Ancient", options: ["All", "India", "World"] },
-            { name: "Modern", options: ["All", "India", "World"] },
-        ]
-    },
-    { 
-        name: "English",
-        subCategories: [
-            { name: "Grammar", options: ["All", "Nouns", "Verbs", "Adjectives"] },
-            { name: "Literature", options: ["All", "Poetry", "Prose"] },
-        ]
-    },
-    { name: "Test" },
-    { name: "Mocktest" }
-];
-
-const EXAMS_PER_PAGE = 15;
+type SelectionLevel = 'examTitle' | 'category' | 'subCategory' | 'childCategory' | 'exams';
 
 export default function ExamsPage() {
-    const [allExams, setAllExams] = useState<Exam[]>([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [isLoading, setIsLoading] = useState(true);
-    const { toast } = useToast();
+    const [level, setLevel] = useState<SelectionLevel>('examTitle');
+    const [selections, setSelections] = useState({
+        examTitle: '',
+        category: '',
+        subCategory: '',
+        childCategory: '',
+    });
+    const [searchTerm, setSearchTerm] = useState('');
 
-    useEffect(() => {
-        const fetchExams = async () => {
-            setIsLoading(true);
-            try {
-                const examsData = await getExams();
-                setAllExams(examsData);
-            } catch (error) {
-                toast({
-                    variant: "destructive",
-                    title: "Error fetching exams",
-                    description: "Could not load the list of exams. Please try again later.",
-                });
-            } finally {
-                setIsLoading(false);
-            }
+    const handleSelect = (level: SelectionLevel, value: string) => {
+        const newSelections = { ...selections, [level]: value };
+        
+        // Reset subsequent levels
+        if (level === 'examTitle') {
+            newSelections.category = '';
+            newSelections.subCategory = '';
+            newSelections.childCategory = '';
+        } else if (level === 'category') {
+            newSelections.subCategory = '';
+            newSelections.childCategory = '';
+        } else if (level === 'subCategory') {
+            newSelections.childCategory = '';
+        }
+
+        setSelections(newSelections);
+
+        const nextLevelMap: Record<string, SelectionLevel> = {
+            examTitle: 'category',
+            category: 'subCategory',
+            subCategory: 'childCategory',
+            childCategory: 'exams',
         };
-        fetchExams();
-    }, [toast]);
-
-    const sortedExams = useMemo(() => {
-        return [...allExams].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    }, [allExams]);
-
-    const totalPages = Math.ceil(sortedExams.length / EXAMS_PER_PAGE);
-    const paginatedExams = sortedExams.slice(
-        (currentPage - 1) * EXAMS_PER_PAGE,
-        currentPage * EXAMS_PER_PAGE
-    );
-
-    const handleNextPage = () => {
-        setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+        setLevel(nextLevelMap[level]);
     };
 
-    const handlePreviousPage = () => {
-        setCurrentPage((prev) => Math.max(prev - 1, 1));
+    const handleBack = () => {
+        if (level === 'category') {
+            setLevel('examTitle');
+            setSelections(s => ({ ...s, examTitle: '' }));
+        } else if (level === 'subCategory') {
+            setLevel('category');
+            setSelections(s => ({ ...s, category: '' }));
+        } else if (level === 'childCategory') {
+            setLevel('subCategory');
+            setSelections(s => ({ ...s, subCategory: '' }));
+        } else if (level === 'exams') {
+             if (selections.childCategory) setLevel('childCategory');
+             else if (selections.subCategory) setLevel('subCategory');
+             else if (selections.category) setLevel('category');
+             else setLevel('examTitle');
+        }
     };
+    
+    const filteredExams = useMemo(() => {
+        return mockExams.filter(exam => {
+            const matchesSearch = exam.title.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchesExamTitle = !selections.examTitle || exam.examTitle === selections.examTitle;
+            const matchesCategory = !selections.category || exam.category === selections.category;
+            const matchesSubCategory = !selections.subCategory || exam.subCategory === selections.subCategory;
+            const matchesChildCategory = !selections.childCategory || exam.childCategory === selections.childCategory;
+            return matchesSearch && matchesExamTitle && matchesCategory && matchesSubCategory && matchesChildCategory;
+        });
+    }, [selections, searchTerm]);
 
-  return (
-    <div className="container mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-8">
-        <aside className="space-y-6">
-            <Card>
-                <div className="p-2">
-                    {categories.map((category, index) => (
-                        <div key={category.name} className="relative group">
-                             <Button 
-                                variant={index === 0 ? 'default' : 'ghost'} 
-                                className="w-full justify-between text-left h-auto py-2.5"
-                            >
-                                {category.name}
-                                {category.subCategories && <ChevronRight className="h-4 w-4" />}
-                            </Button>
-                            {category.subCategories && (
-                                <div className="absolute left-full -top-1 w-48 bg-card border rounded-md shadow-lg p-2 invisible group-hover:visible z-10">
-                                   {category.subCategories.map(sub => (
-                                       <div key={sub.name} className="relative group/sub">
-                                            <Button variant="ghost" className="w-full justify-between text-left h-auto py-2">
-                                                {sub.name}
-                                                <ChevronRight className="h-4 w-4" />
-                                            </Button>
-                                            {sub.options && (
-                                                <div className="absolute left-full top-0 w-48 bg-card border rounded-md shadow-lg p-2 invisible group-hover/sub:visible">
-                                                    {sub.options?.map(option => (
-                                                        <Button key={option} variant="ghost" className="w-full justify-start text-left h-auto py-2">{option}</Button>
-                                                    ))}
-                                                </div>
-                                            )}
-                                       </div>
-                                   ))}
-                                </div>
+    const renderContent = () => {
+        if (level !== 'exams') {
+            let items: { id: number; name: string }[] = [];
+            let currentLevel: SelectionLevel = 'examTitle';
+            let title = "Select Exam Title";
+            
+            if (level === 'examTitle') {
+                items = mockCategories;
+                currentLevel = 'examTitle';
+                title = "Select Exam Title";
+            } else if (level === 'category') {
+                items = mockSubCategories;
+                currentLevel = 'category';
+                title = `Categories for ${selections.examTitle}`
+            } else if (level === 'subCategory') {
+                items = mockChildCategories;
+                currentLevel = 'subCategory';
+                title = `Sub Categories for ${selections.category}`
+            } else if (level === 'childCategory') {
+                items = mockNewChildCategories;
+                currentLevel = 'childCategory';
+                title = `Child Categories for ${selections.subCategory}`
+            }
+
+            return (
+                <Card>
+                    <CardHeader>
+                        <div className="flex items-center gap-4">
+                            {level !== 'examTitle' && (
+                                <Button variant="ghost" size="icon" onClick={handleBack}>
+                                    <ArrowLeft />
+                                </Button>
                             )}
+                            <CardTitle>{title}</CardTitle>
                         </div>
-                    ))}
-                </div>
-            </Card>
-        </aside>
-        <section>
-            <div className="flex flex-col space-y-6">
-                <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input placeholder="Search Exams..." className="pl-10 h-12" />
-                </div>
-                
-                <div>
-                <h1 className="text-2xl font-bold tracking-tight">All Exams</h1>
-                </div>
+                    </CardHeader>
+                    <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {items.map(item => (
+                            <Button
+                                key={item.id}
+                                variant="outline"
+                                className="h-auto py-4 text-base justify-between"
+                                onClick={() => handleSelect(currentLevel, item.name)}
+                            >
+                                {item.name}
+                                <ChevronRight className="h-5 w-5" />
+                            </Button>
+                        ))}
+                    </CardContent>
+                </Card>
+            )
+        }
 
-                {isLoading ? (
-                     <div className="flex justify-center items-center py-20">
-                        <Loader2 className="h-10 w-10 animate-spin text-primary" />
-                    </div>
-                ) : (
-                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
-                        {paginatedExams.map((exam, index) => (
+        return (
+            <div>
+                <div className="flex items-center gap-4 mb-4">
+                     <Button variant="ghost" size="icon" onClick={handleBack}>
+                        <ArrowLeft />
+                    </Button>
+                    <h2 className="text-2xl font-bold tracking-tight">Filtered Exams</h2>
+                </div>
+                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+                    {filteredExams.length > 0 ? (
+                        filteredExams.map((exam, index) => (
                             <ExamCard 
                                 key={exam.id} 
                                 exam={exam} 
                                 isFree={index % 2 === 0} 
                                 price={index % 2 !== 0 ? 75 : undefined} 
                             />
-                        ))}
-                    </div>
-                )}
-
-
-                {totalPages > 1 && !isLoading && (
-                    <div className="flex justify-center items-center gap-4">
-                        <Button variant="outline" onClick={handlePreviousPage} disabled={currentPage === 1}>Previous</Button>
-                        <span className="text-sm text-muted-foreground">
-                            Page {currentPage} of {totalPages}
-                        </span>
-                        <Button onClick={handleNextPage} disabled={currentPage === totalPages}>Next</Button>
-                    </div>
-                )}
+                        ))
+                    ) : (
+                        <p className="md:col-span-3 text-muted-foreground">No exams found for the selected criteria.</p>
+                    )}
+                </div>
             </div>
+        )
+    };
+
+    const breadcrumbs = [
+        selections.examTitle,
+        selections.category,
+        selections.subCategory,
+        selections.childCategory
+    ].filter(Boolean).join(' > ');
+
+  return (
+    <div className="container mx-auto py-8">
+        <section className="space-y-6">
+            <div className="flex justify-between items-center">
+                 <h1 className="text-3xl font-bold tracking-tight">Practice Exams</h1>
+                 <div className="relative flex-1 max-w-sm">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input 
+                        placeholder="Search Exams..." 
+                        className="pl-10 h-12" 
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
+            </div>
+
+            {breadcrumbs && (
+                <div className="text-sm text-muted-foreground">
+                    Path: {breadcrumbs}
+                </div>
+            )}
+           
+            {renderContent()}
         </section>
-        </div>
     </div>
   );
 }
