@@ -108,7 +108,7 @@ export default function ExamsAdminPage() {
         toast({
             variant: "destructive",
             title: "Validation Error",
-            description: "Please fill in all required exam details (Exam Title, Description).",
+            description: "Please fill in all required exam details (Exam name, Description).",
         });
         return;
     }
@@ -183,7 +183,7 @@ export default function ExamsAdminPage() {
           </CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="exam-title-name">Exam Title</Label>
+              <Label htmlFor="exam-title-name">Exam name</Label>
               <Select onValueChange={setExamTitleName} value={examTitleName}>
                 <SelectTrigger id="exam-title-name">
                   <SelectValue placeholder="Select exam title" />
