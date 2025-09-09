@@ -108,7 +108,7 @@ export default function ExamListPage() {
             <Table>
                 <TableHeader>
                 <TableRow>
-                    <TableHead>Title</TableHead>
+                    <TableHead>Exam name</TableHead>
                     <TableHead>Category</TableHead>
                     <TableHead>Questions</TableHead>
                     <TableHead>Status</TableHead>
