@@ -5,12 +5,11 @@ import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { getExams } from '@/services/api';
-import { Search, Loader2 } from 'lucide-react';
+import { Search } from 'lucide-react';
 import ExamCard from '@/components/exams/ExamCard';
-import type { Exam } from '@/lib/types';
-import { useToast } from '@/hooks/use-toast';
 import { mockCategories, mockSubCategories, mockChildCategories, mockNewChildCategories, mockExams } from '@/lib/mock-data';
+
+const ITEMS_PER_PAGE = 8;
 
 export default function ExamsPage() {
     const [selections, setSelections] = useState({
@@ -20,11 +19,11 @@ export default function ExamsPage() {
         childCategory: 'all',
     });
     const [searchTerm, setSearchTerm] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
 
     const handleSelect = (level: keyof typeof selections, value: string) => {
         const newSelections = { ...selections, [level]: value };
         
-        // When a higher-level filter changes, reset the lower-level ones
         if (level === 'examTitle') {
             newSelections.category = 'all';
             newSelections.subCategory = 'all';
@@ -37,6 +36,7 @@ export default function ExamsPage() {
         }
 
         setSelections(newSelections);
+        setCurrentPage(1); // Reset to first page on filter change
     };
 
     const filteredExams = useMemo(() => {
@@ -49,6 +49,9 @@ export default function ExamsPage() {
             return matchesSearch && matchesExamTitle && matchesCategory && matchesSubCategory && matchesChildCategory;
         });
     }, [selections, searchTerm]);
+
+    const totalPages = Math.ceil(filteredExams.length / ITEMS_PER_PAGE);
+    const currentExams = filteredExams.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   return (
     <div className="container mx-auto py-8">
@@ -63,7 +66,10 @@ export default function ExamsPage() {
                         placeholder="Search for exams..."
                         className="pl-8 w-full"
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={(e) => {
+                            setSearchTerm(e.target.value);
+                            setCurrentPage(1);
+                        }}
                         />
                     </div>
                 </div>
@@ -108,9 +114,9 @@ export default function ExamsPage() {
                 </Select>
             </div>
            
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {filteredExams.length > 0 ? (
-                    filteredExams.map((exam, index) => (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 min-h-[500px]">
+                {currentExams.length > 0 ? (
+                    currentExams.map((exam, index) => (
                         <ExamCard 
                             key={exam.id} 
                             exam={exam} 
@@ -125,6 +131,27 @@ export default function ExamsPage() {
                     </div>
                 )}
             </div>
+             {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-4 mt-8">
+                    <Button 
+                        onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
+                        disabled={currentPage === 1}
+                        variant="outline"
+                    >
+                        Previous
+                    </Button>
+                    <span className="text-sm text-muted-foreground">
+                        Page {currentPage} of {totalPages}
+                    </span>
+                    <Button 
+                        onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
+                        disabled={currentPage === totalPages}
+                        variant="outline"
+                    >
+                        Next
+                    </Button>
+                </div>
+            )}
         </section>
     </div>
   );
