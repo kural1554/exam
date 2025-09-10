@@ -1,12 +1,9 @@
+@import './preloader.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import './preloader.css';
 
-body {
-  font-family: var(--font-body), sans-serif;
-}
 
 @layer base {
   :root {
@@ -71,4 +68,8 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+body {
+  font-family: var(--font-body), sans-serif;
 }
