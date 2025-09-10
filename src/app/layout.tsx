@@ -26,7 +26,7 @@ export default function RootLayout({
     // Simulate a loading process.
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 1000); 
+    }, 200); 
 
     return () => clearTimeout(timer);
   }, []);
