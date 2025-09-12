@@ -123,7 +123,7 @@ export default function HomePage() {
                                         data-ai-hint={exam.image.hint}
                                     />
                                 </div>
-                                <CardContent className="p-4 flex-grow">
+                                <CardContent className="p-6 flex-grow">
                                     <h3 className="font-semibold text-lg">{exam.title}</h3>
                                     <p className="text-sm text-muted-foreground mt-1">{exam.category}</p>
                                 </CardContent>
