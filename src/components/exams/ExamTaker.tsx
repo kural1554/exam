@@ -122,7 +122,7 @@ export default function ExamTaker({ exam, questions: initialQuestions, onQuit }:
 
   const handlePrevious = () => {
     if (currentIndex > 0) {
-      setCurrentIndex(currentIndex + 1);
+      setCurrentIndex(currentIndex - 1);
     }
   };
 
