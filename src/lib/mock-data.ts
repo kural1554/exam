@@ -36,7 +36,7 @@ export const mockExams: Exam[] = [
     childCategory: "Beginner Yoga",
     numberOfQuestions: 25,
     image: {
-      src: "https://placehold.co/600x400/10B981/white?text=Science",
+      src: "https://i.pinimg.com/564x/82/e7/28/82e7287b91acb66d6f024e07c98845b1.jpg",
       hint: "biology microscope",
     },
     color: "bg-green-500",
