@@ -38,6 +38,11 @@ export type Question = {
   options: string[];
   correctAnswer: string;
   difficulty: number; // 1-10
+  image?: {
+    src: string;
+    alt: string;
+    hint?: string;
+  };
   translations?: {
     [language: string]: {
       questionText: string;

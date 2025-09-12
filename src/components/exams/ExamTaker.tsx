@@ -12,6 +12,7 @@ import { Star } from 'lucide-react';
 import { cn, setCookie } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import ExamNavbar from './ExamNavbar';
+import Image from 'next/image';
 
 interface ExamTakerProps {
   exam: Exam;
@@ -121,7 +122,7 @@ export default function ExamTaker({ exam, questions: initialQuestions, onQuit }:
 
   const handlePrevious = () => {
     if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
+      setCurrentIndex(currentIndex + 1);
     }
   };
 
@@ -154,6 +155,17 @@ export default function ExamTaker({ exam, questions: initialQuestions, onQuit }:
                   Question {currentIndex + 1} of {questions.length}
                 </CardTitle>
                 <p className={cn("pt-4", textSize)}>{currentQuestion.questionText}</p>
+                {currentQuestion.image && (
+                  <div className="mt-4 relative w-full aspect-video">
+                    <Image
+                      src={currentQuestion.image.src}
+                      alt={currentQuestion.image.alt}
+                      fill
+                      className="object-contain rounded-md"
+                      data-ai-hint={currentQuestion.image.hint}
+                    />
+                  </div>
+                )}
                  <div className="flex justify-between items-center text-sm text-muted-foreground pt-4">
                     <span>2 Mark(s)</span>
                     <button onClick={() => updateAnswer(currentQuestion.id, selectedAnswer, !isMarked)}>
