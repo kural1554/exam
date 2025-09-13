@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useMemo, useState } from 'react';
@@ -65,6 +66,8 @@ const Explanation = ({ question, userAnswer }: { question: Question; userAnswer:
 };
 
 export default function ExamResults({ answers, exam, questions }: ExamResultsProps) {
+  const [showAnswers, setShowAnswers] = useState(false);
+  
   const score = useMemo(() => {
     const correctAnswers = answers.filter((a) => a.isCorrect).length;
     return Math.round((correctAnswers / questions.length) * 100);
@@ -90,58 +93,63 @@ export default function ExamResults({ answers, exam, questions }: ExamResultsPro
         </CardContent>
       </Card>
       
-      <Card>
-        <CardHeader>
-          <CardTitle>Question Breakdown</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Accordion type="single" collapsible className="w-full">
-            {questions.map((question, index) => {
-              const answer = answers.find((a) => a.questionId === question.id);
-              return (
-                <AccordionItem key={question.id} value={`item-${index}`}>
-                  <AccordionTrigger>
-                    <div className="flex items-center gap-4 w-full text-left">
-                      {answer?.isCorrect ? (
-                        <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-                      ) : (
-                        <XCircle className="h-5 w-5 text-destructive flex-shrink-0" />
-                      )}
-                      <span className="flex-1">{question.questionText}</span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="space-y-4">
-                      <p className="text-sm">
-                        <span className="font-semibold">Your answer: </span>
-                        <span className={cn(answer?.isCorrect ? 'text-green-500' : 'text-destructive')}>
-                          {answer?.userAnswer || 'Not answered'}
-                        </span>
-                      </p>
-                      {!answer?.isCorrect && (
+      {showAnswers && (
+        <Card>
+            <CardHeader>
+            <CardTitle>Question Breakdown</CardTitle>
+            </CardHeader>
+            <CardContent>
+            <Accordion type="single" collapsible className="w-full">
+                {questions.map((question, index) => {
+                const answer = answers.find((a) => a.questionId === question.id);
+                return (
+                    <AccordionItem key={question.id} value={`item-${index}`}>
+                    <AccordionTrigger>
+                        <div className="flex items-center gap-4 w-full text-left">
+                        {answer?.isCorrect ? (
+                            <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
+                        ) : (
+                            <XCircle className="h-5 w-5 text-destructive flex-shrink-0" />
+                        )}
+                        <span className="flex-1">{question.questionText}</span>
+                        </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                        <div className="space-y-4">
                         <p className="text-sm">
-                          <span className="font-semibold">Correct answer: </span>
-                          <span className="text-green-500">{question.correctAnswer}</span>
+                            <span className="font-semibold">Your answer: </span>
+                            <span className={cn(answer?.isCorrect ? 'text-green-500' : 'text-destructive')}>
+                            {answer?.userAnswer || 'Not answered'}
+                            </span>
                         </p>
-                      )}
-                      <Explanation question={question} userAnswer={answer?.userAnswer || ''} />
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              );
-            })}
-          </Accordion>
-        </CardContent>
-      </Card>
+                        {!answer?.isCorrect && (
+                            <p className="text-sm">
+                            <span className="font-semibold">Correct answer: </span>
+                            <span className="text-green-500">{question.correctAnswer}</span>
+                            </p>
+                        )}
+                        <Explanation question={question} userAnswer={answer?.userAnswer || ''} />
+                        </div>
+                    </AccordionContent>
+                    </AccordionItem>
+                );
+                })}
+            </Accordion>
+            </CardContent>
+        </Card>
+      )}
 
-       <div className="text-center">
-            <Button asChild size="lg">
+       <div className="text-center space-x-4">
+            <Button size="lg" onClick={() => setShowAnswers(!showAnswers)}>
+              {showAnswers ? 'Hide Answers' : 'View Answers'}
+            </Button>
+            <Button asChild size="lg" variant="outline">
               <Link href={`/exams/${exam.id}/take`}>
                 <RefreshCw className="mr-2 h-4 w-4" />
                 Retake Exam
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="ml-4">
+            <Button asChild variant="secondary" size="lg">
               <Link href="/exams">Choose Another Exam</Link>
             </Button>
         </div>

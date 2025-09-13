@@ -22,7 +22,7 @@ export default function ResultsPage() {
   const [results, setResults] = useState<StoredResults | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
-  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+  const [showResults, setShowResults] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && id) {
@@ -34,7 +34,7 @@ export default function ResultsPage() {
         if (!feedbackDone) {
           setIsFeedbackModalOpen(true);
         } else {
-            setFeedbackSubmitted(true);
+            setShowResults(true);
         }
       }
       setIsLoading(false);
@@ -43,7 +43,7 @@ export default function ResultsPage() {
 
   const handleFeedbackClose = () => {
     setCookie(`feedback_submitted_${id}`, 'true');
-    setFeedbackSubmitted(true);
+    setShowResults(true);
     setIsFeedbackModalOpen(false);
   }
 
@@ -75,14 +75,13 @@ export default function ResultsPage() {
         onClose={handleFeedbackClose}
         examTitle={results.exam.title}
       />
-      {feedbackSubmitted && (
+      {showResults ? (
          <ExamResults
             answers={results.answers}
             exam={results.exam}
             questions={results.questions}
         />
-      )}
-      {!feedbackSubmitted && !isLoading && (
+      ) : (
         <div className="flex items-center justify-center min-h-[50vh]">
             <Card className="p-8 text-center">
                 <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
