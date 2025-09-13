@@ -51,7 +51,7 @@ export default function FeedbackModal({ isOpen, onClose, examTitle, examId }: Fe
     try {
       const user: User | null = getCookie('user_details');
       
-      await submitFeedback({
+      const response = await submitFeedback({
         examTitle,
         rating,
         comment: feedback,
@@ -59,18 +59,23 @@ export default function FeedbackModal({ isOpen, onClose, examTitle, examId }: Fe
         userEmail: user ? user.email : "anonymous@example.com",
       });
 
-      setCookie(`feedback_submitted_${examId}`, 'true');
-      toast({
-        title: "Data submitted",
-      });
-      handleCloseAndReset(true); // pass true to redirect
+      if (response) {
+        setCookie(`feedback_submitted_${examId}`, 'true');
+        toast({
+          title: "Data submitted",
+        });
+        handleCloseAndReset(true); // pass true to redirect
+      } else {
+        throw new Error("Submission failed");
+      }
     } catch (error) {
        toast({
         variant: "destructive",
         title: "Submission Failed",
         description: "Could not submit your feedback. Please try again.",
       });
-       setIsSubmitting(false);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
