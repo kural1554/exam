@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 
@@ -15,9 +15,11 @@ export default function TakeExamLayout({
     const { toast } = useToast();
     const { id: examId } = params;
     const [isClient, setIsClient] = useState(false);
+    const isSubmittingRef = useRef(false);
     
 
     const handleQuitExam = useCallback(() => {
+        if (isSubmittingRef.current) return;
         toast({
             variant: "destructive",
             title: "Exam Terminated",
@@ -27,8 +29,15 @@ export default function TakeExamLayout({
         setTimeout(() => {
             router.push(`/exams`);
         }, 500);
-    }, [router, examId, toast]);
+    }, [router, toast]);
 
+    const handleSubmitExam = useCallback(() => {
+        isSubmittingRef.current = true;
+         if (document.fullscreenElement) {
+            document.exitFullscreen();
+        }
+        router.push(`/exams/${examId}/results`);
+    }, [router, examId]);
     
     useEffect(() => {
         setIsClient(true);
@@ -45,9 +54,12 @@ export default function TakeExamLayout({
         };
 
         const handleFullscreenChange = () => {
-            if (!document.fullscreenElement) {
-                handleQuitExam();
-            }
+            // Add a small delay to allow isSubmittingRef to be updated
+            setTimeout(() => {
+                if (!document.fullscreenElement && !isSubmittingRef.current) {
+                    handleQuitExam();
+                }
+            }, 100);
         };
         
         document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -68,7 +80,7 @@ export default function TakeExamLayout({
             <main className="flex-1">
                 {React.Children.map(children, (child) => {
                     if (React.isValidElement(child)) {
-                         return React.cloneElement(child, { onQuit: handleQuitExam } as any);
+                         return React.cloneElement(child, { onQuit: handleQuitExam, onSubmit: handleSubmitExam } as any);
                     }
                     return child;
                 })}

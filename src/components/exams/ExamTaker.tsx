@@ -18,9 +18,10 @@ interface ExamTakerProps {
   exam: Exam;
   questions: Question[];
   onQuit: () => void;
+  onSubmit: () => void;
 }
 
-export default function ExamTaker({ exam, questions: initialQuestions, onQuit }: ExamTakerProps) {
+export default function ExamTaker({ exam, questions: initialQuestions, onQuit, onSubmit }: ExamTakerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Map<string, { answer: string; marked: boolean }>>(new Map());
   const [timeLeft, setTimeLeft] = useState(initialQuestions.length * 90); // 1.5 minutes per question
@@ -43,11 +44,8 @@ export default function ExamTaker({ exam, questions: initialQuestions, onQuit }:
       };
     });
     setCookie(`exam_results_${exam.id}`, { answers: finalAnswers, exam, questions: initialQuestions });
-    if (document.fullscreenElement) {
-        document.exitFullscreen();
-    }
-    router.push(`/exams/${exam.id}/results`);
-  }, [answers, exam, questions, initialQuestions, router]);
+    onSubmit();
+  }, [answers, exam, questions, initialQuestions, onSubmit]);
 
   const handleQuitExam = useCallback(() => {
       onQuit();
@@ -122,7 +120,7 @@ export default function ExamTaker({ exam, questions: initialQuestions, onQuit }:
 
   const handlePrevious = () => {
     if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
+      setCurrentIndex(currentIndex + 1);
     }
   };
 
