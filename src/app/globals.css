@@ -83,17 +83,20 @@ body {
     position: fixed;
     bottom: 50px;
     right: 50px;
-    font-size: 45px;
+    font-size: 35px;
     text-align: center;
     z-index: 99;
     border-radius: 90%;
-    height: 70px;
-    width: 70px;
-    line-height: 70px;
+    height: 60px;
+    width: 60px;
+    line-height: 60px;
     cursor: pointer;
-    -webkit-transition: all 0.2s;
-    -moz-transition: all 0.2s;
-    transition: all 0.2s
+    transition: all 0.3s ease-in-out;
+}
+
+.whatsapp-info:hover {
+    transform: scale(1.1);
+    background: #148c34;
 }
 
 @-webkit-keyframes pulse {
