@@ -44,9 +44,9 @@ const UserNav = ({ user: passedUser }: { user?: UserType }) => {
   if (!user) return null;
 
   const userInitials = user.name
-    .split(' ')
+    ?.split(' ')
     .map((n) => n[0])
-    .join('');
+    .join('') || '';
 
   const isAdmin = user.isAdmin;
 

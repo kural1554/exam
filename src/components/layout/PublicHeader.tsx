@@ -143,7 +143,7 @@ const PublicHeader = () => {
             </Sheet>
         </div>
         
-        <div className="flex flex-1 items-center justify-end space-x-2">
+        <div className="flex flex-1 items-center justify-between md:justify-end space-x-2">
             <div className="md:hidden">
                  <Link href="/">
                     <Logo />
@@ -151,6 +151,15 @@ const PublicHeader = () => {
             </div>
           <div className="flex items-center gap-2">
             <ModeToggle />
+            <div className="md:hidden">
+                {isLoggedIn && user ? (
+                    <UserNav user={user} />
+                ) : (
+                    <Button asChild size="sm">
+                        <Link href="/login">Sign In</Link>
+                    </Button>
+                )}
+            </div>
             <nav className="hidden md:flex items-center">
                 {isLoggedIn && user ? (
                     <UserNav user={user} />
