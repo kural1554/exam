@@ -19,14 +19,19 @@ export default function TakeExamLayout({
 
     const handleQuitExam = useCallback(() => {
         if (isSubmittingRef.current) return;
+        
+        isSubmittingRef.current = true; // Prevent multiple triggers
+        
         toast({
             variant: "destructive",
             title: "Exam Terminated",
-            description: "You exited fullscreen or switched tabs. Your exam session has ended.",
+            description: "You have left the exam.",
         });
+
         if (document.fullscreenElement) {
-            document.exitFullscreen();
+            document.exitFullscreen().catch(err => console.error(err));
         }
+        
         setTimeout(() => {
             router.push(`/exams`);
         }, 300);
@@ -35,17 +40,21 @@ export default function TakeExamLayout({
     const handleSubmitExam = useCallback(() => {
         isSubmittingRef.current = true;
          if (document.fullscreenElement) {
-            document.exitFullscreen();
+            document.exitFullscreen().catch(err => console.error(err));
         }
         router.push(`/exams/${examId}/results`);
     }, [router, examId]);
     
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            document.documentElement.requestFullscreen().catch(err => {
-                console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
-            });
-        }
+        const enterFullscreen = () => {
+            if (typeof window !== 'undefined' && document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                });
+            }
+        };
+
+        enterFullscreen();
 
         const handleVisibilityChange = () => {
             if (document.visibilityState === 'hidden' && !isSubmittingRef.current) {
@@ -54,11 +63,12 @@ export default function TakeExamLayout({
         };
 
         const handleFullscreenChange = () => {
+            // Give a small delay to allow the isSubmittingRef to be set
             setTimeout(() => {
                 if (!document.fullscreenElement && !isSubmittingRef.current) {
                     handleQuitExam();
                 }
-            }, 200); 
+            }, 500); 
         };
         
         document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -68,7 +78,10 @@ export default function TakeExamLayout({
             document.removeEventListener('visibilitychange', handleVisibilityChange);
             document.removeEventListener('fullscreenchange', handleFullscreenChange);
              if (document.fullscreenElement) {
-                document.exitFullscreen();
+                // Don't exit fullscreen if we are submitting
+                if (!isSubmittingRef.current) {
+                   document.exitFullscreen().catch(err => console.error(err));
+                }
             }
         };
     }, [handleQuitExam]);

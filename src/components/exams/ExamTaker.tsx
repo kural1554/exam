@@ -263,13 +263,30 @@ export default function ExamTaker({ exam, questions: initialQuestions, onQuit, o
                                   <AlertDialogCancel>Cancel</AlertDialogCancel>
                                   <AlertDialogAction 
                                       onClick={handleSubmit}
+                                      className={cn(buttonVariants())}
                                   >
                                       Finish &amp; View Results
                                   </AlertDialogAction>
                               </AlertDialogFooter>
                           </AlertDialogContent>
                       </AlertDialog>
-                      <Button variant="destructive" className="w-full" onClick={onQuit}>End Exam</Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="destructive" className="w-full">End Exam</Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure you want to end the exam?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Your progress will not be saved and you will be redirected to the exams page.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={onQuit}>End Exam</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                   </div>
                 </CardContent>
             </Card>
