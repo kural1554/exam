@@ -22,7 +22,13 @@ interface AuthPopupProps {
 export default function AuthPopup({ isOpen, onOpenChange }: AuthPopupProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent 
+        className="sm:max-w-[425px]"
+        onInteractOutside={(e) => {
+            e.preventDefault();
+        }}
+        hideCloseButton={true}
+        >
         <DialogHeader className="text-center items-center">
           <Logo />
           <DialogTitle className="text-2xl pt-4">Join Examplify Today</DialogTitle>
