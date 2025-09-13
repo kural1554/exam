@@ -22,7 +22,7 @@ const navItems = [
   { href: '/courses', label: 'Courses' },
   { href: '/syllabus', label: 'Syllabus' },
   { href: '/notification', label: 'Notification'},
-  { href: '/about', label: 'About Us' },
+  // { href: '/about', label: 'About Us' },
   { href: '/contact', label: 'Contact Us' },
 ];
 
@@ -46,7 +46,7 @@ const desktopNavLinks = [
     { href: '/courses', label: 'Courses' },
     { href: '/syllabus', label: 'Syllabus' },
     { href: '/notification', label: 'Notification'},
-    { href: '/about', label: 'About Us' },
+    // { href: '/about', label: 'About Us' },
     { href: '/contact', label: 'Contact Us' },
 ];
 
