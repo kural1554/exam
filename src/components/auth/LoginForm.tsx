@@ -17,11 +17,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from 'next/navigation';
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff, Facebook, Github } from "lucide-react";
 import React from "react";
 import { setCookie } from "@/lib/utils";
 import { mockUser } from "@/lib/mock-data";
 import Link from "next/link";
+import { Checkbox } from "../ui/checkbox";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -30,6 +31,7 @@ const formSchema = z.object({
   password: z.string().min(6, {
     message: "Password must be at least 6 characters.",
   }),
+  rememberMe: z.boolean().optional(),
 });
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -46,12 +48,14 @@ export default function LoginForm() {
   const { toast } = useToast();
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(false);
+  const [showPassword, setShowPassword] = React.useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
       password: "",
+      rememberMe: false,
     },
   });
 
@@ -88,7 +92,7 @@ export default function LoginForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
           name="email"
@@ -107,45 +111,74 @@ export default function LoginForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <div className="flex items-center justify-between">
-                <FormLabel>Password</FormLabel>
-              </div>
+              <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="••••••••" {...field} />
+                  <div className="relative">
+                    <Input type={showPassword ? "text" : "password"} placeholder="••••••••" {...field} />
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground"
+                        onClick={() => setShowPassword(prev => !prev)}
+                    >
+                        {showPassword ? <EyeOff /> : <Eye />}
+                    </Button>
+                  </div>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Log In
-        </Button>
-        <div className="mt-4 flex items-center justify-between text-sm">
-            <div>
-                 <span>Don't have an account?</span>
-                <Link href="/signup" className="underline text-primary ml-1">
-                    Sign up
-                </Link>
-            </div>
+        <div className="flex items-center justify-between text-sm">
+            <FormField
+                control={form.control}
+                name="rememberMe"
+                render={({ field }) => (
+                    <FormItem className="flex items-center space-x-2 space-y-0">
+                    <FormControl>
+                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                    </FormControl>
+                    <FormLabel className="!mt-0">Remember me</FormLabel>
+                    </FormItem>
+                )}
+             />
             <Link href="/forgot-password" className="text-sm text-primary hover:underline">Forgot password?</Link>
         </div>
+
+        <div className="flex items-center gap-4">
+            <Button type="submit" className="bg-green-500 hover:bg-green-600 text-white" disabled={isLoading}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Login
+            </Button>
+            <span className="text-sm text-muted-foreground">New user? <Link href="/signup" className="underline text-primary">Sign up</Link></span>
+        </div>
         
-        <div className="relative my-4">
+        <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">
-                Or continue with
+                <span className="bg-card px-2 text-muted-foreground">
+                Or Login with
                 </span>
             </div>
         </div>
 
-        <Button variant="outline" type="button" className="w-full" disabled={isLoading}>
-            <GoogleIcon className="mr-2 h-5 w-5" />
-            Continue with Google
-        </Button>
+        <div className="flex flex-col sm:flex-row gap-2">
+            <Button variant="outline" type="button" className="flex-1 bg-red-600 hover:bg-red-700 text-white border-red-700">
+                <GoogleIcon className="mr-2 h-5 w-5" />
+                Google
+            </Button>
+             <Button variant="outline" type="button" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white border-blue-700">
+                <Facebook className="mr-2 h-5 w-5" />
+                Facebook
+            </Button>
+             <Button variant="outline" type="button" className="flex-1 bg-gray-800 hover:bg-gray-900 text-white border-gray-900">
+                <Github className="mr-2 h-5 w-5" />
+                Github
+            </Button>
+        </div>
       </form>
     </Form>
   );

@@ -15,6 +15,7 @@
     --popover-foreground: 220 28% 14%;
     --primary: 221 83% 53%;
     --primary-foreground: 0 0% 98%;
+    --primary-dark: 225 21% 25%;
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
     --muted: 0 0% 96.1%;
@@ -34,14 +35,15 @@
     --radius: 0.5rem;
   }
   .dark {
-    --background: 220 28% 14%;
+    --background: 220 28% 10%;
     --foreground: 0 0% 98%;
-    --card: 220 28% 18%;
+    --card: 220 28% 14%;
     --card-foreground: 0 0% 98%;
     --popover: 220 28% 14%;
     --popover-foreground: 0 0% 98%;
     --primary: 221 83% 53%;
     --primary-foreground: 0 0% 98%;
+    --primary-dark: 225 21% 25%;
     --secondary: 220 28% 24%;
     --secondary-foreground: 0 0% 98%;
     --muted: 220 28% 24%;
@@ -156,4 +158,12 @@ body {
 
 .fa-whatsapp::before {
     content: "\f234";
+}
+
+.bg-primary-dark {
+    background-color: hsl(var(--primary-dark));
+}
+
+.dark .bg-primary-dark {
+     background-color: hsl(var(--primary-dark));
 }
