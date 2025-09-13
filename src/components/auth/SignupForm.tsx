@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from 'next/navigation';
-import { Loader2, User, Mail, Lock, CalendarIcon, Phone, Facebook, Github } from "lucide-react";
+import { Loader2, CalendarIcon } from "lucide-react";
 import React from "react";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -25,7 +25,6 @@ import { Calendar } from "../ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import Link from "next/link";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -326,7 +325,7 @@ export default function SignupForm() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-2">
-            <Button variant="outline" type="button" className="flex-1 bg-red-600 hover:bg-red-700 text-white border-red-700">
+            <Button variant="outline" type="button" className="flex-1">
                 <GoogleIcon className="mr-2 h-5 w-5" />
                 Google
             </Button>

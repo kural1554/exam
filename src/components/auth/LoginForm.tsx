@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from 'next/navigation';
-import { Loader2, Eye, EyeOff, Facebook, Github } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 import React from "react";
 import { setCookie } from "@/lib/utils";
 import { mockUser } from "@/lib/mock-data";
@@ -166,7 +166,7 @@ export default function LoginForm() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-2">
-            <Button variant="outline" type="button" className="flex-1 bg-red-600 hover:bg-red-700 text-white border-red-700">
+            <Button variant="outline" type="button" className="flex-1">
                 <GoogleIcon className="mr-2 h-5 w-5" />
                 Google
             </Button>
