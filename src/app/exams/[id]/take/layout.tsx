@@ -30,7 +30,6 @@ export default function TakeExamLayout({
             document.exitFullscreen().catch(err => console.error("Failed to exit fullscreen:", err));
         }
         
-        // Use a timeout to ensure state is updated before navigation
         setTimeout(() => {
             router.push(`/exams`);
         }, 100);
@@ -45,22 +44,11 @@ export default function TakeExamLayout({
             document.exitFullscreen().catch(err => console.error("Failed to exit fullscreen:", err));
         }
         
-        // Navigate immediately after setting the flag
         router.push(`/exams/${examId}/results`);
 
     }, [router, examId]);
     
     useEffect(() => {
-        const enterFullscreen = () => {
-            if (typeof window !== 'undefined' && document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
-                });
-            }
-        };
-
-        // enterFullscreen();
-
         const handleVisibilityChange = () => {
             if (document.visibilityState === 'hidden' && !isSubmittingRef.current) {
                 handleQuitExam();
@@ -69,7 +57,6 @@ export default function TakeExamLayout({
 
         const handleFullscreenChange = () => {
             if (!document.fullscreenElement && !isSubmittingRef.current) {
-                // A very short delay to allow the submission flag to be set
                 setTimeout(() => {
                     if (!isSubmittingRef.current) {
                          handleQuitExam();
