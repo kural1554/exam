@@ -1,5 +1,4 @@
 
-
 import type { User, Exam, Question, ExamAttempt, Answer, Course, AnalyticsData, Feedback, Category, NewChildCategory } from "./types";
 
 export const mockUser: User = {
@@ -723,7 +722,7 @@ export const mockAnalyticsData: AnalyticsData = {
 };
 
 // In-memory array to store feedback. In a real app, this would be a database.
-export const mockFeedback: Feedback[] = [];
+export let mockFeedback: Feedback[] = [];
 
 export const mockCategories: Category[] = [
     {
