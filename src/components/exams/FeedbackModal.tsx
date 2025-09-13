@@ -56,8 +56,8 @@ export default function FeedbackModal({ isOpen, onClose, examTitle, examId }: Fe
         examTitle,
         rating,
         comment: feedback,
-        userName: user?.name || "Anonymous",
-        userEmail: user?.email || "anonymous@example.com",
+        userName: user ? user.name : "Anonymous",
+        userEmail: user ? user.email : "anonymous@example.com",
       });
 
       setCookie(`feedback_submitted_${examId}`, 'true');
