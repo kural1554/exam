@@ -49,6 +49,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
           rel="stylesheet"
         />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
       </head>
       <body
         className={cn(
@@ -68,6 +69,14 @@ export default function RootLayout({
             <Toaster />
             </ThemeProvider>
         )}
+         <div className="pulse"></div>
+        <div className="pulse"></div>
+        <div className="pulse"></div>
+        <a style={{color: '#fff'}} target="blank" href="https://api.whatsapp.com/send?phone=905309171112&text=Merhaba" className="whatsapp-info pulse"> 
+            <span className="whatsapp">
+                <i className="fa fa-whatsapp"></i>
+            </span>
+        </a>
       </body>
     </html>
   );
