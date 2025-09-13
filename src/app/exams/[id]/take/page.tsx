@@ -9,8 +9,8 @@ import type { Exam, Question } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
 
 interface TakeExamPageProps {
-  onQuit: () => void;
-  onSubmit: () => void;
+  onQuit?: () => void;
+  onSubmit?: () => void;
 }
 
 export default function TakeExamPage({ onQuit, onSubmit }: TakeExamPageProps) {
