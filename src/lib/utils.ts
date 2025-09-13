@@ -29,3 +29,11 @@ export function getCookie(name: string) {
 export function removeCookie(name: string, options?: Cookies.CookieAttributes) {
   Cookies.remove(name, options);
 }
+
+export const formatTime = (seconds: number) => {
+    if (isNaN(seconds) || seconds < 0) return "00:00:00";
+    const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+    const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${h}:${m}:${s}`;
+};

@@ -5,9 +5,10 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import ExamResults from '@/components/exams/ExamResults';
 import type { Exam, Question, Answer } from '@/lib/types';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 import { getCookie } from '@/lib/utils';
+import { mockExams, mockQuestions } from '@/lib/mock-data';
 
 interface StoredResults {
     answers: Answer[];
@@ -23,7 +24,25 @@ export default function ResultsPage() {
 
   useEffect(() => {
     if (typeof window !== 'undefined' && id) {
-      const storedResults = getCookie(`exam_results_${id}`);
+      let storedResults: StoredResults | null = getCookie(`exam_results_${id}`);
+      
+      // Fallback for demonstration if cookies are not set or cleared
+      if (!storedResults) {
+          const exam = mockExams.find(e => e.id === id);
+          const questions = mockQuestions.filter(q => q.examId === id);
+          if (exam && questions.length > 0) {
+              const answers = questions.map(q => {
+                  const isCorrect = Math.random() > 0.4; // 60% chance correct
+                  const userAnswer = isCorrect ? q.correctAnswer : q.options.find(o => o !== q.correctAnswer) || q.options[0];
+                  return {
+                      questionId: q.id,
+                      userAnswer,
+                      isCorrect,
+                  };
+              });
+              storedResults = { exam, questions, answers };
+          }
+      }
       
       if (storedResults) {
         setResults(storedResults);
