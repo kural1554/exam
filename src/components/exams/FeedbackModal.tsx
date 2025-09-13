@@ -6,16 +6,18 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Star, Loader2, Smile, Frown, Meh, Angry, Laugh } from 'lucide-react';
-import { cn, getCookie } from '@/lib/utils';
+import { cn, getCookie, setCookie } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { submitFeedback } from '@/services/api';
 import type { User } from '@/lib/types';
 import Image from 'next/image';
+import { DialogClose } from '@radix-ui/react-dialog';
 
 interface FeedbackModalProps {
   isOpen: boolean;
   onClose: () => void;
   examTitle: string;
+  examId: string;
 }
 
 const ratingOptions = [
@@ -26,7 +28,7 @@ const ratingOptions = [
     { rating: 5, label: 'Excellent', icon: Laugh },
 ]
 
-export default function FeedbackModal({ isOpen, onClose, examTitle }: FeedbackModalProps) {
+export default function FeedbackModal({ isOpen, onClose, examTitle, examId }: FeedbackModalProps) {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [feedback, setFeedback] = useState('');
@@ -56,6 +58,7 @@ export default function FeedbackModal({ isOpen, onClose, examTitle }: FeedbackMo
         userEmail: user?.email || "anonymous@example.com",
       });
 
+      setCookie(`feedback_submitted_${examId}`, 'true');
       setIsSubmitted(true);
       toast({
         title: "Feedback Submitted!",
@@ -84,18 +87,25 @@ export default function FeedbackModal({ isOpen, onClose, examTitle }: FeedbackMo
         setIsSubmitting(false);
     }, 300);
   }
+  
+  const handleSkip = () => {
+    setCookie(`feedback_submitted_${examId}`, 'true');
+    handleCloseAndReset();
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleCloseAndReset()}>
       <DialogContent className="sm:max-w-md p-0" onInteractOutside={(e) => e.preventDefault()}>
-            <Button
-                variant="ghost"
-                size="icon"
-                className="absolute top-2 right-2 z-10"
-                onClick={handleCloseAndReset}
-            >
-               <Dialog.Close />
-            </Button>
+            <DialogClose asChild>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-2 right-2 z-10"
+                    onClick={handleCloseAndReset}
+                >
+                <X className="h-4 w-4" />
+                </Button>
+            </DialogClose>
             <DialogHeader className="p-6 items-center text-center">
                  <Image src="https://i.pinimg.com/564x/e3/37/a9/e337a902f5a6396c21e67e3a95d70b92.jpg" alt="Feedback illustration" width={120} height={120} data-ai-hint="feedback illustration" />
                  <DialogTitle className="text-xl pt-2">Rate this test</DialogTitle>
@@ -135,7 +145,7 @@ export default function FeedbackModal({ isOpen, onClose, examTitle }: FeedbackMo
               />
             </div>
             <DialogFooter className="px-6 pb-6 sm:justify-center flex-col-reverse sm:flex-col-reverse gap-2 w-full">
-                <Button variant="link" size="sm" onClick={handleCloseAndReset} disabled={isSubmitting} className="text-muted-foreground">
+                <Button variant="link" size="sm" onClick={handleSkip} disabled={isSubmitting} className="text-muted-foreground">
                     Rate Later
                 </Button>
                 <Button type="submit" onClick={handleSubmit} disabled={isSubmitting} className="w-full sm:w-auto">

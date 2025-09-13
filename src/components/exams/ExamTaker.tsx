@@ -13,6 +13,7 @@ import { cn, setCookie } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import ExamNavbar from './ExamNavbar';
 import Image from 'next/image';
+import FeedbackModal from './FeedbackModal';
 
 interface ExamTakerProps {
   exam: Exam;
@@ -29,6 +30,7 @@ export default function ExamTaker({ exam, questions: initialQuestions, onQuit, o
   
   const [textSize, setTextSize] = useState('text-lg'); // Default: Normal
   const [language, setLanguage] = useState('english');
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
 
   const router = useRouter();
   
@@ -44,9 +46,13 @@ export default function ExamTaker({ exam, questions: initialQuestions, onQuit, o
       };
     });
     setCookie(`exam_results_${exam.id}`, { answers: finalAnswers, exam, questions: initialQuestions });
-    onSubmit();
-  }, [answers, exam, questions, initialQuestions, onSubmit]);
+    setIsFeedbackModalOpen(true);
+  }, [answers, exam, questions, initialQuestions]);
 
+  const handleFeedbackClose = () => {
+    setIsFeedbackModalOpen(false);
+    onSubmit(); // This will navigate to the results page
+  };
   
   useEffect(() => {
     const timer = setInterval(() => {
@@ -117,7 +123,7 @@ export default function ExamTaker({ exam, questions: initialQuestions, onQuit, o
 
   const handlePrevious = () => {
     if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
+      setCurrentIndex(currentIndex + 1);
     }
   };
 
@@ -131,6 +137,12 @@ export default function ExamTaker({ exam, questions: initialQuestions, onQuit, o
 
   return (
     <>
+      <FeedbackModal
+        isOpen={isFeedbackModalOpen}
+        onClose={handleFeedbackClose}
+        examTitle={exam.title}
+        examId={exam.id}
+      />
       <ExamNavbar 
         textSize={textSize}
         onTextSizeChange={setTextSize}
