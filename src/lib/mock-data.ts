@@ -7,6 +7,11 @@ export const mockUser: User = {
   name: "Alex Doe",
   email: "alex.doe@example.com",
   avatarUrl: "https://placehold.co/100x100",
+  phone: '9876543210',
+  dob: new Date('1995-05-15'),
+  gender: 'male',
+  state: 'Tamil Nadu',
+  district: 'Chennai',
 };
 
 export const mockExams: Exam[] = [

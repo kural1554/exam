@@ -1,4 +1,5 @@
 
+
 /**
  * @file This file contains mock API functions to simulate fetching data.
  * In a real application, these would be replaced with actual API calls to a backend.
@@ -75,18 +76,12 @@ export const getAllUsers = async (): Promise<User[]> => {
       return {
         ...u,
         id: `user-${index+1}`,
-        phone: `0812-xxxx-xxxx`,
-        // @ts-ignore
-        dateCreated: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
-        // @ts-ignore
-        status: Math.random() > 0.5 ? 'Active' : 'Inactive',
-        // @ts-ignore
-        username: u.name.toLowerCase().replace(' ', ''),
+        phone: `987654321${index}`,
         gender,
         state,
         district,
-        dob: new Date(`199${index}-0${index+1}-1${index+1}`)
-      }
+        dob: new Date(`199${index}-0${(index%9)+1}-1${index%3}`)
+      } as User;
     });
 };
 
