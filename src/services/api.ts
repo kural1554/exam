@@ -94,11 +94,14 @@ export const getFeedback = async (): Promise<Feedback[]> => {
 
 export const submitFeedback = async (data: Omit<Feedback, 'id' | 'date'>): Promise<Feedback> => {
     await delay(300);
+    console.log('Simulating feedback submission:', data);
     const newFeedback: Feedback = {
         ...data,
         id: `feedback-${Date.now()}`,
         date: new Date().toISOString(),
     };
-    mockFeedback.push(newFeedback);
+    // In a real app, this would be an API call. Here we just log it.
+    // We add it to the mock array to have it available for the admin panel.
+    mockFeedback.push(newFeedback); 
     return newFeedback;
 };
