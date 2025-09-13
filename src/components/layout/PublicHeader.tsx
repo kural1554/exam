@@ -23,7 +23,7 @@ const navItems = [
   { href: '/syllabus', label: 'Syllabus' },
   { href: '/notification', label: 'Notification'},
   // { href: '/about', label: 'About Us' },
-  { href: '/contact', label: 'Contact Us' },
+  // { href: '/contact', label: 'Contact Us' },
 ];
 
 const moreMenuItems = [
@@ -47,7 +47,7 @@ const desktopNavLinks = [
     { href: '/syllabus', label: 'Syllabus' },
     { href: '/notification', label: 'Notification'},
     // { href: '/about', label: 'About Us' },
-    { href: '/contact', label: 'Contact Us' },
+    // { href: '/contact', label: 'Contact Us' },
 ];
 
 const PublicHeader = () => {
