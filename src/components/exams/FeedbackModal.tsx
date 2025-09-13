@@ -5,13 +5,14 @@ import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Star, Loader2, Smile, Frown, Meh, Angry, Laugh } from 'lucide-react';
+import { Star, Loader2, Smile, Frown, Meh, Angry, Laugh, X } from 'lucide-react';
 import { cn, getCookie, setCookie } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { submitFeedback } from '@/services/api';
 import type { User } from '@/lib/types';
 import Image from 'next/image';
 import { DialogClose } from '@radix-ui/react-dialog';
+import { useRouter } from 'next/navigation';
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -35,6 +36,7 @@ export default function FeedbackModal({ isOpen, onClose, examTitle, examId }: Fe
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
 
   const handleSubmit = async () => {
     if (rating === 0) {
@@ -65,6 +67,7 @@ export default function FeedbackModal({ isOpen, onClose, examTitle, examId }: Fe
         description: "Thank you for your valuable feedback."
       })
       handleCloseAndReset();
+      router.push(`/exams/${examId}/results`);
 
     } catch (error) {
        toast({
@@ -91,6 +94,7 @@ export default function FeedbackModal({ isOpen, onClose, examTitle, examId }: Fe
   const handleSkip = () => {
     setCookie(`feedback_submitted_${examId}`, 'true');
     handleCloseAndReset();
+    router.push(`/exams/${examId}/results`);
   }
 
   return (
