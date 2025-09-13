@@ -174,10 +174,6 @@ export default function LoginForm() {
                 <Facebook className="mr-2 h-5 w-5" />
                 Facebook
             </Button>
-             <Button variant="outline" type="button" className="flex-1 bg-gray-800 hover:bg-gray-900 text-white border-gray-900">
-                <Github className="mr-2 h-5 w-5" />
-                Github
-            </Button>
         </div>
       </form>
     </Form>
