@@ -34,7 +34,6 @@ export default function FeedbackModal({ isOpen, onClose, examTitle, examId }: Fe
   const [hoverRating, setHoverRating] = useState(0);
   const [feedback, setFeedback] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
 
@@ -61,14 +60,10 @@ export default function FeedbackModal({ isOpen, onClose, examTitle, examId }: Fe
       });
 
       setCookie(`feedback_submitted_${examId}`, 'true');
-      setIsSubmitted(true);
       toast({
-        title: "Feedback Submitted!",
-        description: "Thank you for your valuable feedback."
-      })
-      handleCloseAndReset();
-      router.push(`/exams/${examId}/results`);
-
+        title: "Data submitted",
+      });
+      handleCloseAndReset(true); // pass true to redirect
     } catch (error) {
        toast({
         variant: "destructive",
@@ -79,22 +74,23 @@ export default function FeedbackModal({ isOpen, onClose, examTitle, examId }: Fe
     }
   };
 
-  const handleCloseAndReset = () => {
+  const handleCloseAndReset = (shouldRedirect = false) => {
     onClose();
     // Use a timeout to avoid seeing the state reset before the dialog closes
     setTimeout(() => {
-        setIsSubmitted(false);
         setRating(0);
         setHoverRating(0);
         setFeedback('');
         setIsSubmitting(false);
+        if (shouldRedirect) {
+           router.push(`/exams/${examId}/results`);
+        }
     }, 300);
   }
   
   const handleSkip = () => {
     setCookie(`feedback_submitted_${examId}`, 'true');
-    handleCloseAndReset();
-    router.push(`/exams/${examId}/results`);
+    handleCloseAndReset(true); // pass true to redirect
   }
 
   return (
@@ -105,7 +101,7 @@ export default function FeedbackModal({ isOpen, onClose, examTitle, examId }: Fe
                     variant="ghost"
                     size="icon"
                     className="absolute top-2 right-2 z-10"
-                    onClick={handleCloseAndReset}
+                    onClick={() => handleCloseAndReset()}
                 >
                 <X className="h-4 w-4" />
                 </Button>
