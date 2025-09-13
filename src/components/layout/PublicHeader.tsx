@@ -15,6 +15,9 @@ import {
 } from '../ui/dropdown-menu';
 import { cn, getCookie } from '@/lib/utils';
 import { ModeToggle } from '../ModeToggle';
+import UserNav from './UserNav';
+import type { User as UserType } from '@/lib/types';
+
 
 const navItems = [
   { href: '/', label: 'Home' },
@@ -53,11 +56,16 @@ const desktopNavLinks = [
 const PublicHeader = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<UserType | null>(null);
 
   useEffect(() => {
     // Check login status from cookie
     const loggedInStatus = getCookie('user_loggedin');
+    const userDetails = getCookie('user_details');
     setIsLoggedIn(!!loggedInStatus);
+    if(loggedInStatus && userDetails) {
+        setUser(userDetails);
+    }
   }, []);
 
 
@@ -144,13 +152,8 @@ const PublicHeader = () => {
           <div className="flex items-center gap-2">
             <ModeToggle />
             <nav className="hidden md:flex items-center">
-                {isLoggedIn ? (
-                  <Button asChild variant="outline">
-                      <Link href="/dashboard">
-                        <User className="mr-2 h-4 w-4" />
-                        Profile
-                      </Link>
-                  </Button>
+                {isLoggedIn && user ? (
+                    <UserNav user={user} />
                 ) : (
                   <Button asChild>
                       <Link href="/login">Sign In</Link>

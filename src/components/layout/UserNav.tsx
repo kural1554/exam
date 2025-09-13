@@ -12,26 +12,44 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { mockUser } from '@/lib/mock-data';
+import type { User as UserType } from '@/lib/types';
 import Link from 'next/link';
-import { BookCopy, Home, LogOut, Settings, User } from 'lucide-react';
+import { BookCopy, Home, LogOut, Settings, User, GraduationCap } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { removeCookie } from '@/lib/utils';
+import { getCookie, removeCookie } from '@/lib/utils';
+import { useEffect, useState } from 'react';
 
-const UserNav = () => {
+const UserNav = ({ user: passedUser }: { user?: UserType }) => {
   const router = useRouter();
-  const user = mockUser;
+  const [user, setUser] = useState<UserType | null>(passedUser || null);
+
+  useEffect(() => {
+    if (!passedUser) {
+      const userDetails = getCookie('user_details');
+      if (userDetails) {
+        setUser(userDetails);
+      }
+    }
+  }, [passedUser]);
+
+  const handleLogout = () => {
+    removeCookie('user_loggedin');
+    removeCookie('user_details');
+    setUser(null);
+    router.push('/login');
+    // Force a reload to ensure header state is updated everywhere
+    router.refresh(); 
+  };
+    
+  if (!user) return null;
+
   const userInitials = user.name
     .split(' ')
     .map((n) => n[0])
     .join('');
 
-  const handleLogout = () => {
-    // In a real app, you'd handle logout logic here
-    removeCookie('user_loggedin');
-    router.push('/admin');
-  };
-    
+  const isAdmin = user.isAdmin;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -54,17 +72,19 @@ const UserNav = () => {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
            <DropdownMenuItem asChild>
-            <Link href="/dashboard">
-              <Home className="mr-2 h-4 w-4" />
+            <Link href={isAdmin ? "/admin" : "/dashboard"}>
+              {isAdmin ? <GraduationCap className="mr-2 h-4 w-4" /> : <Home className="mr-2 h-4 w-4" />}
               <span>Dashboard</span>
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href="/exams">
-              <BookCopy className="mr-2 h-4 w-4" />
-              <span>Exams</span>
-            </Link>
-          </DropdownMenuItem>
+          {!isAdmin && (
+            <DropdownMenuItem asChild>
+              <Link href="/exams">
+                <BookCopy className="mr-2 h-4 w-4" />
+                <span>Exams</span>
+              </Link>
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem asChild>
              <Link href="/settings">
               <Settings className="mr-2 h-4 w-4" />
