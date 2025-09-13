@@ -12,6 +12,7 @@ export type User = {
   state?: string;
   district?: string;
   avatarUrl?: string;
+  isAdmin?: boolean;
 };
 
 export type Exam = {

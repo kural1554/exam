@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import {
@@ -24,38 +25,42 @@ export default function AuthPopup({ isOpen, onOpenChange }: AuthPopupProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="sm:max-w-sm p-0 overflow-hidden"
+        className="sm:max-w-md p-0 overflow-hidden"
         onInteractOutside={(e) => {
+            // Prevent closing on outside click
             e.preventDefault();
         }}
         hideCloseButton={true}
         >
           <div className="relative h-40">
               <Image 
-                src="https://i.pinimg.com/564x/82/e7/28/82e7287b91acb66d6f024e07c98845b1.jpg"
+                src="https://i.pinimg.com/564x/e3/37/a9/e337a902f5a6396c21e67e3a95d70b92.jpg"
                 alt="Abstract background"
                 fill
                 className="object-cover"
-                data-ai-hint="woman leaves abstract"
+                data-ai-hint="leaves nature abstract"
               />
               <div className="absolute inset-0 bg-primary/40" />
           </div>
         <div className="p-6">
             <DialogHeader className="text-center items-center">
             <Logo />
-            <DialogTitle className="text-xl pt-2">Your Learning Journey Awaits</DialogTitle>
+            <DialogTitle className="text-xl pt-2">Join Examplify Today</DialogTitle>
             <DialogDescription className="text-center">
-                Sign in or create an account to save your progress and access all features.
+                Unlock your full potential. Sign up or log in to access all features and start your learning journey.
             </DialogDescription>
             </DialogHeader>
-            <DialogFooter className="mt-6 flex-row sm:flex-row sm:space-x-2 w-full gap-2">
-            <Button asChild variant="outline" className="flex-1">
-                <Link href="/login"><LogIn /> Log In</Link>
-            </Button>
-            <Button asChild className="flex-1">
-                <Link href="/signup"><UserPlus /> Sign Up</Link>
-            </Button>
-            </DialogFooter>
+            <div className="mt-6 flex flex-col space-y-2">
+              <Button asChild size="lg">
+                <Link href="/signup">
+                  Create an Account
+                  <UserPlus className="ml-2" />
+                </Link>
+              </Button>
+              <p className="text-center text-sm text-muted-foreground">
+                Already have an account? <Link href="/login" className="font-semibold text-primary hover:underline">Log In</Link>
+              </p>
+            </div>
         </div>
       </DialogContent>
     </Dialog>

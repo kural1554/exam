@@ -66,13 +66,15 @@ export default function LoginForm() {
       setIsLoading(false);
       
       const isAdmin = values.email === 'admin@gmail.com' && values.password === 'admin@123';
-      
+      const cookieOptions = values.rememberMe && !isAdmin ? { expires: 365 } : {};
+
       // Simulate successful login
-      setCookie('user_loggedin', 'true');
+      setCookie('user_loggedin', 'true', cookieOptions);
       setCookie('user_details', {
         name: isAdmin ? 'Admin User' : mockUser.name,
         email: isAdmin ? 'admin@gmail.com' : mockUser.email,
-      });
+        isAdmin: isAdmin,
+      }, cookieOptions);
       
       if (isAdmin) {
         toast({

@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import {
@@ -23,10 +24,12 @@ import {
   BookCopy,
 } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
+import { usePathname, useRouter } from 'next/navigation';
+import { cn, getCookie } from '@/lib/utils';
 import UserNav from '@/components/layout/UserNav';
 import { ModeToggle } from '@/components/ModeToggle';
+import { useEffect, useState } from 'react';
+import { Loader2 } from 'lucide-react';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: Home },
@@ -40,6 +43,27 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+    const isLoggedIn = getCookie('user_loggedin');
+    const userDetails = getCookie('user_details');
+    if (!isLoggedIn || userDetails?.isAdmin) {
+      router.push('/login');
+    }
+  }, [router]);
+
+  if (!isClient) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+
   return (
     <SidebarProvider>
       <Sidebar>
