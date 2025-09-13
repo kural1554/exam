@@ -14,7 +14,6 @@ export default function TakeExamLayout({
     const params = useParams();
     const { toast } = useToast();
     const { id: examId } = params;
-    const [isClient, setIsClient] = useState(false);
     const isSubmittingRef = useRef(false);
     
 
@@ -25,10 +24,12 @@ export default function TakeExamLayout({
             title: "Exam Terminated",
             description: "You exited fullscreen or switched tabs. Your exam session has ended.",
         });
-        // Use a timeout to allow the user to see the toast message before redirecting
+        if (document.fullscreenElement) {
+            document.exitFullscreen();
+        }
         setTimeout(() => {
             router.push(`/exams`);
-        }, 500);
+        }, 300);
     }, [router, toast]);
 
     const handleSubmitExam = useCallback(() => {
@@ -40,7 +41,6 @@ export default function TakeExamLayout({
     }, [router, examId]);
     
     useEffect(() => {
-        setIsClient(true);
         if (typeof window !== 'undefined') {
             document.documentElement.requestFullscreen().catch(err => {
                 console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
@@ -48,18 +48,17 @@ export default function TakeExamLayout({
         }
 
         const handleVisibilityChange = () => {
-            if (document.visibilityState === 'hidden') {
+            if (document.visibilityState === 'hidden' && !isSubmittingRef.current) {
                 handleQuitExam();
             }
         };
 
         const handleFullscreenChange = () => {
-            // Add a small delay to allow isSubmittingRef to be updated
             setTimeout(() => {
                 if (!document.fullscreenElement && !isSubmittingRef.current) {
                     handleQuitExam();
                 }
-            }, 100);
+            }, 200); 
         };
         
         document.addEventListener('visibilitychange', handleVisibilityChange);

@@ -47,9 +47,6 @@ export default function ExamTaker({ exam, questions: initialQuestions, onQuit, o
     onSubmit();
   }, [answers, exam, questions, initialQuestions, onSubmit]);
 
-  const handleQuitExam = useCallback(() => {
-      onQuit();
-  }, [onQuit]);
   
   useEffect(() => {
     const timer = setInterval(() => {
@@ -120,7 +117,7 @@ export default function ExamTaker({ exam, questions: initialQuestions, onQuit, o
 
   const handlePrevious = () => {
     if (currentIndex > 0) {
-      setCurrentIndex(currentIndex + 1);
+      setCurrentIndex(currentIndex - 1);
     }
   };
 
@@ -185,7 +182,7 @@ export default function ExamTaker({ exam, questions: initialQuestions, onQuit, o
                 <div>
                   <Button variant="outline" onClick={handlePrevious} disabled={currentIndex === 0}>Previous</Button>
                   <Button onClick={handleMarkForReview} variant="outline" className="ml-2">
-                    Mark for Review & Next
+                    Mark for Review &amp; Next
                   </Button>
                 </div>
                 <div className="flex items-center gap-2">
@@ -253,7 +250,7 @@ export default function ExamTaker({ exam, questions: initialQuestions, onQuit, o
                      <div className="mt-6 space-y-2">
                        <AlertDialog>
                           <AlertDialogTrigger asChild>
-                               <Button className="w-full">Submit & Finish</Button>
+                               <Button className="w-full">Submit &amp; Finish</Button>
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                               <AlertDialogHeader>
@@ -267,12 +264,12 @@ export default function ExamTaker({ exam, questions: initialQuestions, onQuit, o
                                   <AlertDialogAction 
                                       onClick={handleSubmit}
                                   >
-                                      Finish & View Results
+                                      Finish &amp; View Results
                                   </AlertDialogAction>
                               </AlertDialogFooter>
                           </AlertDialogContent>
                       </AlertDialog>
-                      <Button variant="destructive" className="w-full" onClick={handleQuitExam}>End Exam</Button>
+                      <Button variant="destructive" className="w-full" onClick={onQuit}>End Exam</Button>
                   </div>
                 </CardContent>
             </Card>

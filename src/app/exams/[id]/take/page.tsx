@@ -8,13 +8,12 @@ import { useEffect, useState } from 'react';
 import type { Exam, Question } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
 
-// The props are passed from the layout now
 interface TakeExamPageProps {
   onQuit: () => void;
   onSubmit: () => void;
 }
 
-export default function TakeExamPage({ params, ...props }: { params: { id: string } } & Partial<TakeExamPageProps>) {
+export default function TakeExamPage({ params, ...props }: { params: { id: string } } & TakeExamPageProps) {
   const [exam, setExam] = useState<Exam | null>(null);
   const [questions, setQuestions] = useState<Question[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -38,13 +37,12 @@ export default function TakeExamPage({ params, ...props }: { params: { id: strin
     notFound();
   }
 
-  // The layout passes the necessary props now, so we can assert them as non-partial.
   return (
     <ExamTaker 
         exam={exam} 
         questions={questions} 
-        onQuit={props.onQuit!}
-        onSubmit={props.onSubmit!}
+        onQuit={props.onQuit}
+        onSubmit={props.onSubmit}
     />
   );
 }
