@@ -79,9 +79,9 @@ export default function LoginForm() {
       } else {
         toast({
           title: "Login Successful",
-          description: "Welcome back! Redirecting to the home page.",
+          description: "Welcome back! Redirecting to your dashboard.",
         });
-        router.push('/admin');
+        router.push('/dashboard');
       }
     }, 1000);
   }
