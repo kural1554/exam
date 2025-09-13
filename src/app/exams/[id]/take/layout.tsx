@@ -16,7 +16,6 @@ export default function TakeExamLayout({
     const { id: examId } = params;
     const isSubmittingRef = useRef(false);
     
-
     const handleQuitExam = useCallback(() => {
         if (isSubmittingRef.current) return;
         isSubmittingRef.current = true;
@@ -31,22 +30,24 @@ export default function TakeExamLayout({
             document.exitFullscreen().catch(err => console.error("Failed to exit fullscreen:", err));
         }
         
-        // Use a timeout to ensure fullscreen exit completes before navigation
+        // Use a timeout to ensure state is updated before navigation
         setTimeout(() => {
             router.push(`/exams`);
-        }, 300);
+        }, 100);
+
     }, [router, toast]);
 
     const handleSubmitExam = useCallback(() => {
         if (isSubmittingRef.current) return;
         isSubmittingRef.current = true;
-         if (document.fullscreenElement) {
+        
+        if (document.fullscreenElement) {
             document.exitFullscreen().catch(err => console.error("Failed to exit fullscreen:", err));
         }
-         // Use a timeout to ensure fullscreen exit completes before navigation
-        setTimeout(() => {
-            router.push(`/exams/${examId}/results`);
-        }, 300);
+        
+        // Navigate immediately after setting the flag
+        router.push(`/exams/${examId}/results`);
+
     }, [router, examId]);
     
     useEffect(() => {
@@ -67,12 +68,14 @@ export default function TakeExamLayout({
         };
 
         const handleFullscreenChange = () => {
-            // A brief delay helps prevent race conditions, especially when submitting.
-            setTimeout(() => {
-                if (!document.fullscreenElement && !isSubmittingRef.current) {
-                    handleQuitExam();
-                }
-            }, 500); 
+            if (!document.fullscreenElement && !isSubmittingRef.current) {
+                // A very short delay to allow the submission flag to be set
+                setTimeout(() => {
+                    if (!isSubmittingRef.current) {
+                         handleQuitExam();
+                    }
+                }, 100);
+            }
         };
         
         document.addEventListener('visibilitychange', handleVisibilityChange);
