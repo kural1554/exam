@@ -1,9 +1,10 @@
+
 import Link from 'next/link';
 import Logo from '../Logo';
 import { Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
 
 const footerSections = {
-    'Company': [
+    'Quick Link': [
         { href: '/about', label: 'About us' },
         { href: '/contact', label: 'Contact support' },
         { href: '#', label: 'Blog' },
