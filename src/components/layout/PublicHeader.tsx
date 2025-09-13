@@ -18,7 +18,7 @@ import { ModeToggle } from '../ModeToggle';
 
 const navItems = [
   { href: '/', label: 'Home' },
-  { href: '/exams', label: 'Practice Exams' },
+  { href: '/exams', label: 'Exams' },
   { href: '/courses', label: 'Courses' },
   { href: '/syllabus', label: 'Syllabus' },
   { href: '/notification', label: 'Notification'},
@@ -42,7 +42,7 @@ const moreMenuItems = [
 
 const desktopNavLinks = [
     { href: '/', label: 'Home' },
-    { href: '/exams', label: 'Practice Exams' },
+    { href: '/exams', label: 'Exams' },
     { href: '/courses', label: 'Courses' },
     { href: '/syllabus', label: 'Syllabus' },
     { href: '/notification', label: 'Notification'},
