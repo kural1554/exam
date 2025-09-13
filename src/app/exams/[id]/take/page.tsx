@@ -13,7 +13,7 @@ interface TakeExamPageProps {
   onSubmit: () => void;
 }
 
-export default function TakeExamPage({ params, ...props }: { params: { id: string } } & TakeExamPageProps) {
+export default function TakeExamPage({ params, onQuit, onSubmit }: { params: { id: string } } & TakeExamPageProps) {
   const [exam, setExam] = useState<Exam | null>(null);
   const [questions, setQuestions] = useState<Question[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -41,8 +41,8 @@ export default function TakeExamPage({ params, ...props }: { params: { id: strin
     <ExamTaker 
         exam={exam} 
         questions={questions} 
-        onQuit={props.onQuit}
-        onSubmit={props.onSubmit}
+        onQuit={onQuit}
+        onSubmit={onSubmit}
     />
   );
 }

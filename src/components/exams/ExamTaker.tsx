@@ -32,7 +32,7 @@ export default function ExamTaker({ exam, questions: initialQuestions, onQuit, o
 
   const router = useRouter();
   
-  const handleSubmit = useCallback(() => {
+  const prepareAndSubmit = useCallback(() => {
     const finalAnswers: Answer[] = questions.map(q => {
       const userAnswer = answers.get(q.id)?.answer;
       // For language simulation, we check against the original question's correct answer
@@ -53,14 +53,14 @@ export default function ExamTaker({ exam, questions: initialQuestions, onQuit, o
       setTimeLeft(prev => {
         if (prev <= 1) {
           clearInterval(timer);
-          handleSubmit();
+          prepareAndSubmit();
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [handleSubmit]);
+  }, [prepareAndSubmit]);
 
   useEffect(() => {
     const translatedQuestions = initialQuestions.map(q => {
@@ -262,7 +262,7 @@ export default function ExamTaker({ exam, questions: initialQuestions, onQuit, o
                               <AlertDialogFooter>
                                   <AlertDialogCancel>Cancel</AlertDialogCancel>
                                   <AlertDialogAction 
-                                      onClick={handleSubmit}
+                                      onClick={prepareAndSubmit}
                                       className={cn(buttonVariants())}
                                   >
                                       Finish &amp; View Results
@@ -283,7 +283,7 @@ export default function ExamTaker({ exam, questions: initialQuestions, onQuit, o
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={onQuit}>End Exam</AlertDialogAction>
+                            <AlertDialogAction onClick={onQuit} className={cn(buttonVariants({ variant: 'destructive' }))}>End Exam</AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
                       </AlertDialog>
