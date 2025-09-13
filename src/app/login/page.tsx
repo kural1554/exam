@@ -14,7 +14,7 @@ import Footer from "@/components/layout/Footer";
 export default function LoginPage() {
   return (
     <div className="flex flex-col min-h-screen">
-      {/*
+      
       <PublicHeader />
       <main className="flex-1">
         <div className="grid grid-cols-1 md:grid-cols-2">
@@ -65,7 +65,7 @@ export default function LoginPage() {
         </div>
       </main>
       <Footer />
-      */}
+      
     </div>
   );
 }
