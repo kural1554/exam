@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from 'next/navigation';
-import { Loader2, User, Mail, Lock, CalendarIcon, Phone } from "lucide-react";
+import { Loader2, User, Mail, Lock, CalendarIcon, Phone, Facebook, Github } from "lucide-react";
 import React from "react";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -25,6 +25,7 @@ import { Calendar } from "../ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import Link from "next/link";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -110,10 +111,7 @@ export default function SignupForm() {
                 <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                    <div className="relative">
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                        <Input placeholder="Your Name" {...field} className="pl-10"/>
-                    </div>
+                    <Input placeholder="Your Name" {...field} />
                 </FormControl>
                 <FormMessage />
                 </FormItem>
@@ -126,10 +124,7 @@ export default function SignupForm() {
                 <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                    <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                        <Input placeholder="you@example.com" {...field} className="pl-10"/>
-                    </div>
+                    <Input placeholder="you@example.com" {...field} />
                 </FormControl>
                 <FormMessage />
                 </FormItem>
@@ -144,10 +139,7 @@ export default function SignupForm() {
                 <FormItem>
                 <FormLabel>Phone Number</FormLabel>
                 <FormControl>
-                    <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                        <Input placeholder="Your Phone Number" {...field} className="pl-10"/>
-                    </div>
+                    <Input placeholder="Your Phone Number" {...field} />
                 </FormControl>
                 <FormMessage />
                 </FormItem>
@@ -242,8 +234,7 @@ export default function SignupForm() {
                 )}
             />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
+        <FormField
             control={form.control}
             name="district"
             render={({ field }) => (
@@ -255,7 +246,8 @@ export default function SignupForm() {
                 <FormMessage />
                 </FormItem>
             )}
-            />
+        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
             control={form.control}
             name="password"
@@ -263,17 +255,12 @@ export default function SignupForm() {
                 <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                    <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                        <Input type="password" placeholder="••••••••" {...field} className="pl-10"/>
-                    </div>
+                    <Input type="password" placeholder="••••••••" {...field} />
                 </FormControl>
                 <FormMessage />
                 </FormItem>
             )}
             />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
             control={form.control}
             name="confirmPassword"
@@ -281,10 +268,7 @@ export default function SignupForm() {
                 <FormItem>
                 <FormLabel>Confirm Password</FormLabel>
                 <FormControl>
-                    <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                        <Input type="password" placeholder="••••••••" {...field} className="pl-10"/>
-                    </div>
+                    <Input type="password" placeholder="••••••••" {...field} />
                 </FormControl>
                 <FormMessage />
                 </FormItem>
@@ -325,26 +309,36 @@ export default function SignupForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full !mt-6" disabled={isLoading}>
+        <Button type="submit" className="w-full !mt-6 bg-green-500 hover:bg-green-600 text-white" disabled={isLoading}>
           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Create Account
+          Sign up
         </Button>
 
-        <div className="relative my-4">
+        <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">
-                Or continue with
+                <span className="bg-card px-2 text-muted-foreground">
+                Or Sign up with
                 </span>
             </div>
         </div>
 
-        <Button variant="outline" type="button" className="w-full" disabled={isLoading}>
-            <GoogleIcon className="mr-2 h-5 w-5" />
-            Continue with Google
-        </Button>
+        <div className="flex flex-col sm:flex-row gap-2">
+            <Button variant="outline" type="button" className="flex-1 bg-red-600 hover:bg-red-700 text-white border-red-700">
+                <GoogleIcon className="mr-2 h-5 w-5" />
+                Google
+            </Button>
+             <Button variant="outline" type="button" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white border-blue-700">
+                <Facebook className="mr-2 h-5 w-5" />
+                Facebook
+            </Button>
+             <Button variant="outline" type="button" className="flex-1 bg-gray-800 hover:bg-gray-900 text-white border-gray-900">
+                <Github className="mr-2 h-5 w-5" />
+                Github
+            </Button>
+        </div>
       </form>
     </Form>
   );

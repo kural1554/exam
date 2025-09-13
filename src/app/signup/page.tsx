@@ -4,59 +4,42 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import Logo from "@/components/Logo";
 import SignupForm from "@/components/auth/SignupForm";
 import Image from "next/image";
-import PublicHeader from "@/components/layout/PublicHeader";
-import Footer from "@/components/layout/Footer";
 
 export default function SignupPage() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <PublicHeader />
-      <main className="flex-1">
-        <div className="grid grid-cols-1 md:grid-cols-2">
-          <div className="flex flex-col items-center justify-center bg-background p-8 min-h-[calc(100vh-128px)]">
-              <div className="w-full max-w-2xl">
-                  <div className="text-center mb-8">
-                      <Link href="/" className="inline-block">
-                          <Logo />
-                      </Link>
-                  </div>
-                  <Card>
-                    <CardHeader className="text-center p-6">
-                      <CardTitle className="text-2xl">Create an Account</CardTitle>
-                      <CardDescription>
-                        Start your learning journey with Examplify.
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <SignupForm />
-                      <div className="mt-4 text-center text-sm">
-                        Already have an account?{" "}
-                        <Link href="/login" className="underline text-primary">
-                          Log in
-                        </Link>
-                      </div>
-                    </CardContent>
-                  </Card>
-              </div>
-          </div>
-          <div className="hidden md:block relative min-h-[calc(100vh-128px)]">
-              <Image 
-                  src="https://placehold.co/800x1200" 
-                  alt="Learning Journey"
-                  fill
-                  className="object-cover"
-                  data-ai-hint="students learning library"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent flex flex-col justify-end p-12 text-white">
-                  <div className="w-full max-w-md">
-                      <h1 className="text-5xl font-bold leading-tight">Begin Your Success Story</h1>
-                      <p className="text-lg mt-4">Join a community of learners and achievers. Your path to excellence starts here.</p>
-                  </div>
-              </div>
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900 p-4">
+      <div className="relative flex w-full max-w-6xl m-4 h-auto lg:h-[800px] overflow-hidden rounded-2xl shadow-2xl bg-card">
+        {/* Left side with illustration */}
+        <div className="hidden md:flex md:w-1/2 items-center justify-center bg-primary-dark p-12">
+            <div className="text-white text-center">
+                <h1 className="text-4xl font-bold mb-4">Begin Your Success Story</h1>
+                <p className="text-lg text-primary-foreground/80 mb-8">Join a community of learners and achievers. Your path to excellence starts here.</p>
+                <div className="relative w-full h-96">
+                    <Image
+                    src="https://i.pinimg.com/564x/82/e7/28/82e7287b91acb66d6f024e07c98845b1.jpg"
+                    alt="Illustration of a person with leaves"
+                    fill
+                    className="object-contain"
+                    data-ai-hint="woman leaves abstract"
+                    />
+                </div>
+            </div>
+        </div>
+
+        {/* Right side with the form */}
+        <div className="w-full md:w-1/2 p-6 sm:p-12 flex flex-col justify-center bg-card overflow-y-auto">
+          <div className="w-full max-w-md mx-auto">
+            <h1 className="text-3xl font-bold mb-6 text-foreground">Create an Account</h1>
+            <SignupForm />
+             <div className="mt-4 text-center text-sm">
+                Already have an account?{" "}
+                <Link href="/login" className="underline text-primary">
+                Log in
+                </Link>
+            </div>
           </div>
         </div>
-      </main>
-      <Footer />
+      </div>
     </div>
   );
 }
