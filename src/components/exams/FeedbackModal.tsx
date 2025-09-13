@@ -5,11 +5,12 @@ import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Star, Loader2 } from 'lucide-react';
+import { Star, Loader2, Smile, Frown, Meh, Angry, Laugh } from 'lucide-react';
 import { cn, getCookie } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { submitFeedback } from '@/services/api';
 import type { User } from '@/lib/types';
+import Image from 'next/image';
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -17,8 +18,17 @@ interface FeedbackModalProps {
   examTitle: string;
 }
 
+const ratingOptions = [
+    { rating: 1, label: 'Very Bad', icon: Angry },
+    { rating: 2, label: 'Bad', icon: Frown },
+    { rating: 3, label: 'Average', icon: Meh },
+    { rating: 4, label: 'Good', icon: Smile },
+    { rating: 5, label: 'Excellent', icon: Laugh },
+]
+
 export default function FeedbackModal({ isOpen, onClose, examTitle }: FeedbackModalProps) {
   const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
   const [feedback, setFeedback] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -47,14 +57,19 @@ export default function FeedbackModal({ isOpen, onClose, examTitle }: FeedbackMo
       });
 
       setIsSubmitted(true);
+      toast({
+        title: "Feedback Submitted!",
+        description: "Thank you for your valuable feedback."
+      })
+      handleCloseAndReset();
+
     } catch (error) {
        toast({
         variant: "destructive",
         title: "Submission Failed",
         description: "Could not submit your feedback. Please try again.",
       });
-    } finally {
-        setIsSubmitting(false);
+       setIsSubmitting(false);
     }
   };
 
@@ -64,66 +79,70 @@ export default function FeedbackModal({ isOpen, onClose, examTitle }: FeedbackMo
     setTimeout(() => {
         setIsSubmitted(false);
         setRating(0);
+        setHoverRating(0);
         setFeedback('');
+        setIsSubmitting(false);
     }, 300);
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleCloseAndReset()}>
-      <DialogContent className="sm:max-w-[425px]" onInteractOutside={(e) => e.preventDefault()}>
-        {!isSubmitted ? (
-          <>
-            <DialogHeader>
-              <DialogTitle>How would you rate your experience?</DialogTitle>
-              <DialogDescription>
-                Your feedback helps us improve the exam experience for everyone.
-              </DialogDescription>
+      <DialogContent className="sm:max-w-md p-0" onInteractOutside={(e) => e.preventDefault()}>
+            <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-2 right-2 z-10"
+                onClick={handleCloseAndReset}
+            >
+               <Dialog.Close />
+            </Button>
+            <DialogHeader className="p-6 items-center text-center">
+                 <Image src="https://i.pinimg.com/564x/e3/37/a9/e337a902f5a6396c21e67e3a95d70b92.jpg" alt="Feedback illustration" width={120} height={120} data-ai-hint="feedback illustration" />
+                 <DialogTitle className="text-xl pt-2">Rate this test</DialogTitle>
+                 <DialogDescription>
+                    We would love to know how was your experience with this test?
+                </DialogDescription>
             </DialogHeader>
-            <div className="py-4 space-y-4">
-              <div className="flex justify-center items-center gap-2">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <button key={star} onClick={() => setRating(star)} disabled={isSubmitting}>
-                    <Star
+            <div className="px-6 pb-6 space-y-6">
+              <div className="flex justify-center items-center gap-4">
+                {ratingOptions.map((option) => (
+                  <button 
+                    key={option.rating} 
+                    onClick={() => setRating(option.rating)} 
+                    onMouseEnter={() => setHoverRating(option.rating)}
+                    onMouseLeave={() => setHoverRating(0)}
+                    disabled={isSubmitting}
+                    className="flex flex-col items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    <option.icon
                       className={cn(
-                        'h-8 w-8 cursor-pointer transition-colors',
-                        star <= rating
-                          ? 'text-yellow-400 fill-yellow-400'
-                          : 'text-muted-foreground/50'
+                        'h-8 w-8 cursor-pointer transition-all',
+                        option.rating <= (hoverRating || rating)
+                          ? 'text-yellow-400 scale-110'
+                          : ''
                       )}
                     />
+                     <span className="text-xs font-medium">{option.label}</span>
                   </button>
                 ))}
               </div>
               <Textarea
-                placeholder="Tell us more..."
+                placeholder="Share your experience or suggestions..."
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
                 disabled={isSubmitting}
+                className="min-h-[100px]"
               />
             </div>
-            <DialogFooter>
-              <Button type="submit" onClick={handleSubmit} disabled={isSubmitting}>
-                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Send
-              </Button>
+            <DialogFooter className="px-6 pb-6 sm:justify-center flex-col-reverse sm:flex-col-reverse gap-2 w-full">
+                <Button variant="link" size="sm" onClick={handleCloseAndReset} disabled={isSubmitting} className="text-muted-foreground">
+                    Rate Later
+                </Button>
+                <Button type="submit" onClick={handleSubmit} disabled={isSubmitting} className="w-full sm:w-auto">
+                    {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Submit
+                </Button>
             </DialogFooter>
-          </>
-        ) : (
-          <>
-            <DialogHeader>
-                <DialogTitle className="text-center text-2xl">Thank You!</DialogTitle>
-                <DialogDescription className="text-center">
-                    Your feedback has been submitted successfully.
-                </DialogDescription>
-            </DialogHeader>
-            <div className="py-4 text-center">
-                <p>You can now view your results.</p>
-            </div>
-             <DialogFooter>
-              <Button onClick={handleCloseAndReset}>Close</Button>
-            </DialogFooter>
-          </>
-        )}
       </DialogContent>
     </Dialog>
   );

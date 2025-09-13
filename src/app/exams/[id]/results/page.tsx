@@ -32,7 +32,9 @@ export default function ResultsPage() {
       if (storedResults) {
         setResults(storedResults);
         if (!feedbackDone) {
-          setIsFeedbackModalOpen(true);
+          // Open the feedback modal after a short delay to allow the page to render
+          const timer = setTimeout(() => setIsFeedbackModalOpen(true), 500);
+          return () => clearTimeout(timer);
         } else {
             setShowResults(true);
         }
@@ -67,7 +69,8 @@ export default function ResultsPage() {
         </div>
     );
   }
-
+  
+  // Always render ExamResults, but control its visibility
   return (
     <>
       <FeedbackModal 
@@ -75,18 +78,18 @@ export default function ResultsPage() {
         onClose={handleFeedbackClose}
         examTitle={results.exam.title}
       />
-      {showResults ? (
-         <ExamResults
+      <div style={{ visibility: showResults ? 'visible' : 'hidden' }}>
+        <ExamResults
             answers={results.answers}
             exam={results.exam}
             questions={results.questions}
         />
-      ) : (
+      </div>
+       {!showResults && (
         <div className="flex items-center justify-center min-h-[50vh]">
             <Card className="p-8 text-center">
                 <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
-                <h1 className="text-2xl font-bold">Waiting for feedback...</h1>
-                <p className="text-muted-foreground">Please complete the feedback form to view your results.</p>
+                <h1 className="text-2xl font-bold">Preparing your results...</h1>
             </Card>
         </div>
       )}
