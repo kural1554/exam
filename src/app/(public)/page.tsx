@@ -1,10 +1,15 @@
 
+'use client';
+
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { mockExams } from '@/lib/mock-data';
 import { ArrowRight, CheckCircle, Star } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { getCookie } from '@/lib/utils';
+import AuthPopup from '@/components/auth/AuthPopup';
 
 const features = [
   {
@@ -51,9 +56,23 @@ const testimonials = [
 ];
 
 export default function HomePage() {
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  useEffect(() => {
+    const isLoggedIn = getCookie('user_loggedin');
+    if (!isLoggedIn) {
+      const timer = setTimeout(() => {
+        setIsPopupOpen(true);
+      }, 10000); // 10 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
   return (
     <div className="flex flex-col min-h-[calc(100vh-4rem)]">
       <main className="flex-1">
+        <AuthPopup isOpen={isPopupOpen} onOpenChange={setIsPopupOpen} />
         {/* Hero Section */}
         <section className="relative h-[60vh] md:h-[80vh] flex items-center justify-center text-center">
             <Image 
