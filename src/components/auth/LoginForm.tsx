@@ -170,10 +170,6 @@ export default function LoginForm() {
                 <GoogleIcon className="mr-2 h-5 w-5" />
                 Google
             </Button>
-             <Button variant="outline" type="button" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white border-blue-700">
-                <Facebook className="mr-2 h-5 w-5" />
-                Facebook
-            </Button>
         </div>
       </form>
     </Form>
