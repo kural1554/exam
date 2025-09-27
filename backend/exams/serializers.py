@@ -40,7 +40,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 class ExamSerializer(serializers.ModelSerializer):
     
-    questions = QuestionSerializer(many=True)
+    questions = QuestionSerializer(many=True, default=[])
 
     class Meta:
         model = Exam
@@ -54,11 +54,17 @@ class ExamSerializer(serializers.ModelSerializer):
         ]
 
         read_only_fields = ['generated_exam_name', 'created_at','question_count', 'total_marks']
-
+        
+        extra_kwargs = {
+            'difficulty': {'required': False, 'allow_null': True, 'allow_blank': True},
+            'sub_category_ref': {'required': False, 'allow_null': True},
+            'child_category_ref': {'required': False, 'allow_null': True},
+            # You can add others here if they are also optional
+        }
 
     def create(self, validated_data):
 
-        questions_data = validated_data.pop('questions')
+        questions_data = validated_data.pop('questions',[])
         
         num_questions = len(questions_data)
         
@@ -83,6 +89,35 @@ class ExamSerializer(serializers.ModelSerializer):
                 Option.objects.create(question=question, **option_data)
                 
         return exam
+    
+    def update(self, instance, validated_data):
+        # 1. Pop the nested questions data
+        questions_data = validated_data.pop('questions', [])
+
+        # 2. Update the simple fields on the Exam instance
+        # super().update() handles this efficiently
+        instance = super().update(instance, validated_data)
+
+        # 3. Handle the nested questions: Delete old and create new
+        # This is a simple and robust strategy for updates.
+        instance.questions.all().delete() # Deletes all old questions and their options (due to CASCADE)
+
+        total_exam_marks = 0
+        for question_data in questions_data:
+            options_data = question_data.pop('options')
+            total_exam_marks += question_data.get('marks', 1)
+            question = Question.objects.create(exam=instance, **question_data)
+            
+            # Create the new options for this question
+            for option_data in options_data:
+                Option.objects.create(question=question, **option_data)
+        
+        # 4. Recalculate and save the counts and marks for the instance
+        instance.question_count = len(questions_data)
+        instance.total_marks = total_exam_marks
+        instance.save()
+
+        return instance
     
 class ExamListSerializer(serializers.ModelSerializer):
     """

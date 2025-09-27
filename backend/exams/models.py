@@ -50,7 +50,7 @@ class Exam(models.Model):
         ('archived', 'Archived'), # This will be our "soft deleted" status
     )
    
-    difficulty = models.CharField(max_length=20) # From "Select difficulty"
+    difficulty = models.CharField(max_length=20,blank=True, null=True) # From "Select difficulty"
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
     is_deleted = models.BooleanField(default=False)
     description = models.TextField(blank=True, null=True)
@@ -62,7 +62,7 @@ class Exam(models.Model):
     negative_mark = models.DecimalField(
         max_digits=4, 
         decimal_places=2, 
-        default=0.25,
+        default=0.0,
         help_text="Mark to be deducted for each wrong answer (e.g., 0.25)."
     )
     # SEO for Exam
