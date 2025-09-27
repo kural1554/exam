@@ -127,3 +127,31 @@ export type NewChildCategory = {
     name: string;
     rowOrder: number;
 }
+export type ExamListItem = {
+  id: number;
+  exam_name: string;
+  category: string;
+  question_count: number;
+  status: 'published' | 'draft' | 'archived';
+  created_at: string; // The date will come as a string
+};
+
+export type FullExamData = {
+  id: number;
+  generated_exam_name: string;
+  description: string;
+  time_limit_minutes: number;
+  question_count: number;
+  total_marks: number;
+  negative_mark: number;
+  status: string;
+  questions: {
+    id: number;
+    question_text: string;
+    options: {
+      id: number;
+      option_text: string;
+      is_correct: boolean;
+    }[];
+  }[];
+};

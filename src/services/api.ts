@@ -1,107 +1,259 @@
-
-
 /**
- * @file This file contains mock API functions to simulate fetching data.
- * In a real application, these would be replaced with actual API calls to a backend.
+ * @file This is the COMPLETE API service file.
+ * It contains functions for every single endpoint provided in the API documentation.
  */
 
-import { mockExams, mockQuestions, mockUser, mockPerformanceData, mockCourses, mockFeedback } from '@/lib/mock-data';
 import type { Exam, Question, User, ExamAttempt, Course, Feedback } from '@/lib/types';
 
-// Simulate network delay
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+// Unga DRF API oda base URL
+const API_BASE_URL = 'http://127.0.0.1:8000';
 
-export const getExams = async (): Promise<Exam[]> => {
-  await delay(300);
-  return mockExams;
+
+const getAuthHeaders = (): Record<string, string> => {
+    const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+    };
+    
+    // localStorage browser la mattum thaan irukum, so oru chinna check
+    if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('accessToken'); // 'accessToken' unga token key ah maathikonga
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+    }
+    
+    return headers;
 };
 
-export const getExamById = async (id: string): Promise<Exam | undefined> => {
-  await delay(200);
-  return mockExams.find(exam => exam.id === id);
+
+// --- 1. Authentication & User Management ---
+
+export const registerUser = async (userData: any) => {
+    const response = await fetch(`${API_BASE_URL}/api/users/register/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData),
+    });
+    return response;
 };
 
-export const getQuestionsForExam = async (examId: string): Promise<Question[]> => {
-  await delay(400);
-  return mockQuestions.filter(q => q.examId === examId);
+export const verifyEmail = async (uid64: string, token: string) => {
+    const response = await fetch(`${API_BASE_URL}/api/users/verify-email/${uid64}/${token}/`);
+    if (!response.ok){ const errorData = await response.json();
+        throw new Error(errorData.error ||'Email verification failed');}
+    return response.json();
 };
 
-export const getUser = async (id: string): Promise<User | undefined> => {
-    await delay(100);
-    // In a real app, you would fetch the user by id.
-    // For this mock, we'll just return the single mockUser.
-    return mockUser;
-}
-
-export const getPerformanceData = async (userId: string): Promise<ExamAttempt[]> => {
-    await delay(500);
-    // Filter by userId if you had multiple users' data
-    return mockPerformanceData;
-}
-
-export const getCourses = async (): Promise<Course[]> => {
-    await delay(300);
-    return mockCourses;
-}
-
-const states = ["Tamil Nadu", "Kerala", "Karnataka", "Andhra Pradesh"];
-const districtsByState: Record<string, string[]> = {
-    "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai"],
-    "Kerala": ["Kochi", "Trivandrum", "Kozhikode"],
-    "Karnataka": ["Bengaluru", "Mysuru", "Mangaluru"],
-    "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur"]
+export const loginUser = async (credentials: any) => {
+    const response = await fetch(`${API_BASE_URL}/api/users/login/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials),
+    });
+    if (!response.ok) throw new Error('Login failed');
+    return await response.json();
 };
-const genders: ('male' | 'female' | 'other')[] = ['male', 'female', 'other'];
 
-export const getAllUsers = async (): Promise<User[]> => {
-    await delay(300);
-    // Returning a list of mock users based on mock data
-     const users: Omit<User, 'id'>[] = [
-        { name: 'John Doe', email: 'johndoe12@email.com', avatarUrl: "https://placehold.co/100x100?text=JD" },
-        { name: 'Abizar Alghifary', email: 'abizar33@email.com', avatarUrl: "https://placehold.co/100x100?text=AA" },
-        { name: 'Raffi Ahmad', email: 'raffiahmad@email.com', avatarUrl: "https://placehold.co/100x100?text=RA" },
-        { name: 'Putri Amaliah', email: 'putri211099@email.com', avatarUrl: "https://placehold.co/100x100?text=PA" },
-        { name: 'Zheperd Edward', email: 'zheperd77@email.com', avatarUrl: "https://placehold.co/100x100?text=ZE" },
-        { name: 'Exel Sudarso', email: 'exelbd99@email.com', avatarUrl: "https://placehold.co/100x100?text=ES" },
-        { name: 'Edward Newgate', email: 'sirohigeprts@email.com', avatarUrl: "https://placehold.co/100x100?text=EN" },
-        { name: 'Jack Sparrow', email: 'jacksparrow@email.com', avatarUrl: "https://placehold.co/100x100?text=JS" },
-        { name: 'Peter Parker', email: 'peterparker@email.com', avatarUrl: "https://placehold.co/100x100?text=PP" },
-        { name: 'Zuki Kato', email: 'zukizuki@email.com', avatarUrl: "https://placehold.co/100x100?text=ZK" },
-    ];
+export const requestPasswordReset = async (email: string) => {
+    const response = await fetch(`${API_BASE_URL}/api/users/password-reset-request/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+    });
+    return response;
+};
 
-    return users.map((u, index) => {
-      const state = states[index % states.length];
-      const district = districtsByState[state][index % districtsByState[state].length];
-      const gender = genders[index % genders.length];
-      return {
-        ...u,
-        id: `user-${index+1}`,
-        phone: `987654321${index}`,
-        gender,
-        state,
-        district,
-        dob: new Date(`199${index}-0${(index%9)+1}-1${index%3}`)
-      } as User;
+export const confirmPasswordReset = async (resetData: any) => {
+    const response = await fetch(`${API_BASE_URL}/api/users/password-reset-confirm/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(resetData),
+    });
+    return response;
+};
+
+
+// --- 2. Admin: Category Management ---
+
+export const getCategories = async () => {
+    console.log("Calling getCategories with headers"); // Add for debugging
+    return fetch(`${API_BASE_URL}/api/exams/categories/`, { headers: getAuthHeaders() }).then(res => res.json());
+};
+
+export const getCategoryById = async (id: string) => fetch(`${API_BASE_URL}/api/exams/categories/${id}/`, { headers: getAuthHeaders() }).then(res => res.json());
+
+export const createCategory = async (data: any) => fetch(`${API_BASE_URL}/api/exams/categories/`, { method: 'POST', headers: getAuthHeaders(), body: JSON.stringify(data) }).then(res => res.json());
+
+export const updateCategory = async (id: number, data: { name: string; exam_title: number }): Promise<Response> => {
+    return fetch(`${API_BASE_URL}/api/exams/categories/${id}/`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(data)
     });
 };
 
-// MOCK FEEDBACK API
-export const getFeedback = async (): Promise<Feedback[]> => {
-    await delay(500);
-    // Return a copy and sort by most recent
-    return [...mockFeedback].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+export const deleteCategory = async (id: number): Promise<Response> => {
+    return fetch(`${API_BASE_URL}/api/exams/categories/${id}/`, {
+        method: 'DELETE',
+        headers: getAuthHeaders()
+    });
+};
+// --- 3. Admin: Child Category Management ---
+
+export const getChildCategories = async () => fetch(`${API_BASE_URL}/api/exams/childcategories/`, { headers: getAuthHeaders() }).then(res => res.json());
+export const getChildCategoryById = async (id: string) => fetch(`${API_BASE_URL}/api/exams/childcategories/${id}/`, { headers: getAuthHeaders() }).then(res => res.json());
+export const createChildCategory = async (data: any) => fetch(`${API_BASE_URL}/api/exams/childcategories/`, { method: 'POST', headers: getAuthHeaders(), body: JSON.stringify(data) }).then(res => res.json());
+export const updateChildCategory = async (id: number, data: { name: string; sub_category: number }): Promise<Response> => {
+    return fetch(`${API_BASE_URL}/api/exams/childcategories/${id}/`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(data)
+    });
 };
 
-export const submitFeedback = async (data: Omit<Feedback, 'id' | 'date'>): Promise<Feedback> => {
-    await delay(300);
-    console.log('Simulating feedback submission:', data);
-    const newFeedback: Feedback = {
-        ...data,
-        id: `feedback-${Date.now()}`,
-        date: new Date().toISOString(),
-    };
-    // In a real app, this would be an API call. Here we just log it.
-    // We add it to the mock array to have it available for the admin panel.
-    mockFeedback.push(newFeedback); 
-    return newFeedback;
+export const deleteChildCategory = async (id: number): Promise<Response> => {
+    return fetch(`${API_BASE_URL}/api/exams/childcategories/${id}/`, {
+        method: 'DELETE',
+        headers: getAuthHeaders()
+    });
+};
+
+// --- 4. Admin: Subcategory Management ---
+
+export const getSubcategories = async () => fetch(`${API_BASE_URL}/api/exams/subcategories/`, { headers: getAuthHeaders() }).then(res => res.json());
+export const getSubcategoryById = async (id: string) => fetch(`${API_BASE_URL}/api/exams/subcategories/${id}/`, { headers: getAuthHeaders() }).then(res => res.json());
+export const createSubcategory = async (data: any) => fetch(`${API_BASE_URL}/api/exams/subcategories/`, { method: 'POST', headers: getAuthHeaders(), body: JSON.stringify(data) }).then(res => res.json());
+export const updateSubcategory = async (id: number, data: { name: string; category: number }): Promise<Response> => {
+    return fetch(`${API_BASE_URL}/api/exams/subcategories/${id}/`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(data)
+    });
+};
+
+export const deleteSubcategory = async (id: number): Promise<Response> => {
+    return fetch(`${API_BASE_URL}/api/exams/subcategories/${id}/`, {
+        method: 'DELETE',
+        headers: getAuthHeaders()
+    });
+};
+
+// --- 5. Admin: Title Management ---
+
+export const getExamTitles = async () => {
+    console.log("Calling getExamTitles with headers"); // Add for debugging
+    return fetch(`${API_BASE_URL}/api/exams/titles/`, { headers: getAuthHeaders() }).then(res => res.json());
+};
+export const getExamTitleById = async (id: string) => fetch(`${API_BASE_URL}/api/exams/titles/${id}/`, { headers: getAuthHeaders() }).then(res => res.json());
+export const createExamTitle = async (data: any) => fetch(`${API_BASE_URL}/api/exams/titles/`, { method: 'POST', headers: getAuthHeaders(), body: JSON.stringify(data) }).then(res => res.json());
+
+
+export const updateExamTitle = async (id: number, data: { name: string; row_order: number }): Promise<Response> => {
+    return fetch(`${API_BASE_URL}/api/exams/titles/${id}/`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(data)
+    });
+};
+export const deleteExamTitle = async (id: number): Promise<Response> => {
+    return fetch(`${API_BASE_URL}/api/exams/titles/${id}/`, { 
+        method: 'DELETE', 
+        headers: getAuthHeaders() 
+    });
+};
+
+// --- 6. Admin: Exam Management ---
+export const getExamsForAdmin = async () => {
+    return fetch(`${API_BASE_URL}/api/exams/manage-exams/`, { 
+        headers: getAuthHeaders() 
+    }).then(res => res.json());
+};
+export const getExamByIdForAdmin = async (id: number | string) => {
+    return fetch(`${API_BASE_URL}/api/exams/manage-exams/${id}/`, { 
+        headers: getAuthHeaders() 
+    }).then(res => res.json());
+};
+export const createExam = async (examData: any) => {
+    const response = await fetch(`${API_BASE_URL}/api/exams/manage-exams/`, { 
+        method: 'POST', 
+        headers: getAuthHeaders(), 
+        body: JSON.stringify(examData) 
+    });
+    if (!response.ok) {
+        // This makes error handling easier on the component side
+        const errorData = await response.json();
+        throw new Error(JSON.stringify(errorData));
+    }
+    return response.json();
+};
+export const updateExam = async (id: number | string, examData: any) => {
+    const response = await fetch(`${API_BASE_URL}/api/exams/manage-exams/${id}/`, { 
+        method: 'PUT', 
+        headers: getAuthHeaders(), 
+        body: JSON.stringify(examData) 
+    });
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(JSON.stringify(errorData));
+    }
+    return response.json();
+};
+export const patchExam = async (id: number | string, partialData: any) => {
+    const response = await fetch(`${API_BASE_URL}/api/exams/manage-exams/${id}/`, { 
+        method: 'PATCH', 
+        headers: getAuthHeaders(), 
+        body: JSON.stringify(partialData) 
+    });
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(JSON.stringify(errorData));
+    }
+    return response.json();
+};
+export const deleteExam = async (id: number | string) => {
+    const response = await fetch(`${API_BASE_URL}/api/exams/manage-exams/${id}/`, { 
+        method: 'DELETE', 
+        headers: getAuthHeaders() 
+    });
+    // DELETE often returns a 204 No Content, so we don't try to .json() it
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(JSON.stringify(errorData));
+    }
+    return response; // Return the whole response object
+};
+
+// --- 7. Student: Taking Exams ---
+
+export const getStudentExams = async () => fetch(`${API_BASE_URL}/api/exams/student/exams/`, { headers: getAuthHeaders() }).then(res => res.json());
+export const getStudentExamDetails = async (id: string) => fetch(`${API_BASE_URL}/api/exams/student/exams/${id}/`, { headers: getAuthHeaders() }).then(res => res.json());
+export const startStudentExam = async (id: string) => fetch(`${API_BASE_URL}/api/exams/student/exams/${id}/start/`, { headers: getAuthHeaders() }).then(res => res.json());
+export const submitStudentExam = async (id: string, answers: any) => fetch(`${API_BASE_URL}/api/exams/student/exams/${id}/submit/`, { method: 'POST', headers: getAuthHeaders(), body: JSON.stringify(answers) }).then(res => res.json());
+
+
+// --- 8. Results and Feedback ---
+
+export const getStudentResults = async () => fetch(`${API_BASE_URL}/api/exams/student/results/`, { headers: getAuthHeaders() }).then(res => res.json());
+export const getStudentResultById = async (id: string) => fetch(`${API_BASE_URL}/api/exams/student/results/${id}/`, { headers: getAuthHeaders() }).then(res => res.json());
+export const getAdminFeedback = async () => fetch(`${API_BASE_URL}/api/results/admin/feedback/`, { headers: getAuthHeaders() }).then(res => res.json());
+export const getAdminFeedbackById = async (id: string) => fetch(`${API_BASE_URL}/api/results/admin/feedback/${id}/`, { headers: getAuthHeaders() }).then(res => res.json());
+export const submitStudentFeedback = async (data: any) => fetch(`${API_BASE_URL}/api/results/student/feedback/`, { method: 'POST', headers: getAuthHeaders(), body: JSON.stringify(data) }).then(res => res.json());
+
+export const getAllUsers = async (): Promise<User[]> => {
+  try {
+    
+    const response = await fetch(`${API_BASE_URL}/api/users/users/`, { 
+        headers: getAuthHeaders() 
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch users. You may not have permission.');
+    }
+    
+    return await response.json();
+
+  } catch (error) {
+    console.error('Error fetching all users:', error);
+    return []; 
+  }
 };

@@ -1,225 +1,259 @@
-
+// app/admin/sub-category/page.tsx
 
 'use client';
 
-import React from 'react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
+
+// Import all necessary API functions
+import { getCategories, getSubcategories, createSubcategory, updateSubcategory, deleteSubcategory } from '@/services/api'; 
+
+// Import the types for better code safety
+import type { Category, SubCategory } from '@/lib/types';
+
+// ... other imports ...
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { MoreVertical, PlusCircle, Home, ChevronRight } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
+import Link from 'next/link';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import {
-  Search,
-  MoreVertical,
-  PlusCircle,
-  Home,
-  ChevronRight,
-  RefreshCw,
-  List,
-} from 'lucide-react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-    Table,
-    TableHeader,
-    TableRow,
-    TableHead,
-    TableBody,
-    TableCell,
-  } from '@/components/ui/table';
-import { mockSubCategories, mockCategories } from '@/lib/mock-data';
-import { cn } from '@/lib/utils';
-import Link from 'next/link';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger, DialogClose } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
+
 
 export default function AdminSubCategoryPage() {
-    const subCategories = mockSubCategories;
-    const categories = mockCategories;
+    // --- STATE MANAGEMENT ---
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
+    const [loading, setLoading] = useState(true);
 
-  return (
-    <div className="space-y-6">
-        <div className="flex justify-between items-center">
-            <h1 className="text-3xl font-bold">Create and Manage Category</h1>
-            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                <Link href="/admin" className="flex items-center gap-1 hover:text-primary"><Home className="h-4 w-4" /> Dashboard</Link>
-                <ChevronRight className="h-4 w-4" />
-                <span>Category</span>
+    // State for Create Dialog
+    const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+    const [newSubCategoryName, setNewSubCategoryName] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('');
+
+    // State for Edit Dialog
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [editingSubCategory, setEditingSubCategory] = useState<SubCategory | null>(null);
+
+    // --- DATA FETCHING ---
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const [catsData, subCatsData] = await Promise.all([
+                getCategories(),
+                getSubcategories()
+            ]);
+            if (Array.isArray(catsData)) setCategories(catsData);
+            if (Array.isArray(subCatsData)) setSubCategories(subCatsData);
+        } catch (error) {
+            console.error("Failed to fetch data", error);
+            toast.error("Could not load data.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    // --- CRUD HANDLERS ---
+    
+    // CREATE
+    const handleCreateSubCategory = async () => {
+        if (!newSubCategoryName || !selectedCategory) {
+            toast.error("Parent Category and Name are required.");
+            return;
+        }
+        try {
+            await createSubcategory({
+                name: newSubCategoryName,
+                category: parseInt(selectedCategory)
+            });
+            toast.success("Sub-category created successfully!");
+            setIsCreateDialogOpen(false);
+            setNewSubCategoryName('');
+            setSelectedCategory('');
+            await fetchData();
+        } catch (error) {
+            toast.error("Failed to create sub-category.");
+        }
+    };
+
+    // DELETE
+    const handleDeleteSubCategory = async (id: number) => {
+        if (!window.confirm("Are you sure you want to delete this sub-category?")) {
+            return;
+        }
+        try {
+            const response = await deleteSubcategory(id);
+            if (response.ok) {
+                toast.success("Sub-category deleted successfully!");
+                await fetchData();
+            } else {
+                toast.error("Failed to delete sub-category.");
+            }
+        } catch (error) {
+            toast.error("An error occurred while deleting.");
+        }
+    };
+
+    // UPDATE (Part 1: Open Dialog)
+    const handleOpenEditDialog = (subCategory: SubCategory) => {
+        setEditingSubCategory(subCategory);
+        setIsEditDialogOpen(true);
+    };
+
+    // UPDATE (Part 2: Handle form input changes)
+    const handleEditFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!editingSubCategory) return;
+        setEditingSubCategory({ ...editingSubCategory, name: e.target.value });
+    };
+
+    const handleEditSelectChange = (value: string) => {
+        if (!editingSubCategory) return;
+        setEditingSubCategory({ ...editingSubCategory, category: parseInt(value) });
+    };
+
+    // UPDATE (Part 3: Submit form)
+    const handleUpdateSubCategory = async () => {
+        if (!editingSubCategory) return;
+        try {
+            const response = await updateSubcategory(editingSubCategory.id, {
+                name: editingSubCategory.name,
+                category: editingSubCategory.category
+            });
+            if (response.ok) {
+                toast.success("Sub-category updated successfully!");
+                setIsEditDialogOpen(false);
+                setEditingSubCategory(null);
+                await fetchData();
+            } else {
+                toast.error("Failed to update sub-category.");
+            }
+        } catch (error) {
+            toast.error("An error occurred during the update.");
+        }
+    };
+
+    // --- JSX RENDER ---
+    return (
+        <div className="space-y-6">
+            <div className="flex justify-between items-center">
+                <h1 className="text-3xl font-bold">Manage Sub Categories</h1>
             </div>
-        </div>
-        
-        <div className="text-right">
-            <Dialog>
-                <DialogTrigger asChild>
-                    <Button>
-                        <PlusCircle className="mr-2 h-4 w-4" /> Create Category
-                    </Button>
-                </DialogTrigger>
+            
+            <div className="text-right">
+                <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+                    <DialogTrigger asChild>
+                        <Button><PlusCircle className="mr-2 h-4 w-4" /> Create Sub Category</Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                            <DialogTitle>Create New Sub Category</DialogTitle>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                            <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="category" className="text-right">Parent Category</Label>
+                                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                                    <SelectTrigger className="col-span-3"><SelectValue placeholder="Select a category" /></SelectTrigger>
+                                    <SelectContent>
+                                        {categories.map((category) => (
+                                            <SelectItem key={category.id} value={String(category.id)}>{category.name}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="name" className="text-right">Name</Label>
+                                <Input id="name" value={newSubCategoryName} onChange={(e) => setNewSubCategoryName(e.target.value)} className="col-span-3" />
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <Button variant="secondary" onClick={() => setIsCreateDialogOpen(false)}>Cancel</Button>
+                            <Button type="submit" onClick={handleCreateSubCategory}>Submit</Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+            </div>
+
+            <Card>
+                <CardHeader><CardTitle>Sub Category List</CardTitle></CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>ID</TableHead>
+                                <TableHead>Name</TableHead>
+                                <TableHead>Parent Category</TableHead>
+                                <TableHead className="text-right">Actions</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {loading ? (
+                                <TableRow><TableCell colSpan={4} className="text-center">Loading...</TableCell></TableRow>
+                            ) : (
+                                subCategories.map((subCategory) => {
+                                    const parentCategory = categories.find(cat => cat.id === subCategory.category);
+                                    return (
+                                        <TableRow key={subCategory.id}>
+                                            <TableCell>{subCategory.id}</TableCell>
+                                            <TableCell className="font-medium">{subCategory.name}</TableCell>
+                                            <TableCell><Badge variant="secondary">{parentCategory ? parentCategory.name : 'N/A'}</Badge></TableCell>
+                                            <TableCell className="text-right">
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild><Button variant="ghost" size="icon"><MoreVertical className="h-4 w-4" /></Button></DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end">
+                                                        <DropdownMenuItem onClick={() => handleOpenEditDialog(subCategory)}>Edit</DropdownMenuItem>
+                                                        <DropdownMenuItem className="text-destructive" onClick={() => handleDeleteSubCategory(subCategory.id)}>Delete</DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })
+                            )}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
+
+            {/* --- Edit Sub-Category Dialog --- */}
+            <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
-                        <DialogTitle>Create New Category</DialogTitle>
-                        <DialogDescription>
-                            Select an exam title and enter the name for the new category.
-                        </DialogDescription>
+                        <DialogTitle>Edit Sub Category</DialogTitle>
                     </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="main-category" className="text-right">
-                                Exam Title
-                            </Label>
-                             <Select>
-                                <SelectTrigger className="col-span-3">
-                                    <SelectValue placeholder="Select an exam title" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {categories.map((category) => (
-                                        <SelectItem key={category.id} value={category.slug || category.name.toLowerCase()}>{category.name}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                    {editingSubCategory && (
+                        <div className="grid gap-4 py-4">
+                            <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="edit-category" className="text-right">Parent Category</Label>
+                                <Select value={String(editingSubCategory.category)} onValueChange={handleEditSelectChange}>
+                                    <SelectTrigger className="col-span-3"><SelectValue /></SelectTrigger>
+                                    <SelectContent>
+                                        {categories.map((category) => (
+                                            <SelectItem key={category.id} value={String(category.id)}>{category.name}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="edit-name" className="text-right">Name</Label>
+                                <Input id="edit-name" value={editingSubCategory.name} onChange={handleEditFormChange} className="col-span-3" />
+                            </div>
                         </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="name" className="text-right">
-                                Name
-                            </Label>
-                            <Input id="name" placeholder="Category Name" className="col-span-3" />
-                        </div>
-                    </div>
+                    )}
                     <DialogFooter>
-                        <DialogClose asChild>
-                            <Button type="button" variant="secondary">
-                                Cancel
-                            </Button>
-                        </DialogClose>
-                        <Button type="submit">Submit</Button>
+                        <Button variant="secondary" onClick={() => setIsEditDialogOpen(false)}>Cancel</Button>
+                        <Button type="submit" onClick={handleUpdateSubCategory}>Save Changes</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
         </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-        <div className="lg:col-span-2">
-            <Card>
-                <CardHeader className="bg-muted/50">
-                    <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-                        <CardTitle>Category List</CardTitle>
-                        <div className="flex items-center gap-2">
-                             <Select defaultValue="all">
-                                <SelectTrigger className="w-full sm:w-[160px] bg-background">
-                                    <SelectValue placeholder="Select Exam Title" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All Exam Titles</SelectItem>
-                                    <SelectItem value="textiles">Textiles</SelectItem>
-                                    <SelectItem value="general">General</SelectItem>
-                                    <SelectItem value="health">Health</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            <div className="relative flex-grow sm:flex-grow-0">
-                                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                                <Input placeholder="Search" className="pl-8 bg-background" />
-                            </div>
-                             <Button variant="outline" size="icon">
-                                <RefreshCw className="h-4 w-4" />
-                            </Button>
-                             <Button variant="outline" size="icon">
-                                <List className="h-4 w-4" />
-                            </Button>
-                        </div>
-                    </div>
-                </CardHeader>
-                <CardContent>
-                    <div className="overflow-x-auto">
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>ID</TableHead>
-                                    <TableHead>Name</TableHead>
-                                    <TableHead>Exam Title</TableHead>
-                                    <TableHead>Row Order</TableHead>
-                                    <TableHead className="text-right">Operate</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {subCategories.map((category) => (
-                                    <TableRow key={category.id}>
-                                        <TableCell>{category.id}</TableCell>
-                                        <TableCell className="font-medium">{category.name}</TableCell>
-                                        <TableCell>
-                                            <Badge variant="secondary">Textiles</Badge>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge className={cn("bg-yellow-400 text-yellow-900 hover:bg-yellow-500")}>
-                                                {category.rowOrder}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon" className="bg-foreground text-background hover:bg-foreground/80">
-                                                        <MoreVertical className="h-4 w-4" />
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end">
-                                                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                                                    <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </div>
-                </CardContent>
-            </Card>
-        </div>
-
-        <div className="lg:col-span-1">
-            <Card>
-                <CardHeader className="bg-muted/50">
-                    <CardTitle>Category Order</CardTitle>
-                </CardHeader>
-                <CardContent className="pt-6">
-                     <Select defaultValue="textiles">
-                        <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select Exam Title" />
-                        </SelectTrigger>
-                        <SelectContent>
-                           <SelectItem value="textiles">Textiles</SelectItem>
-                           <SelectItem value="general">General</SelectItem>
-                           <SelectItem value="health">Health</SelectItem>
-                        </SelectContent>
-                    </Select>
-                    <div className="mt-4 space-y-2">
-                        {subCategories
-                            .sort((a, b) => a.rowOrder - b.rowOrder)
-                            .map((category, index) => (
-                            <div key={category.id} className="flex items-center p-3 bg-muted/30 rounded-md">
-                                <span className="text-sm font-medium text-muted-foreground mr-4">{index + 1}.</span>
-                                <span className="text-sm">{category.name}</span>
-                            </div>
-                        ))}
-                    </div>
-                </CardContent>
-            </Card>
-        </div>
-      </div>
-    </div>
-  );
+    );
 }

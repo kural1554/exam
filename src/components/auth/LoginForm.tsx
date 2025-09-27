@@ -24,6 +24,9 @@ import { mockUser } from "@/lib/mock-data";
 import Link from "next/link";
 import { Checkbox } from "../ui/checkbox";
 
+import { loginUser } from "@/services/api";
+import Cookies from 'js-cookie';
+
 const formSchema = z.object({
   email: z.string().email({
     message: "Please enter a valid email address.",
@@ -59,39 +62,42 @@ export default function LoginForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      
-      const isAdmin = values.email === 'admin@gmail.com' && values.password === 'admin@123';
-      const cookieOptions = values.rememberMe && !isAdmin ? { expires: 365 } : {};
 
-      // Simulate successful login
-      setCookie('user_loggedin', 'true', cookieOptions);
-      setCookie('user_details', {
-        name: isAdmin ? 'Admin User' : mockUser.name,
-        email: isAdmin ? 'admin@gmail.com' : mockUser.email,
-        isAdmin: isAdmin,
-      }, cookieOptions);
-      
-      if (isAdmin) {
-        toast({
-          title: "Admin Login Successful",
-          description: "Welcome back, Admin! Redirecting to your dashboard.",
-        });
-        router.push('/admin');
-      } else {
-        toast({
-          title: "Login Successful",
-          description: "Welcome back!",
-        });
-        router.push('/');
-      }
-    }, 1000);
-  }
+    try {
+        const credentials = {
+            email: values.email,
+            password: values.password,
+        };
 
+        
+        const responseData = await loginUser(credentials);
+      
+       
+        if (responseData && responseData.access && responseData.user) {
+        
+           
+            localStorage.setItem('accessToken', responseData.access);
+            localStorage.setItem('userDetails', JSON.stringify(responseData.user));
+            Cookies.set('userRole', responseData.user.role, { expires: 7 });
+          
+           if (responseData.user.role === 'admin') {
+                toast({ title: "Admin Login Successful", description: "Redirecting..." });
+                router.push('/admin'); 
+            } else {
+                toast({ title: "Login Successful", description: "Redirecting..." });
+                router.push('/'); 
+            }
+        } else {
+            throw new Error("Invalid response from server.");
+        }
+    } catch (error: any) {
+        toast({ title: "Login Failed", description: error.message, variant: "destructive" });
+        setIsLoading(false); 
+    }
+
+}
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

@@ -26,6 +26,8 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
+import { registerUser } from "@/services/api";
+
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
@@ -49,13 +51,13 @@ const formSchema = z.object({
   password: z.string().min(6, {
     message: "Password must be at least 6 characters.",
   }),
-  confirmPassword: z.string(),
+  password2: z.string(),
   userType: z.enum(["student", "coach"], {
     required_error: "You need to select a user type.",
   }),
-}).refine((data) => data.password === data.confirmPassword, {
+}).refine((data) => data.password === data.password2, {
   message: "Passwords don't match",
-  path: ["confirmPassword"],
+  path: ["password2"],
 });
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -80,23 +82,68 @@ export default function SignupForm() {
       phone: "",
       district: "",
       password: "",
-      confirmPassword: "",
+      password2: "",
       userType: "student",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      console.log(values);
-      toast({
-        title: "Account Created",
-        description: "Welcome to Examplify! Redirecting to your dashboard.",
-      });
-      router.push('/dashboard');
-      setIsLoading(false);
-    }, 1000);
+    
+    try {
+      
+      const payload = {
+          name: values.name,
+          email: values.email,
+          phone_number: values.phone,
+          dob: format(values.dob, 'yyyy-MM-dd'), // Date object ah string ah maathrom
+          gender: values.gender,
+          state: values.state,
+          district: values.district,
+          password: values.password,
+          password2: values.password2,
+          role: values.userType, // DRF ku thevayana maathiri key ah maathrom
+      };
+
+    
+      const response = await registerUser(payload);
+
+      if (response.ok) {
+        // Success!
+        toast({
+          title: "Account Created Successfully!",
+          description: "Please check your email to verify your account.",
+        });
+        form.reset();
+        
+         setTimeout(() => {
+          router.push('/login'); // Ithu thaan login page ku anupum
+        }, 2000); // 2000 milliseconds = 2 seconds
+        
+      } else {
+        
+        const errorData = await response.json();
+
+        const errorMessage = Object.values(errorData).flat().join(' ');
+        toast({
+            title: "Registration Failed",
+            description: errorMessage || "An error occurred. Please try again.",
+            variant: "destructive",
+        });
+      }
+
+    } catch (error) {
+        
+        toast({
+            title: "Uh oh! Something went wrong.",
+            description: "There was a problem connecting to the server. Please try again later.",
+            variant: "destructive",
+        });
+        console.error("Signup submission error:", error);
+    } finally {
+     
+        setIsLoading(false);
+    }
   }
 
   return (
@@ -254,7 +301,15 @@ export default function SignupForm() {
                 <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
+                    <Input
+                      type="password"
+                      placeholder="••••••••"
+                      value={typeof field.value === "string" ? field.value : ""}
+                      onChange={field.onChange}
+                      onBlur={field.onBlur}
+                      name={field.name}
+                      ref={field.ref}
+                    />
                 </FormControl>
                 <FormMessage />
                 </FormItem>
@@ -262,7 +317,7 @@ export default function SignupForm() {
             />
             <FormField
             control={form.control}
-            name="confirmPassword"
+            name="password2"
             render={({ field }) => (
                 <FormItem>
                 <FormLabel>Confirm Password</FormLabel>

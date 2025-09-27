@@ -18,20 +18,23 @@ import {
   LayoutGrid,
   LayoutList,
   ListTree,
+  LogOut,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { usePathname } from 'next/navigation';
+import { usePathname , useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import Logo from '../Logo';
-
+import Cookies from 'js-cookie';
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: Home },
   { href: '/admin/course', label: 'Course', icon: BookOpen },
   { href: '/admin/post', label: 'Post', icon: FileText },
-  { href: '/admin/category', label: 'Exam Title', icon: LayoutGrid },
-  { href: '/admin/sub-category', label: 'Category', icon: LayoutList },
-  { href: '/admin/child-category', label: 'Sub Category', icon: ListTree },
-  { href: '/admin/new-child-category', label: 'Child Category', icon: ListTree },
+  { href: '/admin/exam-title', label: 'Exam Title', icon: LayoutGrid },
+  { href: '/admin/category', label: 'Category', icon: LayoutList },
+  { href: '/admin/sub-category', label: 'Sub Category', icon: ListTree },
+  { href: '/admin/child-category', label: 'Child Category', icon: ListTree },
+  
+ 
   { href: '/admin/syllabus', label: 'Syllabus', icon: ListTodo },
   { href: '/admin/qa', label: 'Q/A', icon: HelpCircle },
   { href: '/admin/exams', label: 'Exams', icon: FilePenLine },
@@ -46,6 +49,19 @@ const navItems = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+   const router = useRouter();
+
+   const handleLogout = () => {
+    
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('userDetails');
+    
+    
+    Cookies.remove('userRole');
+    
+    
+    router.push('/login');
+  };
 
   return (
     <div className="hidden border-r bg-card md:block">
@@ -75,6 +91,12 @@ export default function AdminSidebar() {
               </Link>
             ))}
           </nav>
+        </div>
+         <div className="mt-auto p-4 border-t">
+            <Button variant="ghost" className="w-full justify-start" onClick={handleLogout}>
+                <LogOut className="mr-3 h-4 w-4" />
+                Logout
+            </Button>
         </div>
       </div>
     </div>

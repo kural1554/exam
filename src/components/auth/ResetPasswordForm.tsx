@@ -18,22 +18,25 @@ import { useToast } from '@/hooks/use-toast';
 import React from 'react';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams,useRouter } from 'next/navigation';
+
+import { confirmPasswordReset } from '@/services/api';
 
 const formSchema = z.object({
   password: z.string().min(6, {
     message: 'Password must be at least 6 characters.',
   }),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
+  password2: z.string(),
+}).refine((data) => data.password === data.password2, {
   message: "Passwords don't match",
-  path: ["confirmPassword"],
+  path: ["password2"], // Set the path of the error to 'password2' field
 });
 
 
 export default function ResetPasswordForm() {
   const { toast } = useToast();
   const params = useParams();
+  const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(false);
   const [isSubmitted, setIsSubmitted] = React.useState(false);
 
@@ -41,35 +44,61 @@ export default function ResetPasswordForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       password: '',
-      confirmPassword: '',
+      password2: '',
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    // In a real app, you would make a fetch request here:
-    // const { uid, token } = params;
-    // const res = await fetch("http://localhost:8000/api/reset-password/", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({ password: values.password, confirm_password: values.confirmPassword, uidb64: uid, token }),
-    // });
-    // const data = await res.json();
-    console.log('Submitting new password:', values.password);
-    console.log('For UID:', params.uid);
-    console.log('With Token:', params.token);
 
-    setTimeout(() => {
-      toast({
-        title: 'Password Changed Successfully',
-        description:
-          'Your password has been updated. You can now log in with your new password.',
-      });
-      setIsSubmitted(true);
-      setIsLoading(false);
-    }, 1000);
+    // URL la irunthu uid and token ah edukurom
+    const uid = params.uid as string;
+    const token = params.token as string;
+
+    if (!uid || !token) {
+        toast({ title: "Error", description: "Invalid reset link.", variant: "destructive" });
+        setIsLoading(false);
+        return;
+    }
+
+    try {
+        const payload = {
+            password: values.password,
+            password2: values.password2,
+            uidb64: uid,
+            token: token,
+        };
+
+        const response = await confirmPasswordReset(payload);
+        
+        if (response.ok) {
+            toast({
+                title: 'Password Changed Successfully',
+                description: 'Redirecting to login...',
+            });
+            setIsSubmitted(true);
+            setTimeout(() => router.push('/login'), 2000); // 2 seconds kalichi login page ku pogum
+        } else {
+            const errorData = await response.json();
+            toast({
+                title: 'Reset Failed',
+                description: errorData.detail || "Invalid or expired link.",
+                variant: "destructive",
+            });
+        }
+
+    } catch (error) {
+        toast({
+            title: "Uh oh! Something went wrong.",
+            description: "There was a problem connecting to the server.",
+            variant: "destructive",
+        });
+    } finally {
+        setIsLoading(false);
+    }
   }
 
+  // Intha `isSubmitted` logic apdiye irukatum
   if (isSubmitted) {
     return (
       <div className="text-center">
@@ -82,7 +111,6 @@ export default function ResetPasswordForm() {
       </div>
     );
   }
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -101,7 +129,7 @@ export default function ResetPasswordForm() {
         />
         <FormField
           control={form.control}
-          name="confirmPassword"
+          name="password2"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Confirm New Password</FormLabel>
