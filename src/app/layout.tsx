@@ -69,6 +69,7 @@ export default function RootLayout({
             <Toaster />
             </ThemeProvider>
         )}
+        <Toaster />
          <div className="pulse"></div>
         <div className="pulse"></div>
         <div className="pulse"></div>
